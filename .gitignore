@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+db.sqlite3
+staticfiles/
+
+# Node
+node_modules/
+dist/
+
+# Reportes locales de pruebas (en CI se publican como artefactos)
+reports/
+
+# Entorno
+.env
+*.local
+
+# Editor y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Configuración local de herramientas
+.claude/
