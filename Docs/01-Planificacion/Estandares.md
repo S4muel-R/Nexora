@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Fecha | 2026-11-04 |
 | Referencia | Instrucciones del Proyecto Integrador, sección 10 |
 | Cumplimiento | Lo verifica la revisión de cada Pull Request (sección 8) y, cuando es automatizable, GitHub Actions |
@@ -65,8 +65,8 @@ El código se escribe en inglés y la interfaz y la documentación en español.
 ## 6. Gestión del proyecto
 
 - Jira (`ADLCDS`) es la fuente de verdad del backlog: historias, tareas, errores y sprints.
-- Estados: **Por hacer → En curso → En revisión → Finalizada**. Una tarea pasa a *Finalizada* solo si cumple su
-  criterio de entrega y su PR está integrado.
+- Estados del tablero: **Por hacer → En curso → Listo**. Una tarea pasa a *Listo* solo si cumple su criterio de entrega
+  y su PR está integrado en `main` (CC-10).
 - Cada sprint cierra con Sprint Review grabado y su análisis de ejecución (sección 4.2 de las instrucciones).
 - Daily Scrum grabado y guardado en OneDrive / Grabaciones del Proyecto.
 
@@ -101,3 +101,4 @@ El código se escribe en inglés y la interfaz y la documentación en español.
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-04 | Versión inicial. |
+| 1.1 | 2026-11-04 | Estados de Jira según el tablero real (CC-10). |

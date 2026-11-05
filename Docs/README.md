@@ -12,12 +12,24 @@ documental de OneDrive (ver S1-12), que usa la misma estructura de carpetas.
 | `05-Pruebas` | Plan y resultados de pruebas |
 | `06-Entregables` | Versiones finales (`.docx` / `.pdf`) entregadas al docente |
 
-## Documentos de gestión
+## Segundo entregable
 
-| Documento | Estado |
+| Criterio (sección 22) | Documento |
 |---|---|
-| [Plan de trabajo para el segundo entregable](01-Planificacion/Plan-segundo-avance.md) | v3 |
-| [Estándares del proyecto](01-Planificacion/Estandares.md) | v1.0 |
+| Plan de trabajo | [Plan del segundo entregable](01-Planificacion/Plan-segundo-avance.md) |
+| Ejecución del proyecto | [Informe de ejecución de los sprints](01-Planificacion/Informe-ejecucion-sprints.md) |
+| Estándares | [Estándares del proyecto](01-Planificacion/Estandares.md) |
+| Backlog y requisitos | [Catálogo de requisitos y Product Backlog](02-Requisitos/Catalogo-de-requisitos.md) |
+| Verificación de requisitos | [Verificación de requisitos](02-Requisitos/Verificacion-de-requisitos.md) |
+| Refinamiento | [Registro de refinamiento](02-Requisitos/Registro-de-refinamiento.md) |
+| Diseño | [Arquitectura, datos y API](03-Diseno/Arquitectura-datos-API.md) |
+| Pruebas (ISO/IEC/IEEE 29119-3) | [Plan de pruebas](05-Pruebas/Plan-de-pruebas.md) · [Especificación de casos](05-Pruebas/Especificacion-de-casos.md) · [Registro de ejecución](05-Pruebas/Registro-de-ejecucion.md) · [Informe de estado](05-Pruebas/Informe-de-estado.md) |
+| Defectos | [Informes de incidente](05-Pruebas/Informes-de-incidente.md) · Jira ADLCDS-103, ADLCDS-104 |
+| Evidencias | [`05-Pruebas/evidencias/`](05-Pruebas/evidencias) (capturas y salidas de pruebas) |
+| Métricas | [Métricas](01-Planificacion/Metricas.md) |
+| Gestión de cambios | [Gestión de cambios](01-Planificacion/Gestion-de-cambios.md) |
+| Trazabilidad | [Matriz de trazabilidad](02-Requisitos/Matriz-de-trazabilidad.md) |
+| Causa raíz | [Análisis de causa raíz](05-Pruebas/Analisis-causa-raiz.md) |
 
 ## Sprint 1
 

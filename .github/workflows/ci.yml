@@ -74,8 +74,8 @@ jobs:
         run: npm run lint
       - name: Verificación de tipos (tsc)
         run: npm run typecheck
-      - name: Pruebas unitarias (vitest)
-        run: npm test
+      - name: Pruebas unitarias con cobertura (vitest)
+        run: npm run coverage
       - name: Compilación
         run: npm run build
       - name: Publicar reportes
