@@ -117,6 +117,17 @@ def test_hu07_e5_fecha_de_nacimiento_futura(client_for, robles_admin):
     ]
 
 
+@pytest.mark.parametrize("value", ["", None, "14/03/2016"], ids=["vacia", "nula", "formato"])
+def test_adlcds_104_fecha_invalida_con_mensaje_claro(client_for, robles_admin, value):
+    """Regresión de ADLCDS-104 (INC-002): sin mensajes técnicos de formato (RNF04)."""
+    response = client_for(robles_admin).post(STUDENTS, payload(birth_date=value), format="json")
+
+    assert response.status_code == 400
+    assert response.json()["error"]["fields"]["birth_date"] == [
+        "Ingrese una fecha de nacimiento válida."
+    ]
+
+
 def test_hu07_e5_nivel_que_no_pertenece_a_la_institucion(client_for, robles_admin):
     response = client_for(robles_admin).post(STUDENTS, payload(level="secundaria"))
 
