@@ -5,7 +5,7 @@ testpaths = ["tests"]
 addopts = "--strict-markers"
 
 [tool.coverage.run]
-source = ["core", "config"]
+source = ["core", "config", "accounts", "institutions", "students"]
 omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "manage.py"]
 
 [tool.ruff]

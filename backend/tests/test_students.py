@@ -40,6 +40,20 @@ def test_hu07_e1_registrar_estudiante(client_for, robles_admin, robles):
     assert student.is_active
 
 
+@pytest.mark.parametrize("fmt", ["multipart", "json"])
+def test_adlcds_103_estudiante_nuevo_queda_activo_en_cualquier_formato(
+    client_for, robles_admin, fmt
+):
+    """Regresión de ADLCDS-103 (INC-001)."""
+    client = client_for(robles_admin)
+
+    response = client.post(STUDENTS, payload(), format=fmt)
+
+    assert response.status_code == 201
+    assert response.json()["is_active"] is True
+    assert [s["identification"] for s in client.get(STUDENTS).json()] == ["1-1111-1111"]
+
+
 def test_hu07_e2_editar_apellido(client_for, robles_admin, robles):
     student = make_student(robles)
 
