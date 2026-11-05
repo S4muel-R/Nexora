@@ -5,13 +5,13 @@ export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/ap
 export interface ApiErrorBody {
   code: string
   message: string
-  fields?: Record<string, string[]>
+  fields?: Record<string, unknown>
 }
 
 export class ApiError extends Error {
   readonly status: number
   readonly code: string
-  readonly fields: Record<string, string[]>
+  readonly fields: Record<string, unknown>
 
   constructor(status: number, body: ApiErrorBody) {
     super(body.message)
@@ -19,11 +19,47 @@ export class ApiError extends Error {
     this.code = body.code
     this.fields = body.fields ?? {}
   }
+
+  /** Primer mensaje de error de un campo, también para campos anidados como `admin.email`. */
+  fieldError(path: string): string | undefined {
+    let value: unknown = this.fields
+    for (const key of path.split('.')) {
+      if (value === null || typeof value !== 'object') return undefined
+      value = (value as Record<string, unknown>)[key]
+    }
+    return Array.isArray(value) && typeof value[0] === 'string' ? value[0] : undefined
+  }
 }
 
 const NETWORK_ERROR: ApiErrorBody = {
   code: 'network_error',
   message: 'No se pudo conectar con el servidor. Revise su conexión e intente de nuevo.',
+}
+
+const TOKEN_KEY = 'nexora.token'
+let unauthorizedHandler: (() => void) | null = null
+
+export const tokenStore = {
+  get: (): string | null => {
+    try {
+      return localStorage.getItem(TOKEN_KEY)
+    } catch {
+      return null
+    }
+  },
+  set: (token: string | null) => {
+    try {
+      if (token) localStorage.setItem(TOKEN_KEY, token)
+      else localStorage.removeItem(TOKEN_KEY)
+    } catch {
+      // Sin almacenamiento disponible la sesión dura solo mientras la pestaña esté abierta.
+    }
+  },
+}
+
+/** Se ejecuta cuando la API responde 401: la sesión ya no es válida (HU02-E3). */
+export function onUnauthorized(handler: (() => void) | null) {
+  unauthorizedHandler = handler
 }
 
 export async function parseError(response: Response): Promise<ApiError> {
@@ -39,13 +75,44 @@ export async function parseError(response: Response): Promise<ApiError> {
   })
 }
 
-export async function apiGet<T>(path: string, fetchImpl: typeof fetch = fetch): Promise<T> {
+type Method = 'GET' | 'POST' | 'PATCH'
+
+export async function apiRequest<T>(
+  method: Method,
+  path: string,
+  body?: unknown,
+  fetchImpl: typeof fetch = fetch,
+): Promise<T> {
+  const headers: Record<string, string> = { Accept: 'application/json' }
+  const token = tokenStore.get()
+  if (token) headers.Authorization = `Token ${token}`
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
+
   let response: Response
   try {
-    response = await fetchImpl(`${API_URL}${path}`, { headers: { Accept: 'application/json' } })
+    response = await fetchImpl(`${API_URL}${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    })
   } catch {
     throw new ApiError(0, NETWORK_ERROR)
   }
-  if (!response.ok) throw await parseError(response)
+
+  if (!response.ok) {
+    const error = await parseError(response)
+    if (response.status === 401 && token) unauthorizedHandler?.()
+    throw error
+  }
+  if (response.status === 204) return undefined as T
   return (await response.json()) as T
+}
+
+export const apiGet = <T>(path: string, fetchImpl?: typeof fetch) =>
+  apiRequest<T>('GET', path, undefined, fetchImpl)
+export const apiPost = <T>(path: string, body?: unknown) => apiRequest<T>('POST', path, body)
+export const apiPatch = <T>(path: string, body: unknown) => apiRequest<T>('PATCH', path, body)
+
+export function errorMessage(error: unknown): string {
+  return error instanceof ApiError ? error.message : 'Ocurrió un error inesperado. Intente de nuevo.'
 }

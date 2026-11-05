@@ -1,36 +1,37 @@
-import { useEffect, useState } from 'react'
-import { ApiError, apiGet } from './api/client'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './auth/AuthContext'
+import { Layout, RequireRole } from './components/Layout'
+import { HomePage } from './pages/HomePage'
+import { InstitutionsPage } from './pages/InstitutionsPage'
+import { LoginPage } from './pages/LoginPage'
+import { MyInstitutionPage } from './pages/MyInstitutionPage'
+import { StudentsPage } from './pages/StudentsPage'
 
-interface Health {
-  status: string
-  database: string
+const guarded = (path: string, element: React.ReactNode) => (
+  <Route path={path} element={<RequireRole path={path}>{element}</RequireRole>} />
+)
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/ingresar" element={<LoginPage />} />
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        {guarded('/instituciones', <InstitutionsPage />)}
+        {guarded('/mi-institucion', <MyInstitutionPage />)}
+        {guarded('/estudiantes', <StudentsPage />)}
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
 }
 
-type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string }
-
 export default function App() {
-  const [state, setState] = useState<State>({ kind: 'loading' })
-
-  useEffect(() => {
-    apiGet<Health>('/health/')
-      .then((health) => setState({ kind: 'ok', health }))
-      .catch((error: unknown) =>
-        setState({
-          kind: 'error',
-          message: error instanceof ApiError ? error.message : 'Ocurrió un error inesperado.',
-        }),
-      )
-  }, [])
-
   return (
-    <main className="shell">
-      <h1>Nexora</h1>
-      <p>Plataforma de gestión educativa</p>
-      <section aria-live="polite" className={`status status--${state.kind}`}>
-        {state.kind === 'loading' && 'Verificando el servidor…'}
-        {state.kind === 'ok' && `Servidor disponible (base de datos: ${state.health.database})`}
-        {state.kind === 'error' && state.message}
-      </section>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
