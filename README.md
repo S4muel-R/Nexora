@@ -9,7 +9,8 @@ de cada persona.
 - [`backend/`](backend) — API en Django + Django REST Framework, pruebas con pytest.
 - [`frontend/`](frontend) — interfaz en React + TypeScript (Vite), pruebas con Vitest.
 - [`Docs/`](Docs/README.md) — documentación del proyecto (planificación, requisitos, diseño, desarrollo, pruebas y entregables).
-- [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — integración continua: análisis estático, pruebas, cobertura y compilación.
+- [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — integración continua: análisis estático, pruebas, cobertura, compilación y pruebas de sistema.
+- [`scripts/md2docx.py`](scripts/md2docx.py) — genera los `.docx` de `Docs/06-Entregables/` a partir de los `.md` (requiere `pip install python-docx`).
 
 ## Ejecutar con Docker
 
@@ -43,8 +44,12 @@ npm run dev
 
 ```bash
 cd backend && .venv/Scripts/python -m pytest --cov
-cd frontend && npm test
+cd frontend && npm run coverage
+cd frontend && npm run e2e
 ```
+
+`npm run e2e` levanta la API con datos ficticios (`manage.py seed_demo`) y la interfaz, y ejecuta los recorridos de
+Playwright en computadora y teléfono. Las capturas de evidencia quedan en `Docs/05-Pruebas/evidencias/e2e/`.
 
 ## Forma de trabajo
 
