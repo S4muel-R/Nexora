@@ -22,6 +22,8 @@ export function StudentsPage() {
   const canEdit = user?.role === 'institution_admin'
   const [students, setStudents] = useState<Student[]>([])
   const [levels, setLevels] = useState<Level[]>([])
+  // INC-004: el formulario solo se abre cuando los niveles de la institución ya cargaron.
+  const [levelsLoaded, setLevelsLoaded] = useState(false)
   const [search, setSearch] = useState('')
   const [includeInactive, setIncludeInactive] = useState(false)
   const [listError, setListError] = useState<string | null>(null)
@@ -49,9 +51,14 @@ export function StudentsPage() {
   }, [load])
 
   useEffect(() => {
+    let active = true
     apiGet<Institution>('/my-institution/')
-      .then((institution) => setLevels(institution.levels))
-      .catch(() => setLevels([]))
+      .then((institution) => active && setLevels(institution.levels))
+      .catch(() => active && setLevels([]))
+      .finally(() => active && setLevelsLoaded(true))
+    return () => {
+      active = false
+    }
   }, [])
 
   // INC-004: si el formulario se abrió antes de cargar los niveles, preseleccionar el único nivel al llegar.
@@ -114,7 +121,7 @@ export function StudentsPage() {
       <div className="page-header">
         <h1>Estudiantes</h1>
         {canEdit && !editing && (
-          <button type="button" className="button" onClick={() => openForm('new')}>
+          <button type="button" className="button" onClick={() => openForm('new')} disabled={!levelsLoaded}>
             Registrar estudiante
           </button>
         )}
@@ -233,7 +240,12 @@ export function StudentsPage() {
               <td data-label="Estado">{student.is_active ? 'Activo' : 'Desactivado'}</td>
               {canEdit && (
                 <td data-label="Acciones" className="row-actions">
-                  <button type="button" className="button button--small" onClick={() => openForm(student)}>
+                  <button
+                    type="button"
+                    className="button button--small"
+                    onClick={() => openForm(student)}
+                    disabled={!levelsLoaded}
+                  >
                     Editar
                   </button>
                   <button

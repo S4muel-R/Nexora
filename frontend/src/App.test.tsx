@@ -144,7 +144,7 @@ describe('HU03 Opciones por rol', () => {
 })
 
 describe('HU07 Registrar estudiante', () => {
-  it('INC-004: el único nivel se preselecciona aunque los niveles lleguen después de abrir el formulario', async () => {
+  it('INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado', async () => {
     let releaseInstitution: () => void = () => {}
     const institutionLoaded = new Promise<void>((resolve) => (releaseInstitution = resolve))
     localStorage.setItem('nexora.token', 'token-de-prueba')
@@ -158,11 +158,29 @@ describe('HU07 Registrar estudiante', () => {
     })
     renderAt('/estudiantes')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Registrar estudiante' }))
+    const register = await screen.findByRole('button', { name: 'Registrar estudiante' })
+    expect(register).toBeDisabled()
     releaseInstitution()
+    await vi.waitFor(() => expect(register).toBeEnabled())
+    await userEvent.click(register)
 
-    const level = screen.getByLabelText('Nivel')
-    expect(await screen.findByRole('option', { name: 'Primaria' })).toBeInTheDocument()
-    await vi.waitFor(() => expect(level).toHaveValue('primaria'))
+    expect(screen.getByLabelText('Nivel')).toHaveValue('primaria')
+  })
+})
+
+describe('HU02 Cerrar sesión en un equipo compartido', () => {
+  it('INC-009: el token se borra del navegador aunque el servidor no responda al cierre de sesión', async () => {
+    localStorage.setItem('nexora.token', 'token-de-prueba')
+    vi.stubGlobal('fetch', (url: string) => {
+      if (url.endsWith('/auth/me/')) return Promise.resolve(json(200, users.admin))
+      if (url.endsWith('/auth/logout/')) return new Promise<Response>(() => {})
+      return Promise.resolve(json(200, []))
+    })
+    renderAt('/')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }))
+
+    expect(localStorage.getItem('nexora.token')).toBeNull()
+    expect(await screen.findByRole('button', { name: 'Ingresar' })).toBeInTheDocument()
   })
 })

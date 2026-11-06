@@ -57,6 +57,22 @@ export const tokenStore = {
   },
 }
 
+/**
+ * INC-009: avisa al servidor el cierre de sesión con el token indicado. `keepalive` permite que la petición termine
+ * aunque la página se cierre o se recargue; la sesión local ya se borró antes de llamarla.
+ */
+export async function apiLogout(token: string, fetchImpl: typeof fetch = fetch): Promise<void> {
+  try {
+    await fetchImpl(`${API_URL}/auth/logout/`, {
+      method: 'POST',
+      headers: { Accept: 'application/json', Authorization: `Token ${token}` },
+      keepalive: true,
+    })
+  } catch {
+    // Sin conexión el token queda en el servidor, pero ya no está en este navegador.
+  }
+}
+
 /** Se ejecuta cuando la API responde 401: la sesión ya no es válida (HU02-E3). */
 export function onUnauthorized(handler: (() => void) | null) {
   unauthorizedHandler = handler

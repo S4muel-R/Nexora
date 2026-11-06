@@ -17,12 +17,18 @@ export function MyInstitutionPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
+    // INC-008: una respuesta de una carga ya descartada no sobrescribe lo que la persona está editando.
+    let active = true
     apiGet<Institution>('/my-institution/')
       .then((data) => {
+        if (!active) return
         setInstitution(data)
         setForm(data)
       })
-      .catch((err) => setLoadError(errorMessage(err)))
+      .catch((err) => active && setLoadError(errorMessage(err)))
+    return () => {
+      active = false
+    }
   }, [])
 
   if (loadError) return <Alert kind="error">{loadError}</Alert>

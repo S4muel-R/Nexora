@@ -80,4 +80,19 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
     await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible()
     await evidence(page, info, 'CP-S19', 'sesion-conservada')
   })
+
+  test('CP-S21 HU02-E1 cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009)', async ({ page }, info) => {
+    await login(page, ACCOUNTS.roblesAdmin)
+    // El servidor tarda en responder el cierre de sesión y la persona recarga o cierra la pestaña antes.
+    await page.route('**/api/v1/auth/logout/', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+      await route.continue().catch(() => {})
+    })
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click()
+    await page.reload()
+
+    await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible()
+    expect(await page.evaluate(() => localStorage.getItem('nexora.token'))).toBeNull()
+    await evidence(page, info, 'CP-S21', 'sesion-cerrada')
+  })
 })

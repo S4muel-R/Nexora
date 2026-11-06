@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { apiGet, apiPost, onUnauthorized, tokenStore } from '../api/client'
+import { apiGet, apiLogout, apiPost, onUnauthorized, tokenStore } from '../api/client'
 import type { User } from '../api/types'
 
 interface AuthState {
@@ -44,12 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return result.user
   }, [])
 
+  // INC-009: la sesión local se borra antes de avisar al servidor; si la página se cierra o recarga mientras la
+  // petición está en curso, el token ya no queda guardado en el navegador.
   const logout = useCallback(async () => {
-    try {
-      await apiPost('/auth/logout/')
-    } finally {
-      clearSession()
-    }
+    const token = tokenStore.get()
+    sessionVersion.current += 1
+    clearSession()
+    if (token) await apiLogout(token)
   }, [clearSession])
 
   const value = useMemo(() => ({ user, loading, login, logout }), [user, loading, login, logout])
