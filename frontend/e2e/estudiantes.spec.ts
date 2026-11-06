@@ -91,4 +91,19 @@ test.describe('HU06 – HU07 Estudiantes y aislamiento', () => {
     await expect(page.getByRole('button', { name: 'Editar' })).toHaveCount(0)
     await evidence(page, info, 'CP-S15', 'docente')
   })
+
+  test('CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004)', async ({ page }, info) => {
+    await login(page, ACCOUNTS.roblesAdmin)
+    // Simula la lentitud observada en CI: la institución responde 1,5 s después de abrir la pantalla.
+    await page.route('**/api/v1/my-institution/', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+    await page.getByRole('link', { name: 'Estudiantes' }).first().click()
+    await page.getByRole('button', { name: 'Registrar estudiante' }).click()
+    const form = page.getByRole('form', { name: 'Registrar estudiante' })
+
+    await expect(form.getByLabel('Nivel')).toHaveValue('primaria')
+    await evidence(page, info, 'CP-S18', 'nivel-preseleccionado')
+  })
 })

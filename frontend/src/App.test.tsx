@@ -142,3 +142,27 @@ describe('HU03 Opciones por rol', () => {
     expect(screen.queryByRole('button', { name: 'Registrar estudiante' })).not.toBeInTheDocument()
   })
 })
+
+describe('HU07 Registrar estudiante', () => {
+  it('INC-004: el único nivel se preselecciona aunque los niveles lleguen después de abrir el formulario', async () => {
+    let releaseInstitution: () => void = () => {}
+    const institutionLoaded = new Promise<void>((resolve) => (releaseInstitution = resolve))
+    localStorage.setItem('nexora.token', 'token-de-prueba')
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url.endsWith('/auth/me/')) return json(200, users.admin)
+      if (url.endsWith('/my-institution/')) {
+        await institutionLoaded
+        return json(200, { id: 1, name: 'Escuela Los Robles', levels: ['primaria'], address: '', phone: '', email: '' })
+      }
+      return json(200, [])
+    })
+    renderAt('/estudiantes')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Registrar estudiante' }))
+    releaseInstitution()
+
+    const level = screen.getByLabelText('Nivel')
+    expect(await screen.findByRole('option', { name: 'Primaria' })).toBeInTheDocument()
+    await vi.waitFor(() => expect(level).toHaveValue('primaria'))
+  })
+})

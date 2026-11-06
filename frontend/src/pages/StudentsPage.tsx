@@ -54,6 +54,13 @@ export function StudentsPage() {
       .catch(() => setLevels([]))
   }, [])
 
+  // INC-004: si el formulario se abrió antes de cargar los niveles, preseleccionar el único nivel al llegar.
+  useEffect(() => {
+    if (editing === 'new' && levels.length === 1) {
+      setForm((current) => (current.level ? current : { ...current, level: levels[0] }))
+    }
+  }, [editing, levels])
+
   const openForm = (student: Student | 'new') => {
     setEditing(student)
     setFormError(null)
