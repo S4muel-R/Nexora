@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { apiGet, apiPost, onUnauthorized, tokenStore } from '../api/client'
 import type { User } from '../api/types'
@@ -15,6 +15,8 @@ const AuthContext = createContext<AuthState | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(() => tokenStore.get() !== null)
+  // INC-007: cada inicio de sesión invalida la validación pendiente de la sesión anterior.
+  const sessionVersion = useRef(0)
 
   const clearSession = useCallback(() => {
     tokenStore.set(null)
@@ -24,9 +26,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     onUnauthorized(clearSession)
     if (tokenStore.get()) {
+      const version = sessionVersion.current
+      const isCurrent = () => sessionVersion.current === version
       apiGet<User>('/auth/me/')
-        .then(setUser)
-        .catch(clearSession)
+        .then((current) => isCurrent() && setUser(current))
+        .catch(() => isCurrent() && clearSession())
         .finally(() => setLoading(false))
     }
     return () => onUnauthorized(null)
@@ -34,6 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const result = await apiPost<{ token: string; user: User }>('/auth/login/', { email, password })
+    sessionVersion.current += 1
     tokenStore.set(result.token)
     setUser(result.user)
     return result.user

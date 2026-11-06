@@ -59,4 +59,25 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
     await expect(page.getByText('No tiene permiso para realizar esta acción.')).toBeVisible()
     await evidence(page, info, 'CP-S06', 'acceso-restringido')
   })
+
+  test('CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007)', async ({ page }, info) => {
+    // Sesión anterior que ya no es válida (por ejemplo, cerrada en otra pestaña) y validación lenta de /auth/me/.
+    await page.addInitScript(() => {
+      if (!sessionStorage.getItem('cp-s19')) {
+        sessionStorage.setItem('cp-s19', '1')
+        localStorage.setItem('nexora.token', 'token-de-una-sesion-anterior')
+      }
+    })
+    await page.route('**/api/v1/auth/me/', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+
+    await login(page, ACCOUNTS.roblesAdmin)
+    await page.waitForTimeout(2500)
+
+    await expect(page.getByRole('heading', { name: /^Hola,/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible()
+    await evidence(page, info, 'CP-S19', 'sesion-conservada')
+  })
 })

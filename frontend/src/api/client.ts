@@ -101,7 +101,8 @@ export async function apiRequest<T>(
 
   if (!response.ok) {
     const error = await parseError(response)
-    if (response.status === 401 && token) unauthorizedHandler?.()
+    // INC-007: solo se cierra la sesión si el 401 corresponde al token vigente, no a uno anterior ya reemplazado.
+    if (response.status === 401 && token && tokenStore.get() === token) unauthorizedHandler?.()
     throw error
   }
   if (response.status === 204) return undefined as T

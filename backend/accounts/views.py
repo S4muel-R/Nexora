@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -10,7 +10,9 @@ from .models import User, normalize_email
 from .serializers import LoginSerializer, UserSerializer
 
 
+# INC-007: sin autenticación previa, para que un token anterior inválido no impida iniciar sesión.
 @api_view(["POST"])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def login(request):
     """HU01: inicia sesión con correo y contraseña y devuelve un token."""

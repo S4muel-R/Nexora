@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { ApiError, apiGet, parseError } from './client'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ApiError, apiGet, onUnauthorized, parseError, tokenStore } from './client'
 
 const jsonResponse = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -38,5 +38,36 @@ describe('apiGet', () => {
     }
 
     await expect(apiGet('/health/', fetchFails)).rejects.toMatchObject({ code: 'network_error', status: 0 })
+  })
+})
+
+describe('sesión vencida (HU02-E3, INC-007)', () => {
+  afterEach(() => {
+    onUnauthorized(null)
+    tokenStore.set(null)
+  })
+
+  it('un 401 del token vigente cierra la sesión', async () => {
+    const handler = vi.fn()
+    onUnauthorized(handler)
+    tokenStore.set('token-vigente')
+    const unauthorized = async () => jsonResponse(401, { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } })
+
+    await expect(apiGet('/auth/me/', unauthorized)).rejects.toMatchObject({ status: 401 })
+    expect(handler).toHaveBeenCalledOnce()
+  })
+
+  it('INC-007: un 401 tardío de un token ya reemplazado no cierra la sesión nueva', async () => {
+    const handler = vi.fn()
+    onUnauthorized(handler)
+    tokenStore.set('token-anterior')
+    const lateUnauthorized = async () => {
+      tokenStore.set('token-nuevo')
+      return jsonResponse(401, { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } })
+    }
+
+    await expect(apiGet('/auth/me/', lateUnauthorized)).rejects.toMatchObject({ status: 401 })
+    expect(handler).not.toHaveBeenCalled()
+    expect(tokenStore.get()).toBe('token-nuevo')
   })
 })

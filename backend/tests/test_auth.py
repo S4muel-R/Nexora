@@ -24,6 +24,15 @@ def test_hu01_e1_inicio_de_sesion_exitoso(api_client, robles_admin):
     assert "password" not in body["user"]
 
 
+def test_inc_007_token_anterior_invalido_no_impide_iniciar_sesion(api_client, robles_admin):
+    api_client.credentials(HTTP_AUTHORIZATION="Token token-de-una-sesion-anterior")
+
+    response = api_client.post(LOGIN, {"email": "admin@robles.test", "password": PASSWORD})
+
+    assert response.status_code == 200
+    assert response.json()["token"]
+
+
 def test_hu01_e2_correo_con_mayusculas_y_espacios(api_client, robles_admin):
     response = api_client.post(LOGIN, {"email": "  Admin@Robles.test ", "password": PASSWORD})
 
