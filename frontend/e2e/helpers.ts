@@ -21,7 +21,8 @@ export async function login(page: Page, email: string, password = DEMO_PASSWORD)
 
 /** Guarda una captura como evidencia: EV_<caso>_<paso>_<proyecto>_<fecha>.png (Estándares, sección 2). */
 export async function evidence(page: Page, testInfo: TestInfo, caseId: string, step: string) {
-  const date = new Date().toISOString().slice(0, 10).replaceAll('-', '')
+  // Fecha local (Costa Rica), no UTC: después de las 18:00 la fecha UTC ya es la del día siguiente.
+  const date = new Date().toLocaleDateString('en-CA').replaceAll('-', '')
   const path = `../Docs/05-Pruebas/evidencias/e2e/EV_${caseId}_${step}_${testInfo.project.name}_${date}.png`
   await page.screenshot({ path, fullPage: true })
   await testInfo.attach(`${caseId} ${step}`, { path, contentType: 'image/png' })
