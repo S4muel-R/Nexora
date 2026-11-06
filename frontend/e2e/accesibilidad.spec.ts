@@ -63,6 +63,8 @@ test.describe('Accesibilidad', () => {
 
   test('CP-S17 — inicio de sesión solo con teclado y foco visible', async ({ page }, testInfo) => {
     await page.goto('/ingresar')
+    // El formulario aparece cuando termina la validación de la sesión.
+    await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible()
     await page.keyboard.press('Tab')
     await expect(page.getByLabel('Correo')).toBeFocused()
     const outline = await page.getByLabel('Correo').evaluate((el) => {
