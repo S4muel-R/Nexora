@@ -7,6 +7,7 @@ export default defineConfig({
   server: { host: true, port: 5173 },
   test: {
     environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./src/test/setup.ts'],
     reporters: ['default', 'junit'],
     outputFile: { junit: './reports/junit.xml' },
