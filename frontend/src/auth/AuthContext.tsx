@@ -1,6 +1,14 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { apiGet, apiLogout, apiPost, onUnauthorized, tokenStore } from '../api/client'
+import {
+  apiGet,
+  apiLogout,
+  apiPost,
+  currentSessionEpoch,
+  logoutPending,
+  newSessionEpoch,
+  onUnauthorized,
+} from '../api/client'
 import type { User } from '../api/types'
 
 interface AuthState {
@@ -14,43 +22,54 @@ const AuthContext = createContext<AuthState | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(() => tokenStore.get() !== null)
-  // INC-007: cada inicio de sesión invalida la validación pendiente de la sesión anterior.
-  const sessionVersion = useRef(0)
+  // La cookie de sesión es HttpOnly: solo la API sabe si hay sesión, así que siempre se consulta al abrir.
+  const [loading, setLoading] = useState(true)
 
   const clearSession = useCallback(() => {
-    tokenStore.set(null)
+    newSessionEpoch()
     setUser(null)
   }, [])
 
   useEffect(() => {
     onUnauthorized(clearSession)
-    if (tokenStore.get()) {
-      const version = sessionVersion.current
-      const isCurrent = () => sessionVersion.current === version
-      apiGet<User>('/auth/me/')
-        .then((current) => isCurrent() && setUser(current))
-        .catch(() => isCurrent() && clearSession())
-        .finally(() => setLoading(false))
+    let active = true
+    // INC-007: una respuesta de la validación inicial que llega después de iniciar sesión se descarta.
+    const epoch = newSessionEpoch()
+    const isCurrent = () => active && epoch === currentSessionEpoch()
+    const restore = async () => {
+      // INC-009: si quedó un cierre de sesión sin confirmar, se completa antes de restaurar nada.
+      if (logoutPending.get()) {
+        await apiLogout()
+        return
+      }
+      try {
+        const current = await apiGet<User>('/auth/me/')
+        if (isCurrent()) setUser(current)
+      } catch {
+        // Sin sesión válida: se muestra el inicio de sesión.
+      }
     }
-    return () => onUnauthorized(null)
+    restore().finally(() => active && setLoading(false))
+    return () => {
+      active = false
+      onUnauthorized(null)
+    }
   }, [clearSession])
 
   const login = useCallback(async (email: string, password: string) => {
-    const result = await apiPost<{ token: string; user: User }>('/auth/login/', { email, password })
-    sessionVersion.current += 1
-    tokenStore.set(result.token)
+    const result = await apiPost<{ user: User }>('/auth/login/', { email, password })
+    newSessionEpoch()
+    logoutPending.set(false)
     setUser(result.user)
     return result.user
   }, [])
 
-  // INC-009: la sesión local se borra antes de avisar al servidor; si la página se cierra o recarga mientras la
-  // petición está en curso, el token ya no queda guardado en el navegador.
+  // INC-009: la interfaz se cierra al instante y la marca de cierre pendiente asegura que el servidor cierre la sesión
+  // aunque la página se recargue o se cierre antes de su respuesta.
   const logout = useCallback(async () => {
-    const token = tokenStore.get()
-    sessionVersion.current += 1
+    logoutPending.set(true)
     clearSession()
-    if (token) await apiLogout(token)
+    await apiLogout()
   }, [clearSession])
 
   const value = useMemo(() => ({ user, loading, login, logout }), [user, loading, login, logout])

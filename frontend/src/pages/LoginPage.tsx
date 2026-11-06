@@ -4,10 +4,12 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { errorMessage } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { Alert, Field } from '../components/Field'
+import { usePageTitle } from '../components/usePageTitle'
 
 /** HU01: inicio de sesión con validación de campos obligatorios y mensajes claros. */
 export function LoginPage() {
-  const { user, login } = useAuth()
+  const { user, login, loading } = useAuth()
+  usePageTitle('Ingresar')
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState('')
@@ -17,6 +19,9 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
 
   if (user) return <Navigate to="/" replace />
+  // INC-006: mientras se valida la sesión o se completa un cierre pendiente, no se puede iniciar otra sesión;
+  // de lo contrario la respuesta del cierre pendiente borraría la cookie de la sesión nueva.
+  if (loading) return <p className="page-status">Cargando…</p>
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()

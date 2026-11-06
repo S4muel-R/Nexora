@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, apiGet, onUnauthorized, parseError, tokenStore } from './client'
+import { ApiError, apiGet, apiPost, newSessionEpoch, onUnauthorized, parseError } from './client'
 
 const jsonResponse = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -42,32 +42,62 @@ describe('apiGet', () => {
 })
 
 describe('sesión vencida (HU02-E3, INC-007)', () => {
-  afterEach(() => {
-    onUnauthorized(null)
-    tokenStore.set(null)
-  })
+  afterEach(() => onUnauthorized(null))
 
-  it('un 401 del token vigente cierra la sesión', async () => {
+  const unauthorized = () =>
+    jsonResponse(401, { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } })
+
+  it('un 401 de la sesión vigente cierra la sesión', async () => {
     const handler = vi.fn()
     onUnauthorized(handler)
-    tokenStore.set('token-vigente')
-    const unauthorized = async () => jsonResponse(401, { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } })
 
-    await expect(apiGet('/auth/me/', unauthorized)).rejects.toMatchObject({ status: 401 })
+    await expect(apiGet('/auth/me/', async () => unauthorized())).rejects.toMatchObject({ status: 401 })
     expect(handler).toHaveBeenCalledOnce()
   })
 
-  it('INC-007: un 401 tardío de un token ya reemplazado no cierra la sesión nueva', async () => {
+  it('INC-007: un 401 tardío de una sesión ya reemplazada no cierra la sesión nueva', async () => {
     const handler = vi.fn()
     onUnauthorized(handler)
-    tokenStore.set('token-anterior')
     const lateUnauthorized = async () => {
-      tokenStore.set('token-nuevo')
-      return jsonResponse(401, { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } })
+      newSessionEpoch() // se inició otra sesión mientras la respuesta estaba en camino
+      return unauthorized()
     }
 
     await expect(apiGet('/auth/me/', lateUnauthorized)).rejects.toMatchObject({ status: 401 })
     expect(handler).not.toHaveBeenCalled()
-    expect(tokenStore.get()).toBe('token-nuevo')
+  })
+})
+
+describe('sesión en cookie con CSRF (INC-006)', () => {
+  afterEach(() => {
+    document.cookie = 'csrftoken=; max-age=0; path=/'
+    vi.unstubAllGlobals()
+  })
+
+  it('las peticiones envían la cookie y las escrituras el token CSRF', async () => {
+    document.cookie = 'csrftoken=abc123; path=/'
+    const fetchSpy = vi.fn(async () => jsonResponse(200, {}))
+    vi.stubGlobal('fetch', fetchSpy)
+
+    await apiPost('/students/', { first_name: 'Ana' })
+
+    const [, init] = fetchSpy.mock.calls[0] as unknown as [string, RequestInit]
+    expect(init.credentials).toBe('include')
+    expect((init.headers as Record<string, string>)['X-CSRFToken']).toBe('abc123')
+    expect((init.headers as Record<string, string>).Authorization).toBeUndefined()
+  })
+
+  it('si no hay cookie CSRF la pide a la API antes de escribir', async () => {
+    const urls: string[] = []
+    vi.stubGlobal('fetch', async (url: string) => {
+      urls.push(url)
+      if (url.endsWith('/auth/csrf/')) document.cookie = 'csrftoken=nuevo; path=/'
+      return jsonResponse(200, {})
+    })
+
+    await apiPost('/students/', {})
+
+    expect(urls[0]).toMatch(/\/auth\/csrf\/$/)
+    expect(urls[1]).toMatch(/\/students\/$/)
   })
 })

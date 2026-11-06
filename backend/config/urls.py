@@ -16,6 +16,7 @@ api_patterns = [
     path("auth/login/", accounts_views.login, name="login"),
     path("auth/logout/", accounts_views.logout, name="logout"),
     path("auth/me/", accounts_views.me, name="me"),
+    path("auth/csrf/", accounts_views.csrf, name="csrf"),
     path("my-institution/", MyInstitutionView.as_view(), name="my-institution"),
     path("", include(router.urls)),
 ]

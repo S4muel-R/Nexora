@@ -46,8 +46,9 @@ function renderAt(path: string) {
   )
 }
 
+const NO_SESSION = { error: { code: 'not_authenticated', message: 'Debe iniciar sesión.' } }
+
 function loginAs(user: User) {
-  localStorage.setItem('nexora.token', 'token-de-prueba')
   vi.stubGlobal('fetch', async (url: string) => {
     if (url.endsWith('/auth/me/')) return json(200, user)
     if (url.includes('/students/')) return json(200, [])
@@ -57,29 +58,35 @@ function loginAs(user: User) {
   })
 }
 
-beforeEach(() => localStorage.clear())
+beforeEach(() => {
+  localStorage.clear()
+  // Sin sesión por defecto: la cookie HttpOnly solo la conoce la API.
+  vi.stubGlobal('fetch', async (url: string) => (url.endsWith('/auth/me/') ? json(401, NO_SESSION) : json(200, {})))
+})
 afterEach(() => vi.unstubAllGlobals())
 
 describe('HU01 Iniciar sesión', () => {
   it('HU01-E5: marca los campos obligatorios sin llamar a la API', async () => {
-    const fetchSpy = vi.fn()
+    const fetchSpy = vi.fn(async (url: string) => (url.endsWith('/auth/me/') ? json(401, NO_SESSION) : json(200, {})))
     vi.stubGlobal('fetch', fetchSpy)
     renderAt('/ingresar')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Ingresar' }))
 
     expect(screen.getByText('Ingrese su correo.')).toBeInTheDocument()
     expect(screen.getByText('Ingrese su contraseña.')).toBeInTheDocument()
-    expect(fetchSpy).not.toHaveBeenCalled()
+    expect(fetchSpy.mock.calls.some(([url]) => String(url).endsWith('/auth/login/'))).toBe(false)
   })
 
   it('HU01-E3: muestra el mensaje de credenciales inválidas', async () => {
-    vi.stubGlobal('fetch', async () =>
-      json(400, { error: { code: 'invalid_credentials', message: 'Correo o contraseña incorrectos.' } }),
+    vi.stubGlobal('fetch', async (url: string) =>
+      url.endsWith('/auth/me/')
+        ? json(401, NO_SESSION)
+        : json(400, { error: { code: 'invalid_credentials', message: 'Correo o contraseña incorrectos.' } }),
     )
     renderAt('/ingresar')
 
-    await userEvent.type(screen.getByLabelText('Correo'), 'admin@robles.test')
+    await userEvent.type(await screen.findByLabelText('Correo'), 'admin@robles.test')
     await userEvent.type(screen.getByLabelText('Contraseña'), 'incorrecta')
     await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
 
@@ -87,15 +94,18 @@ describe('HU01 Iniciar sesión', () => {
   })
 
   it('HU01-E1: al ingresar muestra el inicio con la institución', async () => {
-    vi.stubGlobal('fetch', async () => json(200, { token: 'abc', user: users.admin }))
+    vi.stubGlobal('fetch', async (url: string) =>
+      url.endsWith('/auth/me/') ? json(401, NO_SESSION) : json(200, { user: users.admin }),
+    )
     renderAt('/ingresar')
 
-    await userEvent.type(screen.getByLabelText('Correo'), 'admin@robles.test')
+    await userEvent.type(await screen.findByLabelText('Correo'), 'admin@robles.test')
     await userEvent.type(screen.getByLabelText('Contraseña'), 'Nexora-Demo-2026')
     await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
 
     expect(await screen.findByRole('heading', { name: 'Hola, Laura' })).toBeInTheDocument()
-    expect(localStorage.getItem('nexora.token')).toBe('abc')
+    // INC-006: la credencial queda en la cookie HttpOnly; nada se guarda en el almacenamiento del navegador.
+    expect(localStorage.length).toBe(0)
   })
 })
 
@@ -147,7 +157,6 @@ describe('HU07 Registrar estudiante', () => {
   it('INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado', async () => {
     let releaseInstitution: () => void = () => {}
     const institutionLoaded = new Promise<void>((resolve) => (releaseInstitution = resolve))
-    localStorage.setItem('nexora.token', 'token-de-prueba')
     vi.stubGlobal('fetch', async (url: string) => {
       if (url.endsWith('/auth/me/')) return json(200, users.admin)
       if (url.endsWith('/my-institution/')) {
@@ -169,8 +178,7 @@ describe('HU07 Registrar estudiante', () => {
 })
 
 describe('HU02 Cerrar sesión en un equipo compartido', () => {
-  it('INC-009: el token se borra del navegador aunque el servidor no responda al cierre de sesión', async () => {
-    localStorage.setItem('nexora.token', 'token-de-prueba')
+  it('INC-009: la sesión se cierra en la interfaz aunque el servidor no responda, y queda el cierre pendiente', async () => {
     vi.stubGlobal('fetch', (url: string) => {
       if (url.endsWith('/auth/me/')) return Promise.resolve(json(200, users.admin))
       if (url.endsWith('/auth/logout/')) return new Promise<Response>(() => {})
@@ -180,7 +188,23 @@ describe('HU02 Cerrar sesión en un equipo compartido', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }))
 
-    expect(localStorage.getItem('nexora.token')).toBeNull()
     expect(await screen.findByRole('button', { name: 'Ingresar' })).toBeInTheDocument()
+    expect(localStorage.getItem('nexora.cierre-pendiente')).toBe('1')
+  })
+
+  it('INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla', async () => {
+    localStorage.setItem('nexora.cierre-pendiente', '1')
+    const calls: string[] = []
+    vi.stubGlobal('fetch', async (url: string) => {
+      calls.push(url)
+      if (url.endsWith('/auth/me/')) return json(200, users.admin)
+      return new Response(null, { status: 204 })
+    })
+    renderAt('/')
+
+    expect(await screen.findByRole('button', { name: 'Ingresar' })).toBeInTheDocument()
+    expect(calls.some((url) => url.endsWith('/auth/logout/'))).toBe(true)
+    expect(calls.some((url) => url.endsWith('/auth/me/'))).toBe(false)
+    expect(localStorage.getItem('nexora.cierre-pendiente')).toBeNull()
   })
 })

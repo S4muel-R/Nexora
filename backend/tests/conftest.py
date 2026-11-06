@@ -3,7 +3,6 @@
 import datetime
 
 import pytest
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
 from accounts.models import User
@@ -62,12 +61,11 @@ def monteverde_admin(monteverde) -> User:
 
 @pytest.fixture
 def client_for():
-    """Devuelve un cliente autenticado con el token del usuario indicado."""
+    """Devuelve un cliente con la sesión del usuario indicado iniciada (cookie de sesión)."""
 
     def _client(user: User) -> APIClient:
         client = APIClient()
-        token, _ = Token.objects.get_or_create(user=user)
-        client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
+        client.force_login(user)
         return client
 
     return _client

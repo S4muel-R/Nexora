@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ACCOUNTS, evidence, login } from './helpers'
+import { ACCOUNTS, API_URL, evidence, login } from './helpers'
 
 test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
   test('CP-S01 HU01-E1 la administradora inicia sesión y ve su institución', async ({ page }, info) => {
@@ -62,12 +62,9 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
 
   test('CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007)', async ({ page }, info) => {
     // Sesión anterior que ya no es válida (por ejemplo, cerrada en otra pestaña) y validación lenta de /auth/me/.
-    await page.addInitScript(() => {
-      if (!sessionStorage.getItem('cp-s19')) {
-        sessionStorage.setItem('cp-s19', '1')
-        localStorage.setItem('nexora.token', 'token-de-una-sesion-anterior')
-      }
-    })
+    await page.context().addCookies([
+      { name: 'sessionid', value: 'sesion-anterior-invalida', domain: 'localhost', path: '/' },
+    ])
     await page.route('**/api/v1/auth/me/', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 1500))
       await route.continue()
@@ -83,16 +80,21 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
 
   test('CP-S21 HU02-E1 cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009)', async ({ page }, info) => {
     await login(page, ACCOUNTS.roblesAdmin)
-    // El servidor tarda en responder el cierre de sesión y la persona recarga o cierra la pestaña antes.
+    // El primer aviso de cierre no llega al servidor (se cerró la pestaña o se cayó la red); los siguientes sí.
+    let logoutCalls = 0
     await page.route('**/api/v1/auth/logout/', async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 3000))
-      await route.continue().catch(() => {})
+      if (++logoutCalls === 1) await route.abort()
+      else await route.continue()
     })
     await page.getByRole('button', { name: 'Cerrar sesión' }).click()
     await page.reload()
 
-    await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible()
-    expect(await page.evaluate(() => localStorage.getItem('nexora.token'))).toBeNull()
+    // Al abrir de nuevo, la aplicación completa el cierre pendiente antes de restaurar la sesión.
+    await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible({ timeout: 15_000 })
+    // El cierre pendiente se completa en el servidor (no solo en la pantalla), aunque su respuesta tarde.
+    await expect
+      .poll(async () => (await page.request.get(`${API_URL}/auth/me/`)).status(), { timeout: 15_000 })
+      .toBe(401)
     await evidence(page, info, 'CP-S21', 'sesion-cerrada')
   })
 })

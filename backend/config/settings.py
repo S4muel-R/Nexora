@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "rest_framework.authtoken",
     "core",
     "accounts",
     "institutions",
@@ -98,6 +97,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.User"
 
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "http://localhost:5173")
+CORS_ALLOW_CREDENTIALS = True
+
+# Sesión en cookie HttpOnly con protección CSRF (avance 1, sección 7.1; INC-006).
+# La cookie de sesión no es legible desde JavaScript; la interfaz lee `csrftoken` y lo envía en
+# X-CSRFToken al escribir.
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+# Vence tras 2 horas sin actividad (OWASP ASVS V3); cada petición renueva el plazo.
+SESSION_COOKIE_AGE = int(os.environ.get("DJANGO_SESSION_SECONDS", "7200"))
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Ambiente publicado con HTTPS (INC-003): redirección, cookies seguras y HSTS.
 # Desactivado en desarrollo local, que usa HTTP.
@@ -111,7 +122,7 @@ if env_bool("DJANGO_HTTPS", False):
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+        "core.authentication.CookieSessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",

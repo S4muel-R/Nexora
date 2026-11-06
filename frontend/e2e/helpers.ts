@@ -4,6 +4,8 @@ import type { Page, TestInfo } from '@playwright/test'
 /** Contraseña de las cuentas ficticias creadas por `manage.py seed_demo`. */
 export const DEMO_PASSWORD = 'Nexora-Demo-2026'
 
+export const API_URL = process.env.E2E_API_URL ?? 'http://localhost:8000/api/v1'
+
 export const ACCOUNTS = {
   platform: 'plataforma@nexora.test',
   roblesAdmin: 'admin@robles.test',
