@@ -100,7 +100,7 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | Análisis | El plan técnico no tenía una lista de configuración de despliegue; la revisión de seguridad se hizo por primera vez en este entregable. Ver ACR-04. |
 | Corrección | Variable `DJANGO_HTTPS` (falsa por defecto para el desarrollo local) que activa `SECURE_SSL_REDIRECT`, `SECURE_PROXY_SSL_HEADER`, cookies seguras y HSTS. Commit `e867548`, PR #11. W021 (lista de precarga HSTS) se acepta: es una decisión casi irreversible que no corresponde a un prototipo. |
 | Resultado de reprueba | CP-A26: con HTTPS solo queda W021; sin HTTPS sigue W008 (la prueba lo verifica). pytest 63/63 (EJ-18). |
-| Evidencia | `evidencias/EV_INC-003_check-deploy_20261105.txt` (antes y después) · `evidencias/EV_pytest_ejecucion-4_20261105.txt` |
+| Evidencia | `evidencias/seguridad/EV_INC-003_check-deploy_20261105.txt` (antes y después) · `evidencias/EV_pytest_ejecucion-4_20261105.txt` |
 | Estado | Corregido y reprobado; se cierra al integrar el PR #11. |
 
 ---

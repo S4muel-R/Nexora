@@ -20,7 +20,7 @@
 | Dependencias del frontend | `npm audit`, `npm audit --omit=dev` | Antes: 2 críticos y 11 moderados en desarrollo (**INC-005**). Después: 0 en producción; 7 moderados aceptados | `evidencias/seguridad/EV_SEG-npm-audit_*` |
 | Dependencias del backend | `pip-audit -r requirements.txt` (2.9.0) | 0 vulnerabilidades en 10 paquetes | `evidencias/seguridad/EV_SEG-pip-audit_20261105.txt` |
 | Secretos en el repositorio | `scripts/secret_scan.py` sobre `git log -p --all` (23 commits) | 7 coincidencias, todas valores de prueba ficticios (ver sección 3) | `evidencias/seguridad/EV_SEG-secretos_20261105.txt` |
-| Configuración de despliegue | `manage.py check --deploy` | Antes: W004, W008, W012, W016 (**INC-003**). Después, con `DJANGO_HTTPS=true`: solo W021 (aceptada) | `evidencias/EV_INC-003_check-deploy_20261105.txt` |
+| Configuración de despliegue | `manage.py check --deploy` | Antes: W004, W008, W012, W016 (**INC-003**). Después, con `DJANGO_HTTPS=true`: solo W021 (aceptada) | `evidencias/seguridad/EV_INC-003_check-deploy_20261105.txt` |
 | Gestión de la sesión contra la arquitectura aprobada | Revisión de código | Token en `localStorage` en lugar de cookie HttpOnly con CSRF (**INC-006**, abierto) | Sección 2, control V3 |
 | Sesión anterior inválida | Playwright con la API retrasada (CP-S19), pytest (CP-A27) | Un token viejo impedía iniciar sesión o cerraba la nueva (**INC-007**, corregido) | `evidencias/EV_INC-007_*` |
 

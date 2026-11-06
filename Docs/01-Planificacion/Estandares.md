@@ -27,7 +27,7 @@
 | Funciones, variables y hooks TS | `camelCase`; hooks con prefijo `use` | `useAuth` |
 | Rutas de la API | Sustantivos en plural, `kebab-case`, versionadas | `/api/v1/institutions/` |
 | Identificadores de artefactos | `RF01`, `HU01`, `HU01-E1` (escenario), `CP-001` (caso), `INC-001` (incidente), `CC-01` (cambio), `R01` (riesgo) | — |
-| Evidencias | `EV_<CP|INC>-<id>_<paso|falla|reprueba>_<AAAAMMDD>.png` | `EV_INC-003_falla_20261106.png` |
+| Evidencias | `EV_<CP|INC>-<id>_<paso|falla|reprueba>_<AAAAMMDD>.png` | `EV_INC-004_falla-CI_telefono_20261105.png` |
 
 El código se escribe en inglés y la interfaz y la documentación en español.
 
