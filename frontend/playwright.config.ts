@@ -14,6 +14,8 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: process.env.CI ? 1 : 0,
+  // ACR-03: una prueba que solo pasa al reintentar hace fallar el CI (los reintentos ocultaron INC-004 e INC-007).
+  failOnFlakyTests: !!process.env.CI,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'reports/playwright', open: 'never' }],

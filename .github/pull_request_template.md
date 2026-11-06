@@ -16,5 +16,7 @@
 - [ ] Incluye pruebas automatizadas, o explica por qué no aplica.
 - [ ] Respeta los estándares de programación, nomenclatura y tratamiento de errores.
 - [ ] No expone secretos ni datos personales reales.
+- [ ] Respeta la arquitectura aprobada (avance 1, sección 7) o registra la desviación en Gestión de cambios.
+- [ ] Revisa campos booleanos, de fecha y valores que se cargan de forma asíncrona (ACR-03).
 - [ ] Actualiza la documentación afectada (requisitos, casos de prueba, trazabilidad).
 - [ ] CI en verde.
