@@ -71,8 +71,9 @@ busca lo que los scripts no prevén.
 | Compatibilidad / usabilidad | Perfil de teléfono (Pixel 7) y computadora (1280 × 800) | Playwright | Sí |
 | Humo | Estado del servicio y conexión a la base de datos | pytest + endpoint `/health/` | Sí |
 | Regresión | Toda la suite en cada Pull Request, también los encadenados; una prueba que solo pasa al reintentar hace fallar el CI | GitHub Actions | Sí |
-| Robustez (asincronía) | La suite de sistema contra la API con latencia aleatoria (0 – 700 ms) y sin reintentos; casos con respuestas retrasadas (`page.route`) | Playwright + middleware de latencia | Sí, antes de cada entrega |
-| Seguridad estática y de configuración | Dependencias, secretos en el historial, `check --deploy`, revisión de código contra la arquitectura aprobada (selección de OWASP ASVS) | `npm audit`, `pip-audit`, `scripts/secret_scan.py`, Django | Parcial (CP-A26 automatizado; el resto por ejecución registrada) |
+| Robustez (asincronía) | La suite de sistema contra la API con latencia aleatoria (`NEXORA_LATENCIA_MAX_MS=700`) y sin reintentos; casos con respuestas retrasadas (`page.route`) | Playwright + `core/testing.py` | Sí, antes de cada entrega |
+| Versión compilada | Los recorridos de sistema sobre `vite build` + `vite preview` (`E2E_PREVIEW=1`), que es la versión que se entrega | Playwright | Sí, en cada PR (perfil computadora) |
+| Seguridad estática y de configuración | Dependencias, secretos en el historial, `check --deploy`, sesión en cookie con CSRF, revisión de código contra la arquitectura aprobada (selección de OWASP ASVS) | `npm audit`, `pip-audit`, `scripts/secret_scan.py`, Django | Sí en cada PR: auditorías, CP-A26, CP-A28, CP-A29; secretos por ejecución registrada |
 | Accesibilidad | WCAG 2.2 AA como objetivo: reglas automáticas, teclado, foco, reflujo a 320 px, anuncio de errores | axe-core (`@axe-core/playwright`), Playwright, `scripts/a11y_manual.cjs` | Parcial (CP-S16, CP-S17); lector de pantalla manual pendiente |
 | Exploratoria | Sesiones guiadas por charter sobre formularios y mensajes | Manual, navegador | No |
 

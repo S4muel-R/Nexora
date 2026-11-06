@@ -5,7 +5,7 @@
 | Código | S2-05 (incluye la nota técnica S1-07) |
 | EDT | 1.2.2.2 |
 | Responsable | Luis |
-| Versión | 1.1 |
+| Versión | 1.2 |
 | Fecha | 2026-11-05 |
 | Criterio de entrega | Arquitectura, base de datos y API diseñadas |
 | Alcance | Incremento del segundo entregable: HU01 – HU07 |
@@ -17,7 +17,7 @@
         │  HTTPS / JSON
         ▼
  frontend/  React + TypeScript (Vite)
-        │  Authorization: Token <token>
+        │  Cookie de sesión HttpOnly + X-CSRFToken
         ▼
  backend/   Django + Django REST Framework
    ├── accounts      usuarios, roles, inicio y cierre de sesión
@@ -32,7 +32,7 @@
 | Decisión | Justificación |
 |---|---|
 | API REST separada de la interfaz | Permite probar la API de forma aislada (pirámide de pruebas) y usar la interfaz en computadora y teléfono |
-| Autenticación por token de DRF | Simple, sin dependencias adicionales; cerrar sesión elimina el token (HU02-E3) |
+| Sesión de Django en cookie HttpOnly con CSRF (desde la v1.2; INC-006) | Es lo que fija el avance 1 (§7.1): JavaScript no puede leer la credencial; las escrituras exigen el token CSRF; vence tras 2 horas sin actividad; cerrar sesión la invalida en el servidor (HU02-E3). La v1.0 usaba el token de DRF en `localStorage` |
 | Usuario propio con correo como identificador | Las personas usuarias ingresan con correo (HU01); se define antes de la primera migración |
 | Un esquema de base de datos compartido con `institution_id` | Ver sección 2 |
 
@@ -103,15 +103,17 @@ Institution 1 ──── * Student
 
 ## 4. Contrato de API (`/api/v1`)
 
-Todas las rutas exigen `Authorization: Token <token>` salvo las marcadas como públicas. Los errores siguen el formato de
-los Estándares, sección 3.
+Todas las rutas exigen la cookie de sesión `sessionid` (HttpOnly, `SameSite=Lax`) salvo las marcadas como públicas; las
+peticiones que escriben (POST, PATCH) envían además el encabezado `X-CSRFToken` con el valor de la cookie `csrftoken`.
+Sin sesión válida la API responde `401`. Los errores siguen el formato de los Estándares, sección 3.
 
 ### Autenticación
 
 | Método y ruta | Rol | Cuerpo | Respuesta |
 |---|---|---|---|
-| `POST /auth/login/` (pública; ignora cualquier encabezado `Authorization`, INC-007) | — | `{ "email", "password" }` | `200 { "token", "user": { "id", "email", "first_name", "last_name", "role", "institution": { "id", "name" } \| null } }` · `400 invalid_credentials` · `403 account_disabled` |
-| `POST /auth/logout/` | Cualquiera | — | `204` (elimina el token). La interfaz borra el token local **antes** de llamar y envía la petición con `keepalive` (INC-009) |
+| `GET /auth/csrf/` (pública) | — | — | `204` y cookie `csrftoken` (legible por la interfaz) |
+| `POST /auth/login/` (pública; ignora cualquier sesión o encabezado anterior, INC-007) | — | `{ "email", "password" }` | `200 { "user": { "id", "email", "first_name", "last_name", "role", "institution": { "id", "name" } \| null } }` y cookie `sessionid` · `400 invalid_credentials` · `403 account_disabled` |
+| `POST /auth/logout/` | Cualquiera | — | `204`; invalida la sesión en el servidor y vacía la cookie. La interfaz cierra la sesión de inmediato y, si la petición no se confirma, la repite al volver a abrir (INC-009) |
 | `GET /auth/me/` | Cualquiera | — | `200` usuario actual · `401` |
 
 ### Instituciones
@@ -134,12 +136,11 @@ los Estándares, sección 3.
 | `GET /students/{id}/` | `institution_admin`, `teacher` | — | `200` · `404` si es de otra institución |
 | `PATCH /students/{id}/` | `institution_admin` | Campos editables, incluido `is_active` | `200` · `400` · `404` · `409` |
 
-### Desviación abierta respecto del avance 1 (INC-006)
+### Desviación corregida respecto del avance 1 (INC-006)
 
-El avance 1 (sección 7.1) fija sesiones con cookies HttpOnly y protección CSRF. Este contrato usa `Authorization: Token`
-con el token guardado en `localStorage`. La desviación se detectó en la revisión de seguridad del 2026-11-05 (CP-SEG04,
-[Revisión de seguridad](../05-Pruebas/Revision-seguridad.md)) y su corrección se decide en CC-13. Mientras tanto, el
-contrato documenta el comportamiento real del sistema.
+La versión 1.0 de este contrato usaba `Authorization: Token` con el token guardado en `localStorage`, lo que contradecía
+la sección 7.1 del avance 1. La revisión de seguridad del 2026-11-05 lo detectó (CP-SEG04) y CC-13 lo corrigió con la
+sesión en cookie descrita arriba (commit `796cef8`). Ver la [Revisión de seguridad](../05-Pruebas/Revision-seguridad.md).
 
 Para un ambiente publicado, `DJANGO_HTTPS=true` activa la redirección a HTTPS, las cookies seguras y HSTS (INC-003).
 

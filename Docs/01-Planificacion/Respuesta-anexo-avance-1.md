@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Documento revisado | Primer entregable corregido, "Anexo de correcciones — Avance 1" (revisión del 2026-11-04) |
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Fecha | 2026-11-05 |
 | Preparado por | Samuel · revisión pendiente de Luis y Wilberth |
 
@@ -61,8 +61,8 @@ Los seis indicadores del anexo están medidos con fecha de corte, responsable, f
 | Indicador | Valor observado |
 |---|---|
 | Cobertura de requisitos | 3/8 RF implementados y probados (+ RF03 parcial); 0/8 aceptados |
-| Aprobación funcional | 58/59 casos (98,3 %); 6/24 criterios de la línea base aprobados y 2 parciales |
-| Defectos críticos o altos abiertos | 0 sin corregir; 3 altos corregidos pendientes de integrar |
+| Aprobación funcional | 64/64 casos (100 %); 6/24 criterios de la línea base aprobados y 2 parciales |
+| Defectos críticos o altos abiertos | 0 sin corregir; los 9 defectos (3 altos) corregidos, pendientes de integrar |
 | Avance de tareas | Sprint 3: 13/15 con entregable; 0 en *Listo* en Jira hasta integrar los PR |
 | Éxito de recorridos | Sin dato (evaluación O5 no ejecutada) |
 | Esfuerzo | Sin dato (no hay registro de horas); línea base 450 h |
@@ -71,10 +71,10 @@ Los seis indicadores del anexo están medidos con fecha de corte, responsable, f
 
 | Componente | Evidencia mínima pedida | Dónde está |
 |---|---|---|
-| Pruebas de servidor | Suite pytest, resultados, salida del comando y commit | 63 pruebas, 94 % de cobertura · `05-Pruebas/evidencias/EV_pytest_*` · [Registro de ejecución](../05-Pruebas/Registro-de-ejecucion.md) |
-| Pruebas de interfaz | Playwright para inicio de sesión, permisos, grupos y asistencia; informe de ejecución | 21 casos × 2 dispositivos (inicio de sesión, permisos, instituciones, estudiantes, accesibilidad) · `EV_playwright_*` · informe HTML en el artefacto `evidencias-e2e` de cada CI. **Grupos y asistencia: pendientes** con HU09 – HU10 |
-| Integración continua | Workflow, ejecución visible, fecha, commit, estado y registro de fallos | `.github/workflows/ci.yml` · 14 ejecuciones en los PR #1 – #11 con enlace, commit y resultado (Registro, sección 2) · capturas en `05-Pruebas/evidencias/ci/` · registro de fallos: `EV_INC-001_falla-CI_20261105.txt`, `EV_INC-004_falla-CI_*`, `EV_INC-007_falla-CI_*` |
-| Seguridad | Acceso no autorizado, aislamiento, revisión de secretos y dependencias; hallazgos y correcciones | [Revisión de seguridad](../05-Pruebas/Revision-seguridad.md): 13/17 controles cumplen; hallazgos INC-003, INC-005, INC-006 (abierto), INC-007, INC-009 |
+| Pruebas de servidor | Suite pytest, resultados, salida del comando y commit | 69 pruebas, 95 % de cobertura · `05-Pruebas/evidencias/EV_pytest_*` · [Registro de ejecución](../05-Pruebas/Registro-de-ejecucion.md) |
+| Pruebas de interfaz | Playwright para inicio de sesión, permisos, grupos y asistencia; informe de ejecución | 21 casos × 2 dispositivos (inicio de sesión, permisos, instituciones, estudiantes, accesibilidad) · `EV_playwright_*` · informe HTML en el artefacto `evidencias-e2e` de cada CI · también sobre la versión compilada. **Grupos y asistencia: pendientes** con HU09 – HU10 |
+| Integración continua | Workflow, ejecución visible, fecha, commit, estado y registro de fallos | `.github/workflows/ci.yml` · 17 ejecuciones en los PR #1 – #11 con enlace, commit y resultado (Registro, sección 2); auditoría de dependencias en cada PR · capturas en `05-Pruebas/evidencias/ci/` · registro de fallos: `EV_INC-001_falla-CI_20261105.txt`, `EV_INC-004_falla-CI_*`, `EV_INC-007_falla-CI_*` |
+| Seguridad | Acceso no autorizado, aislamiento, revisión de secretos y dependencias; hallazgos y correcciones | [Revisión de seguridad](../05-Pruebas/Revision-seguridad.md): 16/18 controles cumplen y ninguno incumple; hallazgos INC-003, INC-005, INC-006, INC-007 e INC-009, todos corregidos. La sesión usa cookie HttpOnly con CSRF, como fija la sección 7.1 del avance 1 |
 | Accesibilidad | Lista WCAG 2.2 AA aplicable, teclado, contraste, etiquetas y resultados | [Revisión de accesibilidad](../05-Pruebas/Revision-accesibilidad.md): 0 violaciones en 12 auditorías; lista de comprobación por criterio; revisión con lector de pantalla pendiente |
 
 ## 8. Revisión editorial y pendientes
@@ -88,12 +88,12 @@ Los seis indicadores del anexo están medidos con fecha de corte, responsable, f
 
 | Elemento del anexo | Estado en este entregable |
 |---|---|
-| Exportación del backlog vigente | **Hecho**: [Backlog-Jira.md](Backlog-Jira.md) y [Backlog-Jira.csv](Backlog-Jira.csv) (120 elementos) |
+| Exportación del backlog vigente | **Hecho**: [Backlog-Jira.md](Backlog-Jira.md) y [Backlog-Jira.csv](Backlog-Jira.csv) (122 elementos) |
 | Matriz de trazabilidad con IDs reales | **Hecho**: matriz v1.1 |
 | Registros de defectos y resultados | **Hecho**: 9 incidentes con evidencia de falla y reprueba, registrados en Jira |
 | Indicadores con datos observados | **Hecho** (2 sin dato, declarados como tales) |
 | Capturas y logs de CI/CD | **Hecho**: `05-Pruebas/evidencias/ci/` y registros de fallo |
-| Ejecución automatizada | **Hecho**: 121 pruebas, más 84 con latencia |
+| Ejecución automatizada | **Hecho**: 139 pruebas, más 42 sobre la versión compilada y 84 con latencia |
 | Revisión de seguridad y accesibilidad | **Hecho** para la selección de controles; manual con lector de pantalla pendiente |
 | Evaluación con usuarios | **Pendiente** (O5, Sprint 8) |
 | Actas de aceptación | **Pendiente**: aceptación manual EJ-12 y acta del Sprint Review |

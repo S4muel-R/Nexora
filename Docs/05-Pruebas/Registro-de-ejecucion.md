@@ -39,8 +39,10 @@ defectos del producto).
 | EJ-21 | 2026-11-05 | Robustez: suite de sistema contra la API con latencia aleatoria de 0 a 700 ms por petición, sin reintentos, 2 repeticiones | Local, Chromium; ajustes temporales con un middleware de latencia (no versionados) | `b403436` + INC-008 | 80 | 75 | 5 | CP-S11 falla 4 de 4 → **INC-004 reabierto** (se podía guardar antes de cargar los niveles). CP-S16 en teléfono queda con la sesión anterior → **INC-009** | `evidencias/EV_playwright_latencia-1_20261105.txt` · `EV_INC-008_falla-local_*` · `EV_INC-009_falla-local_*` |
 | EJ-22 | 2026-11-05 | Corrección de INC-004, INC-008 e INC-009 y regresión completa | Local, SQLite, Chromium | `f15dec5` | 121 + 84 | 121 + 84 | 0 | CP-U07, CP-S20 y CP-S21 fallan sin la corrección y pasan con ella. pytest 63/63 (94 %), Vitest 16/16, Playwright 42/42 sin reintentos; con latencia 84/84 sin reintentos | `EV_pytest_ejecucion-5_20261105.txt` · `EV_vitest_ejecucion-3_20261105.txt` · `EV_playwright_ejecucion-4_20261105.txt` · `EV_playwright_latencia-2_20261105.txt` |
 | EJ-23 | 2026-11-05 | Regresión completa en CI (PR #11, ejecución 4), con `failOnFlakyTests` | GitHub Actions, PostgreSQL 16 | `f15dec5` | 121 | 121 | 0 | En verde sin pruebas intermitentes | [Ejecución 42152244891](https://github.com/S4muel-R/Nexora/actions/runs/42152244891) |
+| EJ-24 | 2026-11-05 | Corrección de INC-006 (sesión en cookie HttpOnly con CSRF), A11Y-01/02 y pruebas de formularios; regresión en desarrollo, sobre la versión compilada y con latencia | Local, SQLite, Chromium; `vite preview`; `NEXORA_LATENCIA_MAX_MS=700` | `61c4593` | 139 + 42 + 84 | 139 + 42 + 84 | 0 | Primera versión con latencia: 3 fallas en 80 (el cierre pendiente borraba la cookie de la sesión nueva), corregido antes del commit. CP-S21 falla sin la marca de cierre pendiente. Final: pytest 69/69 (95 %), Vitest 28/28 (91,6 % de líneas), Playwright 42/42, compilada 42/42, latencia 84/84 | `EV_pytest_ejecucion-6_20261105.txt` · `EV_vitest_ejecucion-4_20261105.txt` · `EV_playwright_ejecucion-5_20261105.txt` · `EV_playwright_compilada_20261105.txt` · `EV_playwright_latencia-3_INC-006-falla_20261105.txt` · `EV_playwright_latencia-4_20261105.txt` · `EV_INC-009_falla-cookie-sin-cierre-pendiente_*` |
+| EJ-25 | 2026-11-05 | Regresión completa en CI con auditoría de dependencias y recorridos sobre la versión compilada | GitHub Actions, PostgreSQL 16 | `61c4593` | 139 + 21 | 139 + 21 | 0 | `pip-audit`: 0; `npm audit --omit=dev`: 0 altos; pytest 69/69, Vitest 28/28, Playwright 42/42 y 21/21 sobre la versión compilada, sin intermitentes | [Ejecución 42159260303](https://github.com/S4muel-R/Nexora/actions/runs/42159260303) · `evidencias/ci/EV_EJ-25_PR11-verde-auditoria-compilada_20261105.png` |
 
-## 2. Detalle de EJ-11, EJ-17 – EJ-20 y EJ-23 (GitHub Actions)
+## 2. Detalle de EJ-11, EJ-17 – EJ-20, EJ-23 y EJ-25 (GitHub Actions)
 
 Cada PR ejecuta el flujo `.github/workflows/ci.yml` (desde `f4e6a01` también en los PR encadenados). Los artefactos
 `reportes-backend` (cobertura y JUnit), `reportes-frontend` y `evidencias-e2e` (informe HTML de Playwright y capturas)
@@ -62,6 +64,8 @@ quedan en cada ejecución.
 | #11 | ídem | `9599320` | [42148745101](https://github.com/S4muel-R/Nexora/actions/runs/42148745101) | 63/63 · 94 % | 15/15 | 38/38 | Verde |
 | #11 | ídem | `b403436` | [42148970848](https://github.com/S4muel-R/Nexora/actions/runs/42148970848) | 63/63 | 15/15 | 37 + **1 intermitente** (CP-S09) → falla por `failOnFlakyTests` | **Rojo** (INC-008) |
 | #11 | ídem | `f15dec5` | [42152244891](https://github.com/S4muel-R/Nexora/actions/runs/42152244891) | 63/63 · 94 % | 16/16 | 42/42, sin intermitentes | Verde |
+| #11 | ídem | `ff429da`, `ae91c0d` (documentación) | [42153460203](https://github.com/S4muel-R/Nexora/actions/runs/42153460203) · [42153547160](https://github.com/S4muel-R/Nexora/actions/runs/42153547160) | 63/63 | 16/16 | 42/42 | Verde |
+| #11 | ídem | `61c4593` | [42159260303](https://github.com/S4muel-R/Nexora/actions/runs/42159260303) | 69/69 · 95 % · `pip-audit` 0 | 28/28 · `npm audit` 0 altos | 42/42 + 21/21 compilada | Verde |
 
 Las diferencias de SQLite a PostgreSQL que preocupaban en el plan (unicidad sin distinguir mayúsculas, restricciones)
 no produjeron fallas: las mismas pruebas pasan en ambos motores.
@@ -81,9 +85,10 @@ no produjeron fallas: las mismas pruebas pasan en ambos motores.
 
 | Ejecución final por nivel | Ejecutadas | Aprobadas | % |
 |---|---|---|---|
-| API e integración (EJ-22, CI EJ-23) | 63 | 63 | 100 % |
-| Unitarias de interfaz (EJ-22, CI EJ-23) | 16 | 16 | 100 % |
-| Sistema, incluida accesibilidad (EJ-22, CI EJ-23) | 42 | 42 | 100 % |
-| **Total automatizadas** | **121** | **121** | **100 %** |
-| Robustez con latencia (EJ-22) | 84 | 84 | 100 % |
-| Revisiones de seguridad (CP-SEG01 – CP-SEG04) | 4 | 3 | 75 % (INC-006 abierto) |
+| API e integración (EJ-24, CI EJ-25) | 69 | 69 | 100 % |
+| Unitarias de interfaz (EJ-24, CI EJ-25) | 28 | 28 | 100 % |
+| Sistema, incluida accesibilidad (EJ-24, CI EJ-25) | 42 | 42 | 100 % |
+| **Total automatizadas** | **139** | **139** | **100 %** |
+| Sistema sobre la versión compilada (EJ-24) | 42 | 42 | 100 % |
+| Robustez con latencia (EJ-24) | 84 | 84 | 100 % |
+| Revisiones de seguridad (CP-SEG01 – CP-SEG04) | 4 | 4 | 100 % (CP-SEG04 tras INC-006) |

@@ -5,8 +5,8 @@
 | Referencia | Anexo de correcciones del avance 1, secciones 1 y 9 ("exportación del backlog vigente") |
 | Fuente | Jira Cloud, proyecto ADLCDS, tablero 2: https://proyectosulacit.atlassian.net/jira/software/projects/ADLCDS/boards/2 |
 | Fecha de corte | 2026-11-05 |
-| Método | Consulta JQL `project = ADLCDS ORDER BY key ASC` mediante la API de Jira; archivo CSV: [Backlog-Jira.csv](Backlog-Jira.csv) |
-| Elementos | 120 (101 tareas, 7 defectos, 12 historias) |
+| Método | Consulta JQL `project = ADLCDS ORDER BY key ASC` mediante la API de Jira, con los cambios de estado registrados después de la consulta; archivo CSV: [Backlog-Jira.csv](Backlog-Jira.csv) |
+| Elementos | 122 (101 tareas, 12 historias, 9 defectos) |
 
 > El estado es el del tablero a la fecha de corte. *Listo* exige el PR integrado en `main` (Estándares, sección 6);
 > por eso ninguna tarea está en *Listo* aunque su entregable esté en GitHub: los PR #1 – #11 esperan la revisión de
@@ -22,10 +22,10 @@
 | Sprint 4 Registros y grupos | 12 | 4 | 0 | 16 |
 | Sprint 5 Asistencia y Correcci | 13 | 0 | 0 | 13 |
 | Sprint 6 Reportes de interfaz | 13 | 0 | 0 | 13 |
-| Sprint 7 arranque de pruebas | 14 | 0 | 0 | 14 |
+| Sprint 7 arranque de pruebas | 13 | 1 | 0 | 14 |
 | Sprint 8 Validación de uso | 10 | 0 | 0 | 10 |
-| Sin sprint | 6 | 13 | 0 | 19 |
-| **Total** | **78** | **42** | **0** | **120** |
+| Sin sprint | 5 | 16 | 0 | 21 |
+| **Total** | **76** | **46** | **0** | **122** |
 
 ## 2. Elementos
 
@@ -121,7 +121,7 @@
 | [ADLCDS-89](https://proyectosulacit.atlassian.net/browse/ADLCDS-89) | Tarea | S7-11- Integrar pantallas | Por hacer | Samuel Ramirez Perez | Media | Sprint 7 arranque de pruebas |
 | [ADLCDS-90](https://proyectosulacit.atlassian.net/browse/ADLCDS-90) | Tarea | S7-12- Corregir errores | Por hacer | Samuel Ramirez Perez | Media | Sprint 7 arranque de pruebas |
 | [ADLCDS-91](https://proyectosulacit.atlassian.net/browse/ADLCDS-91) | Tarea | S7-13- Demo Funcional | Por hacer | Samuel Ramirez Perez | Media | Sprint 7 arranque de pruebas |
-| [ADLCDS-92](https://proyectosulacit.atlassian.net/browse/ADLCDS-92) | Tarea | S7-14- Accesibilidad | Por hacer | Samuel Ramirez Perez | Media | Sprint 7 arranque de pruebas |
+| [ADLCDS-92](https://proyectosulacit.atlassian.net/browse/ADLCDS-92) | Tarea | S7-14- Accesibilidad | En curso | Samuel Ramirez Perez | Media | Sprint 7 arranque de pruebas |
 | [ADLCDS-93](https://proyectosulacit.atlassian.net/browse/ADLCDS-93) | Tarea | S8-01- Refinar correcciones | Por hacer | Wilberth Rodriguez Bejarano | Media | Sprint 8 Validación de uso |
 | [ADLCDS-94](https://proyectosulacit.atlassian.net/browse/ADLCDS-94) | Tarea | S8-02- Informe y retrospectiva | Por hacer | Wilberth Rodriguez Bejarano | Media | Sprint 8 Validación de uso |
 | [ADLCDS-95](https://proyectosulacit.atlassian.net/browse/ADLCDS-95) | Tarea | S8-03- Ejecutar 24 pruebas | Por hacer | Wilberth Rodriguez Bejarano | Media | Sprint 8 Validación de uso |
@@ -150,4 +150,6 @@
 | [ADLCDS-118](https://proyectosulacit.atlassian.net/browse/ADLCDS-118) | Defecto | INC-003 Sin configuración HTTPS para un ambiente publicado | En curso | Samuel Ramirez Perez | Media | Sin sprint |
 | [ADLCDS-119](https://proyectosulacit.atlassian.net/browse/ADLCDS-119) | Defecto | INC-004 El nivel no se preselecciona si el formulario de estudiante se abre antes de cargar los niveles | En curso | Samuel Ramirez Perez | Alta | Sin sprint |
 | [ADLCDS-120](https://proyectosulacit.atlassian.net/browse/ADLCDS-120) | Defecto | INC-005 Dependencias de desarrollo del frontend con avisos de seguridad críticos | En curso | Samuel Ramirez Perez | Media | Sin sprint |
-| [ADLCDS-121](https://proyectosulacit.atlassian.net/browse/ADLCDS-121) | Defecto | INC-006 La sesión usa un token en localStorage en lugar de cookie HttpOnly con CSRF (desviación del avance 1) | Por hacer | Luis Lobo Zeledon | Alta | Sin sprint |
+| [ADLCDS-121](https://proyectosulacit.atlassian.net/browse/ADLCDS-121) | Defecto | INC-006 La sesión usa un token en localStorage en lugar de cookie HttpOnly con CSRF (desviación del avance 1) | En curso | Luis Lobo Zeledon | Alta | Sin sprint |
+| [ADLCDS-122](https://proyectosulacit.atlassian.net/browse/ADLCDS-122) | Defecto | INC-009 Cerrar sesión y recargar enseguida restaura la sesión (el token no se borra hasta que responde el servidor) | En curso | Samuel Ramirez Perez | Alta | Sin sprint |
+| [ADLCDS-123](https://proyectosulacit.atlassian.net/browse/ADLCDS-123) | Defecto | INC-008 Una carga repetida de Mi institución sobrescribe lo que se está escribiendo | En curso | Samuel Ramirez Perez | Media | Sin sprint |

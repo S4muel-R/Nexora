@@ -5,7 +5,7 @@
 | Referencia | Avance 1, sección 7.2 (WCAG 2.2 nivel AA como objetivo) y sección 8 (accesibilidad) · Anexo de correcciones, sección 7 |
 | Tarea | S7-14 Accesibilidad ([ADLCDS-92](https://proyectosulacit.atlassian.net/browse/ADLCDS-92)), adelantada |
 | Alcance | Pantallas del incremento: ingreso, inicio, instituciones, mi institución, estudiantes y formulario de estudiante con errores, en computadora (1280 × 800) y teléfono (Pixel 7) |
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Fecha | 2026-11-05 |
 | Responsable | Samuel (ejecución) · revisión manual con tecnología de apoyo: pendiente |
 
@@ -44,8 +44,8 @@
 | 1.4.4 / 1.4.10 | Cambio de tamaño y reflujo | Cumple: sin desplazamiento horizontal a 320 px en las 4 pantallas medidas | Revisión asistida |
 | 1.4.11 | Contraste de componentes | Revisión manual pendiente (bordes de campos y foco) | — |
 | 2.1.1 | Teclado | Cumple en el ingreso y el formulario de estudiantes | CP-S17 · revisión asistida |
-| 2.4.2 | Página titulada | Revisión manual pendiente: el título de la pestaña no cambia por pantalla | — |
-| 2.4.3 | Orden del foco | Cumple: Identificación → Fecha → Nombre → Apellidos → Nivel → Guardar. Mejora: al abrir el formulario el foco no se mueve a él | Revisión asistida |
+| 2.4.2 | Página titulada | Cumple tras A11Y-01: "Ingresar · Nexora", "Inicio · Nexora", "Mi institución · Nexora", "Estudiantes · Nexora", "Instituciones · Nexora" | Revisión asistida 2 · CP-U09 |
+| 2.4.3 | Orden del foco | Cumple: al abrir el formulario el foco pasa a su encabezado (A11Y-02) y sigue Identificación → Fecha → Nombre → Apellidos → Nivel → Guardar | Revisión asistida 2 · CP-U09 |
 | 2.4.6 | Encabezados y etiquetas | Cumple | axe |
 | 2.4.7 | Foco visible | Cumple en el campo de correo | CP-S17 |
 | 2.5.8 | Tamaño del objetivo (mínimo) | Cumple | axe (`target-size`) |
@@ -57,10 +57,12 @@
 
 ## 4. Hallazgos y acciones
 
-No se registran defectos de accesibilidad en esta revisión. Quedan como mejoras del backlog (S7-14):
+No se registraron defectos de accesibilidad. Las mejoras detectadas se resolvieron así:
 
-| ID | Observación | Criterio | Acción |
+| ID | Observación | Criterio | Estado |
 |---|---|---|---|
-| A11Y-01 | El título de la pestaña es el mismo en todas las pantallas | 2.4.2 | Título por pantalla |
-| A11Y-02 | Al abrir el formulario de estudiante con el teclado, el foco no se mueve al formulario | 2.4.3 (mejora) | Mover el foco al encabezado del formulario |
-| A11Y-03 | Falta una prueba con lector de pantalla (NVDA) y con zoom del 200 % | Varios | Sesión manual en el Sprint 7, con la evaluación de uso (O5) |
+| A11Y-01 | El título de la pestaña era el mismo en todas las pantallas | 2.4.2 | **Resuelto** (commit `61c4593`, `usePageTitle`) |
+| A11Y-02 | Al abrir el formulario de estudiante con el teclado, el foco no se movía al formulario | 2.4.3 (mejora) | **Resuelto** (commit `61c4593`; CP-U09 lo verifica) |
+| A11Y-03 | Falta una prueba con lector de pantalla (NVDA) y con zoom del 200 % | Varios | Pendiente: sesión manual en el Sprint 7, con la evaluación de uso (O5) |
+
+Evidencia de la revisión asistida tras las mejoras: `evidencias/accesibilidad/EV_A11Y-revision-asistida-2_20261105.txt`.

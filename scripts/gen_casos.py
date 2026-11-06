@@ -5,7 +5,7 @@ from pathlib import Path
 
 OUT = Path(sys.argv[1])
 FECHA = "2026-11-05"
-EV_API = "`evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11)"
+EV_API = "`evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11)"
 PRE_API = "Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py`"
 
 BASE = {
@@ -14,7 +14,7 @@ BASE = {
     "CP-A15": "CA06", "CP-A16": "CA07", "CP-A17": "CA07", "CP-A18": "CA07", "CP-A19": "CA08",
     "CP-U02": "CA01", "CP-U04": "CA01", "CP-U05": "CA07",
     "CP-S01": "CA01", "CP-S05": "CA01", "CP-S06": "CA02 (pantalla)", "CP-S07": "CA03", "CP-S09": "CA05 (parcial)",
-    "CP-S10": "CA02, CA06", "CP-S11": "CA07", "CP-S12": "CA08", "CP-S14": "CA07", "CP-S15": "CA07", "CP-S18": "CA07", "CP-S19": "CA01", "CP-A27": "CA01", "CP-U06": "CA01", "CP-U07": "CA01", "CP-S20": "CA05 (parcial)", "CP-S21": "CA01",
+    "CP-S10": "CA02, CA06", "CP-S11": "CA07", "CP-S12": "CA08", "CP-S14": "CA07", "CP-S15": "CA07", "CP-S18": "CA07", "CP-S19": "CA01", "CP-A27": "CA01", "CP-U06": "CA01", "CP-U07": "CA01", "CP-S20": "CA05 (parcial)", "CP-S21": "CA01", "CP-A28": "CA01", "CP-A29": "CA01", "CP-U08": "CA01", "CP-U09": "CA03, CA05, CA07, CA08",
 }
 SIN_BASE = "— (escenario agregado en el refinamiento)"
 
@@ -40,9 +40,9 @@ API = [
      ["test_hu01_e4_cuenta_desactivada", "test_hu01_e4_institucion_desactivada_impide_acceso"]),
     ("CP-A05", "HU01-E5", "Rechazar campos vacíos", "—", "Correo y contraseña vacíos", "POST `/auth/login/`",
      "400 con errores en `email` y `password`", ["test_hu01_e5_campos_vacios"]),
-    ("CP-A06", "HU02-E1, E3", "Cerrar sesión invalida el token", "Sesión iniciada", "Token del usuario",
-     "POST `/auth/logout/`; luego GET `/auth/me/` con el mismo token", "204; luego 401 \"Debe iniciar sesión.\"",
-     ["test_hu02_e1_cerrar_sesion_elimina_el_token", "test_hu02_e3_token_anterior_ya_no_es_valido"]),
+    ("CP-A06", "HU02-E1, E3", "Cerrar sesión invalida la sesión en el servidor", "Sesión iniciada", "Cookie de sesión del usuario",
+     "POST `/auth/logout/`; luego GET `/auth/me/` con la cookie anterior", "204 y cookie vaciada; luego 401 \"Debe iniciar sesión.\"",
+     ["test_hu02_e1_cerrar_sesion_elimina_la_sesion", "test_hu02_e3_sesion_anterior_ya_no_es_valida"]),
     ("CP-A07", "HU03-E2, E3", "Permisos por rol en la API", "Usuarios de cada rol",
      "Docente, plataforma y administrativo", "Llamar rutas de otro rol",
      "403 para docente en gestión; 403 para plataforma en datos escolares",
@@ -131,10 +131,21 @@ API = [
      "`DJANGO_HTTPS=true` y `false`; clave aleatoria; `DEBUG=false`", "Ejecutar `manage.py check --deploy` en cada caso",
      "Con HTTPS: sin W004, W008, W012 ni W016 (solo W021, aceptada). Sin HTTPS: W008 presente",
      ["test_inc_003_ambiente_https_sin_advertencias_de_despliegue", "test_inc_003_sin_https_check_deploy_advierte"]),
-    ("CP-A27", "HU01-E1 · INC-007", "Un token anterior inválido no impide iniciar sesión", "Cuenta `admin@robles.test` activa",
-     "Encabezado `Authorization: Token token-de-una-sesion-anterior`", "POST `/auth/login/` con el encabezado",
-     "200 con token nuevo (antes: 401 \"Debe iniciar sesión.\")",
-     ["test_inc_007_token_anterior_invalido_no_impide_iniciar_sesion"]),
+    ("CP-A27", "HU01-E1 · INC-007", "Una sesión anterior inválida no impide iniciar sesión", "Cuenta `admin@robles.test` activa",
+     "Cookie `sessionid` inválida y encabezado `Authorization` de una versión anterior", "POST `/auth/login/`; GET `/auth/me/`",
+     "200 y la sesión nueva queda activa (antes: 401 \"Debe iniciar sesión.\")",
+     ["test_inc_007_sesion_anterior_invalida_no_impide_iniciar_sesion"]),
+    ("CP-A28", "RF01 · INC-006 · avance 1 §7.1", "Sesión en cookie HttpOnly, SameSite=Lax, con vencimiento por inactividad", "Cuenta activa",
+     "Correo y contraseña válidos", "POST `/auth/login/`; leer la cookie; GET `/auth/me/`",
+     "Respuesta sin token; cookie `sessionid` HttpOnly y SameSite=Lax con `max-age` de 2 h, renovada en cada petición",
+     ["test_inc_006_sesion_en_cookie_httponly_samesite", "test_inc_006_sesion_vence_por_inactividad", "test_hu01_e1_inicio_de_sesion_exitoso"]),
+    ("CP-A29", "RF01 · INC-006 · OWASP ASVS V3", "Las escrituras exigen el token CSRF", "Sesión iniciada con verificación CSRF activa",
+     "Sin y con `X-CSRFToken`", "GET `/auth/csrf/`; POST `/auth/logout/` sin token y con token",
+     "403 sin token; 204 con token; la cookie `csrftoken` es legible por la interfaz (no HttpOnly)",
+     ["test_inc_006_escrituras_exigen_token_csrf", "test_inc_006_csrf_entrega_cookie_legible_por_la_interfaz"]),
+    ("CP-A30", "Plan de pruebas §5 (robustez)", "Latencia configurable de la API de pruebas", "—", "`NEXORA_LATENCIA_MAX_MS` = 500 y sin definir",
+     "Invocar el middleware con rutas de la API y fuera de ella", "Demora entre 0 y 0,5 s solo en `/api/`; sin la variable no hay demora",
+     ["test_latencia_aleatoria_solo_en_la_api", "test_sin_variable_no_hay_latencia"]),
 ]
 
 UNIT = [
@@ -153,13 +164,23 @@ UNIT = [
      "API simulada; `/my-institution/` responde tarde",
      "Institución con un solo nivel (primaria)", "Ver el botón Registrar estudiante; liberar la respuesta; abrir el formulario",
      "Botón deshabilitado mientras carga; luego habilitado y Nivel en \"Primaria\"", ["App.test.tsx › INC-004"]),
-    ("CP-U06", "HU02-E3 · INC-007", "Un 401 solo cierra la sesión si corresponde al token vigente", "Manejador de sesión vencida registrado",
-     "401 con el token vigente; 401 tardío de un token ya reemplazado", "Ejecutar `apiGet('/auth/me/')` en cada caso",
-     "Se cierra la sesión en el primer caso; en el segundo se conserva el token nuevo",
+    ("CP-U06", "HU02-E3 · INC-007", "Un 401 solo cierra la sesión si corresponde a la sesión vigente", "Manejador de sesión vencida registrado",
+     "401 de la sesión vigente; 401 tardío de una sesión ya reemplazada", "Ejecutar `apiGet('/auth/me/')` en cada caso",
+     "Se cierra la sesión en el primer caso; en el segundo se conserva la nueva",
      ["client.test.ts › sesión vencida (2 pruebas)"]),
-    ("CP-U07", "HU02-E1 · INC-009", "El token se borra del navegador aunque el servidor no responda al cierre de sesión",
-     "Sesión iniciada; `POST /auth/logout/` sin respuesta", "—", "Pulsar Cerrar sesión",
-     "`localStorage` sin token y pantalla de ingreso", ["App.test.tsx › INC-009"]),
+    ("CP-U07", "HU02-E1 · INC-009", "El cierre de sesión es inmediato en la interfaz y se completa en el servidor aunque se recargue",
+     "Sesión iniciada; `POST /auth/logout/` sin respuesta; marca de cierre pendiente al abrir", "—",
+     "Pulsar Cerrar sesión; abrir la aplicación con la marca pendiente",
+     "Pantalla de ingreso y marca pendiente; al abrir, se llama a `/auth/logout/` antes que a `/auth/me/` y se borra la marca",
+     ["App.test.tsx › INC-009 (2 pruebas)"]),
+    ("CP-U08", "RF01 · INC-006", "La interfaz envía la cookie y el token CSRF, nunca un token propio", "—",
+     "Cookie `csrftoken` presente y ausente", "Ejecutar `apiPost('/students/')`",
+     "`credentials: include`, encabezado `X-CSRFToken`, sin `Authorization`; si falta la cookie, primero GET `/auth/csrf/`",
+     ["client.test.ts › sesión en cookie con CSRF (2 pruebas)"]),
+    ("CP-U09", "HU04, HU05, HU07 · A11Y-01, A11Y-02", "Formularios de instituciones, mi institución y estudiantes", "API simulada",
+     "Altas, errores de la API, desactivación y búsqueda", "Llenar y enviar cada formulario",
+     "Datos enviados a la API, confirmaciones y errores por campo; foco en el formulario al abrirlo; título de pestaña por pantalla",
+     ["pages.test.tsx (9 pruebas)"]),
 ]
 
 PRE_S = "Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7)"
@@ -184,7 +205,7 @@ SYSTEM = [
     ("CP-S18", "HU07-E1 · INC-004", "Nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004)", "`/my-institution/` retrasado 1,5 s", "Abrir Estudiantes; Registrar estudiante", "El campo Nivel muestra \"Primaria\"", "nivel-preseleccionado"),
     ("CP-S19", "HU01-E1 · INC-007", "Una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007)", "Token inválido de una sesión anterior en el navegador; `/auth/me/` retrasado 1,5 s", "Ingresar como admin@robles.test; esperar 2,5 s", "Se ingresa y la sesión se conserva (saludo y botón Cerrar sesión visibles)", "sesion-conservada"),
     ("CP-S20", "HU05-E1 · INC-008", "Una carga repetida no borra lo que se escribió (reprueba INC-008)", "Segunda carga de `/my-institution/` retrasada 1,5 s", "Abrir Mi institución; escribir el teléfono; esperar 2 s", "El campo conserva el teléfono escrito", "valor-conservado"),
-    ("CP-S21", "HU02-E1 · INC-009", "Cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009)", "`/auth/logout/` retrasado 3 s", "Ingresar; Cerrar sesión; recargar de inmediato", "Pantalla de ingreso y sin token en el navegador", "sesion-cerrada"),
+    ("CP-S21", "HU02-E1 · INC-009", "Un cierre de sesión que no llegó al servidor se completa al volver a abrir (reprueba INC-009)", "El primer `POST /auth/logout/` se aborta", "Ingresar; Cerrar sesión; recargar de inmediato", "Pantalla de ingreso y la API responde 401 en `/auth/me/` (la sesión quedó cerrada en el servidor)", "sesion-cerrada"),
 ]
 
 # (id, requisito, objetivo, herramienta y comando, resultado esperado, resultado obtenido, estado, evidencia)
@@ -202,7 +223,7 @@ SECURITY = [
      "`evidencias/seguridad/EV_SEG-secretos_20261105.txt`"),
     ("CP-SEG04", "Avance 1, sección 7.1 · OWASP ASVS V3 (sesiones)", "La sesión usa cookies HttpOnly y protección CSRF, como fija la arquitectura aprobada",
      "Revisión de `frontend/src/api/client.ts` y `config/settings.py`", "Credencial de sesión no accesible desde JavaScript",
-     "El token se guarda en `localStorage` y se envía como `Authorization: Token` → **INC-006**", "Fallido",
+     "Antes: token en `localStorage` (**INC-006**, fallido). Tras `796cef8`: cookie de sesión HttpOnly y SameSite=Lax, `X-CSRFToken` en las escrituras (CP-A28, CP-A29, CP-U08)", "Aprobado tras INC-006",
      "Revisión de código · [Revisión de seguridad](Revision-seguridad.md)"),
 ]
 
@@ -233,14 +254,14 @@ a la última ejecución registrada en el [Registro de ejecución](Registro-de-ej
 
 | Nivel | Casos | Pruebas automatizadas | Historias |
 |---|---|---|---|
-| API e integración (CP-A) | 27 | 63 (pytest) | HU01 – HU07, RN, RNF |
-| Unitarias de interfaz (CP-U) | 7 | 16 (Vitest) | HU01 – HU03, HU07 |
-| Sistema (CP-S) | 21 | 42 (Playwright: 21 × 2 dispositivos) | HU01 – HU07, RNF03, RNF04, WCAG |
+| API e integración (CP-A) | 30 | 69 (pytest) | HU01 – HU07, RN, RNF |
+| Unitarias de interfaz (CP-U) | 9 | 28 (Vitest) | HU01 – HU05, HU07 |
+| Sistema (CP-S) | 21 | 42 (Playwright: 21 × 2 dispositivos), también sobre la versión compilada | HU01 – HU07, RNF03, RNF04, WCAG |
 | Seguridad (CP-SEG) | 4 | Herramientas de análisis (no se cuentan como pruebas automatizadas) | RNF de seguridad |
-| **Total** | **59** | **121** | |
+| **Total** | **64** | **139** | |
 
-Resultado de la última ejecución: 58 casos aprobados (CP-SEG01 con riesgo residual aceptado) y **1 fallido
-(CP-SEG04 → INC-006, abierto)**.
+Resultado de la última ejecución: **64 de 64 casos aprobados** (CP-SEG01 con riesgo residual aceptado; CP-SEG04
+aprobado tras corregir INC-006).
 
 Correspondencia con la **línea base del avance 1** (CA01 – CA24): este incremento cubre CA01 – CA08 (CA02 y CA05
 parcialmente); CA09 – CA24 corresponden a HU08 – HU12 del catálogo, planificadas para los Sprints 4 – 6. El detalle
@@ -313,7 +334,7 @@ out.append("""## 5. Historial de versiones
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-04 | Versión inicial: 44 casos para HU01 – HU07. |
-| 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: cada caso indica su criterio CA01 – CA24 de la línea base. Nuevos CP-A26, CP-A27, CP-U05 – CP-U07, CP-S16 – CP-S21 y CP-SEG01 – CP-SEG04 (seguridad, accesibilidad e INC-003 – INC-009). Evidencias de las ejecuciones EJ-14 – EJ-22. |
+| 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: cada caso indica su criterio CA01 – CA24 de la línea base. Nuevos CP-A26 – CP-A30, CP-U05 – CP-U09, CP-S16 – CP-S21 y CP-SEG01 – CP-SEG04 (seguridad, accesibilidad, robustez e INC-003 – INC-009). Sesión en cookie HttpOnly (INC-006). Evidencias de las ejecuciones EJ-14 – EJ-25. |
 """)
 OUT.write_text("\n".join(out), encoding="utf-8")
 print("ok", len(API), len(UNIT), len(SYSTEM), sum(len(c[7]) for c in API))

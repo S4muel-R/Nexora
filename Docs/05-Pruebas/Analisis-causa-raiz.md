@@ -4,7 +4,7 @@
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 17 |
 | Técnicas | 5 porqués, Ishikawa (causa-efecto), Pareto |
-| Versión | 1.1 |
+| Versión | 1.2 |
 | Fecha | 2026-11-05 |
 | Estado | Borrador para validar en la retrospectiva del equipo |
 
@@ -161,8 +161,8 @@ de la carga.
 | Correctiva | Correcciones de INC-004 e INC-007 con reprueba que retrasa las respuestas (CP-S18, CP-S19) y pruebas unitarias y de API | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Una prueba que solo pasa al reintentar hace fallar el CI (`failOnFlakyTests`, commit `b403436`) y se analiza como posible defecto (Plan de pruebas, sección 9) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Cada pantalla nueva incluye un caso de sistema con la API retrasada (`page.route`) para los datos que carga al abrir | Samuel | Sprint 4 |
-| Preventiva | Antes de cada entrega, ejecutar la suite de sistema contra la API con latencia aleatoria y sin reintentos (EJ-21, EJ-22); llevar el middleware de latencia al repositorio como opción de prueba | Samuel | Sprint 4 |
-| Preventiva | Ejecutar las pruebas de sistema también sobre la versión compilada (`vite build` + `vite preview`), que es la que se entrega | Wilberth | Sprint 4 |
+| Preventiva | Antes de cada entrega, ejecutar la suite de sistema contra la API con latencia aleatoria y sin reintentos; la latencia es una opción del repositorio (`NEXORA_LATENCIA_MAX_MS`, commit `d405db9`) | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Ejecutar las pruebas de sistema también sobre la versión compilada (`E2E_PREVIEW=1`, en el CI desde `d405db9`) | Samuel | 2026-11-05 (hecho) |
 | Correctiva | Correcciones de INC-008, INC-009 y la reapertura de INC-004 (commit `f15dec5`) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Revisar en cada serializador nuevo los campos booleanos y de fecha (valor por defecto y mensajes), y en cada pantalla los datos asíncronos; agregado a la lista de revisión del PR (commit `b403436`) | Luis y Samuel | 2026-11-05 (hecho) |
 | Preventiva | Incluir el caso "campo vacío" en los escenarios de error al refinar historias | Wilberth | Sprint 4 |
@@ -209,7 +209,7 @@ registraron como cambios, y la seguridad se revisó por primera vez después de 
 | Tipo | Acción | Responsable | Fecha |
 |---|---|---|---|
 | Correctiva | INC-003 e INC-005 corregidos (commits `e867548`, `c42730e`) | Samuel | 2026-11-05 (hecho) |
-| Correctiva | Decidir la corrección de INC-006 (CC-13) | Equipo | Sprint Review |
-| Preventiva | Agregar al CI `npm audit --omit=dev`, `pip-audit` y `check --deploy` con `DJANGO_HTTPS=true` | Wilberth | Sprint 4 |
+| Correctiva | INC-006: sesión en cookie HttpOnly con CSRF (CC-13, commit `796cef8`); ratificar en el Sprint Review | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Agregar al CI `npm audit --omit=dev` y `pip-audit` (commit `d405db9`); `check --deploy` con `DJANGO_HTTPS=true` ya corre en pytest (CP-A26) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Lista de revisión de PR: respetar la arquitectura aprobada o registrar la desviación (commit `b403436`) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Matriz de controles OWASP ASVS de la [Revisión de seguridad](Revision-seguridad.md), revisada en cada sprint | Luis | Cada sprint |

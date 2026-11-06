@@ -26,7 +26,7 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | INC-003 | [ADLCDS-118](https://proyectosulacit.atlassian.net/browse/ADLCDS-118) | Sin configuración HTTPS para un ambiente publicado | Configuración del backend | Media | Media | Seguridad | `manage.py check --deploy` (EJ-16) | Corregido y reprobado · pendiente de integrar |
 | INC-004 | [ADLCDS-119](https://proyectosulacit.atlassian.net/browse/ADLCDS-119) | El formulario de estudiante se puede usar antes de cargar los niveles (reabierto una vez) | Estudiantes (interfaz) | Media | Alta | Adecuación funcional | CI de PR #9 (intermitente) y #10 (EJ-11); reabierto en EJ-21 | Corregido y reprobado · pendiente de integrar |
 | INC-005 | [ADLCDS-120](https://proyectosulacit.atlassian.net/browse/ADLCDS-120) | Dependencias de desarrollo con avisos de seguridad críticos | Frontend (herramientas) | Media | Media | Seguridad | `npm audit` (EJ-15) | Corregido · 7 avisos moderados aceptados |
-| INC-006 | [ADLCDS-121](https://proyectosulacit.atlassian.net/browse/ADLCDS-121) | La sesión usa un token en `localStorage` en lugar de cookie HttpOnly con CSRF | Autenticación (interfaz y API) | Media | Alta | Seguridad | Revisión de código contra el avance 1 (CP-SEG04, EJ-15) | **Abierto** — decisión en CC-13 |
+| INC-006 | [ADLCDS-121](https://proyectosulacit.atlassian.net/browse/ADLCDS-121) | La sesión usa un token en `localStorage` en lugar de cookie HttpOnly con CSRF | Autenticación (interfaz y API) | Media | Alta | Seguridad | Revisión de código contra el avance 1 (CP-SEG04, EJ-15) | Corregido y reprobado · pendiente de integrar |
 | INC-007 | [ADLCDS-117](https://proyectosulacit.atlassian.net/browse/ADLCDS-117) | Una sesión anterior inválida impide o cierra el nuevo inicio de sesión | Autenticación (interfaz y API) | Alta | Alta | Fiabilidad · Seguridad | CI de PR #11 (intermitente, EJ-17) | Corregido y reprobado · pendiente de integrar |
 | INC-008 | [ADLCDS-123](https://proyectosulacit.atlassian.net/browse/ADLCDS-123) | Una carga repetida de Mi institución sobrescribe lo que se está escribiendo | Mi institución (interfaz) | Baja | Media | Adecuación funcional | CI de PR #11 con `failOnFlakyTests` (EJ-20) | Corregido y reprobado · pendiente de integrar |
 | INC-009 | [ADLCDS-122](https://proyectosulacit.atlassian.net/browse/ADLCDS-122) | Cerrar sesión y recargar enseguida restaura la sesión | Autenticación (interfaz) | Alta | Alta | Seguridad | Suite con API lenta (EJ-21) | Corregido y reprobado · pendiente de integrar |
@@ -173,10 +173,12 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | Severidad / prioridad | Media / Alta — explotarlo requiere además una vulnerabilidad XSS (React escapa el contenido y no se encontró ninguna), pero es una desviación de la línea base aprobada. |
 | Responsable | Luis (backend) y Samuel (interfaz) |
 | Análisis | El contrato de API del Sprint 2 (`Arquitectura-datos-API.md`) eligió `Authorization: Token` sin contrastarlo con la sección 7.1 del avance 1 ni registrar el cambio. Ver ACR-04. |
-| Corrección propuesta | CC-13: migrar a `SessionAuthentication` con cookie HttpOnly, `SameSite=Lax` y token CSRF en las escrituras (Sprint 4), o registrar la desviación con mitigaciones (política CSP, vencimiento del token). Decide el equipo en el Sprint Review. |
-| Resultado de reprueba | Pendiente. |
-| Evidencia | [Revisión de seguridad](Revision-seguridad.md), control V3 · `frontend/src/api/client.ts` |
-| Estado | **Abierto**. |
+| Decisión | CC-13, opción A (2026-11-05): cumplir la arquitectura aprobada en lugar de documentar la desviación, porque el cambio cabía antes de la entrega y elimina el riesgo en lugar de mitigarlo. |
+| Corrección | Sesión de Django en cookie `sessionid` HttpOnly y `SameSite=Lax`, que vence tras 2 horas sin actividad (`SESSION_SAVE_EVERY_REQUEST`); `GET /auth/csrf/` entrega la cookie `csrftoken` y la interfaz la envía en `X-CSRFToken` en cada escritura; `CookieSessionAuthentication` responde 401 sin sesión; migración que elimina la tabla de tokens. Se conservan INC-007 (época de sesión) e INC-009 (marca de cierre pendiente que se completa al volver a abrir). Commit `796cef8`, PR #11. |
+| Hallazgo durante la reprueba | Con la API lenta (EJ-24), la primera versión dejaba iniciar sesión mientras se completaba un cierre pendiente: la respuesta de ese cierre borraba la cookie de la sesión nueva (CP-S10 y CP-S16 fallaron 3 veces en 80). Se corrigió antes de integrar: la pantalla de ingreso espera a que termine la validación de la sesión. |
+| Resultado de reprueba | CP-A28 (cookie HttpOnly, SameSite, vencimiento), CP-A29 (CSRF obligatorio), CP-U08 (la interfaz no guarda credenciales y envía `X-CSRFToken`), CP-SEG04 aprobado. pytest 69/69, Vitest 28/28, Playwright 42/42 en desarrollo y 42/42 sobre la versión compilada, 84/84 con latencia (EJ-24). |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · `EV_vitest_ejecucion-4_20261105.txt` · `EV_playwright_ejecucion-5_20261105.txt` · `EV_playwright_compilada_20261105.txt` · Hallazgo en la reprueba: `EV_playwright_latencia-3_INC-006-falla_20261105.txt` · `EV_INC-006_reprueba-latencia-falla_computadora_20261105.png` · Reprueba final: `EV_playwright_latencia-4_20261105.txt` · [Revisión de seguridad](Revision-seguridad.md), control V3 |
+| Estado | Corregido y reprobado; se cierra al integrar el PR #11. |
 
 ---
 
@@ -245,8 +247,8 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | Severidad / prioridad | Alta / Alta — en un equipo compartido otra persona entra con la cuenta de quien creyó cerrar la sesión. |
 | Responsable | Samuel · revisión: pendiente Luis |
 | Análisis | El cierre de sesión dependía de la respuesta del servidor para borrar la credencial local. Ver ACR-03 y ACR-04. |
-| Corrección | El token se borra antes de avisar al servidor; el aviso usa `keepalive` para completarse aunque la página se cierre. Commit `f15dec5`, PR #11. |
-| Resultado de reprueba | CP-U07 y CP-S21 fallan sin la corrección y pasan con ella. Suite con latencia 84/84; suite normal 42/42 sin reintentos (EJ-22). |
+| Corrección | El token se borra antes de avisar al servidor; el aviso usa `keepalive` para completarse aunque la página se cierre. Commit `f15dec5`, PR #11. Con la sesión en cookie HttpOnly (INC-006, `796cef8`) la interfaz no puede borrar la cookie: deja una marca de cierre pendiente que, si el aviso no llegó, se completa al volver a abrir la aplicación antes de restaurar la sesión. |
+| Resultado de reprueba | CP-U07 y CP-S21 fallan sin la corrección y pasan con ella. Suite con latencia 84/84; suite normal 42/42 sin reintentos (EJ-22). Con la sesión en cookie, CP-S21 aborta el primer aviso de cierre y comprueba en la API que la sesión quedó cerrada: falla sin la marca de cierre pendiente (`EV_INC-009_falla-cookie-sin-cierre-pendiente_*`) y pasa con ella (EJ-24). |
 | Evidencia | Falla: `evidencias/EV_INC-009_falla-local_computadora_20261105.png` (tras recargar, la sesión sigue abierta) · `EV_INC-009_falla-local_20261105.txt` · `EV_playwright_latencia-1_20261105.txt` · Reprueba: `e2e/EV_CP-S21_sesion-cerrada_*.png` · `EV_vitest_ejecucion-3_20261105.txt` · `EV_playwright_latencia-2_20261105.txt` |
 | Estado | Corregido y reprobado; se cierra al integrar el PR #11. |
 
@@ -265,6 +267,6 @@ scripts (MP-05).
 
 ## Estado en Jira
 
-Los nueve incidentes están registrados como *Bug*. Todos salvo INC-006 están en *En curso* (corregidos, pendientes
-de integrar en `main`); INC-006 está en *Por hacer* hasta la decisión de CC-13. La reapertura de INC-004 quedó como
-comentario en ADLCDS-119.
+Los nueve incidentes están registrados como *Bug* y en *En curso*: corregidos y reprobados, pendientes de integrar en
+`main` (PR #5, #8 y #11). La reapertura de INC-004 y la corrección de INC-006 quedaron como comentarios en ADLCDS-119 y
+ADLCDS-121.

@@ -89,7 +89,7 @@ ADLCDS-88,Tarea,S7-10- A justar interfaz,Por hacer,Samuel Ramirez Perez,Media,Sp
 ADLCDS-89,Tarea,S7-11- Integrar pantallas,Por hacer,Samuel Ramirez Perez,Media,Sprint 7 arranque de pruebas
 ADLCDS-90,Tarea,S7-12- Corregir errores,Por hacer,Samuel Ramirez Perez,Media,Sprint 7 arranque de pruebas
 ADLCDS-91,Tarea,S7-13- Demo Funcional,Por hacer,Samuel Ramirez Perez,Media,Sprint 7 arranque de pruebas
-ADLCDS-92,Tarea,S7-14- Accesibilidad,Por hacer,Samuel Ramirez Perez,Media,Sprint 7 arranque de pruebas
+ADLCDS-92,Tarea,S7-14- Accesibilidad,En curso,Samuel Ramirez Perez,Media,Sprint 7 arranque de pruebas
 ADLCDS-93,Tarea,S8-01- Refinar correcciones,Por hacer,Wilberth Rodriguez Bejarano,Media,Sprint 8 Validación de uso
 ADLCDS-94,Tarea,S8-02- Informe y retrospectiva,Por hacer,Wilberth Rodriguez Bejarano,Media,Sprint 8 Validación de uso
 ADLCDS-95,Tarea,S8-03- Ejecutar 24 pruebas,Por hacer,Wilberth Rodriguez Bejarano,Media,Sprint 8 Validación de uso
@@ -118,4 +118,6 @@ ADLCDS-117,Defecto,INC-007 Una sesión anterior inválida impide o cierra el nue
 ADLCDS-118,Defecto,INC-003 Sin configuración HTTPS para un ambiente publicado,En curso,Samuel Ramirez Perez,Media,Sin sprint
 ADLCDS-119,Defecto,INC-004 El nivel no se preselecciona si el formulario de estudiante se abre antes de cargar los niveles,En curso,Samuel Ramirez Perez,Alta,Sin sprint
 ADLCDS-120,Defecto,INC-005 Dependencias de desarrollo del frontend con avisos de seguridad críticos,En curso,Samuel Ramirez Perez,Media,Sin sprint
-ADLCDS-121,Defecto,INC-006 La sesión usa un token en localStorage en lugar de cookie HttpOnly con CSRF (desviación del avance 1),Por hacer,Luis Lobo Zeledon,Alta,Sin sprint
+ADLCDS-121,Defecto,INC-006 La sesión usa un token en localStorage en lugar de cookie HttpOnly con CSRF (desviación del avance 1),En curso,Luis Lobo Zeledon,Alta,Sin sprint
+ADLCDS-122,Defecto,INC-009 Cerrar sesión y recargar enseguida restaura la sesión (el token no se borra hasta que responde el servidor),En curso,Samuel Ramirez Perez,Alta,Sin sprint
+ADLCDS-123,Defecto,INC-008 Una carga repetida de Mi institución sobrescribe lo que se está escribiendo,En curso,Samuel Ramirez Perez,Media,Sin sprint

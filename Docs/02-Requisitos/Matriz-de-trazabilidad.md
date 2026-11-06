@@ -15,13 +15,13 @@ CA24 del avance 1 y la sección 3 recorre la cadena en sentido inverso, desde ca
 Los RF usan la numeración de la línea base del avance 1 (CC-11): RF01 acceso y permisos, RF02 configuración de la
 plataforma, RF03 datos institucionales, RF04 estudiantes, RF05 docentes, RF06 grupos, RF07 asistencia, RF08 reportes.
 Rutas de código relativas a `backend/` (Python) y `frontend/src/` (TypeScript). Resultados de la última ejecución
-(EJ-13 – EJ-22 y CI de los PR #1 – #11).
+(EJ-13 – EJ-25 y CI de los PR #1 – #11).
 
 ## 1. Incremento del segundo entregable (HU01 – HU07)
 
 | Necesidad | Requisito | Historia | Escenario | Código | Caso de prueba | Resultado | Defecto | Corrección | Reprueba |
 |---|---|---|---|---|---|---|---|---|---|
-| N02 | RF01 | HU01 | HU01-E1 | `accounts/views.py` · `LoginPage.tsx` · `AuthContext.tsx`, `client.ts` | CP-A01, CP-A27, CP-U02, CP-U06, CP-S01, CP-S17, CP-S19 | Aprobado | INC-007 · ADLCDS-117 | `9599320` (sesión anterior ignorada) | EJ-18 CP-S19 · estabilidad 5 × 4 sin reintentos |
+| N02 | RF01 | HU01 | HU01-E1 | `accounts/views.py` · `LoginPage.tsx` · `core/authentication.py` · `AuthContext.tsx`, `client.ts` | CP-A01, CP-A27, CP-A28, CP-A29, CP-U02, CP-U06, CP-U08, CP-S01, CP-S17, CP-S19 | Aprobado | INC-007 · ADLCDS-117<br>INC-006 · ADLCDS-121 | `9599320` (sesión anterior ignorada)<br>`796cef8` (cookie HttpOnly y CSRF) | EJ-18 CP-S19<br>EJ-24 CP-A28, CP-A29, CP-U08 |
 | N02 | RF01 | HU01 | HU01-E2 | `accounts/models.py` (`normalize_email`) | CP-A02 | Aprobado | — | — | — |
 | N02 | RF01 | HU01 | HU01-E3 | `accounts/views.py` · `LoginPage.tsx` | CP-A03, CP-U02, CP-S02 | Aprobado | — | — | — |
 | N02 | RF01 | HU01 | HU01-E4 | `accounts/views.py` | CP-A04 | Aprobado | — | — | — |
@@ -58,7 +58,7 @@ al criterio. Objetivos y riesgos según el anexo, sección 5, y la matriz de rie
 | CA | HU (avance 1) | RF | Objetivo | Riesgos | Historia del catálogo · Jira | Escenarios del catálogo | Casos | Resultado | Defectos |
 |---|---|---|---|---|---|---|---|---|---|
 | CA01 | HU01 | RF01 | O3, O4 | R03 | HU01, HU03 · ADLCDS-105, 107 | HU01-E1, HU03-E1, HU03-E2 | CP-A01, CP-A07, CP-A27, CP-U02, CP-U04, CP-U06, CP-U07, CP-S01, CP-S05, CP-S19, CP-S21 | Aprobado tras corregir INC-007 e INC-009 | INC-007, INC-009 |
-| CA02 | HU01 | RF01 | O3, O4 | R03 | HU03, HU06 · ADLCDS-107, 110 | HU03-E3, HU06-E3 (institución); grupo: HU09, HU10 | CP-A07, CP-A14, CP-S06, CP-S10 | Parcial: aprobado entre instituciones; entre grupos se prueba con HU09 – HU10 | INC-006 (sesión) |
+| CA02 | HU01 | RF01 | O3, O4 | R03 | HU03, HU06 · ADLCDS-107, 110 | HU03-E3, HU06-E3 (institución); grupo: HU09, HU10 | CP-A07, CP-A14, CP-S06, CP-S10 | Parcial: aprobado entre instituciones; entre grupos se prueba con HU09 – HU10 | INC-006 (corregido) |
 | CA03 | HU02 | RF02 | O3, O4 | R03 | HU04 · ADLCDS-108 | HU04-E1, HU04-E2 | CP-A08, CP-S07 | Aprobado | — |
 | CA04 | HU02 | RF02 | O3, O4 | R03 | HU04 · ADLCDS-108 | Permiso exclusivo de la plataforma (RN01) | CP-A07 (`test_hu04_solo_plataforma_registra_instituciones`) | Aprobado | — |
 | CA05 | HU03 | RF03 | O3, O4 | R05 | HU05 · ADLCDS-109 | HU05-E1, HU05-E2 | CP-A11, CP-S09, CP-S20 | Parcial: niveles aprobados; el periodo lectivo no está implementado (GAP-01) | INC-008 |
@@ -106,7 +106,7 @@ al criterio. Objetivos y riesgos según el anexo, sección 5, y la matriz de rie
 | INC-007 | ADLCDS-117 | CP-S10 (CI #11 intermitente) · CP-S19 | HU01-E1 | HU01 | RF01 | CA01 | O4 | R03 | Corregido y reprobado |
 | INC-008 | ADLCDS-123 | CP-S09 (CI #11 intermitente, EJ-20) · CP-S20 | HU05-E1 | HU05 | RF03 | CA05 | O4 | R05 | Corregido y reprobado |
 | INC-009 | ADLCDS-122 | CP-S16 con latencia (EJ-21) · CP-S21 | HU02-E1 | HU02 | RF01 | CA01 | O4 | R03 | Corregido y reprobado |
-| INC-006 | ADLCDS-121 | CP-SEG04 (EJ-15) | HU01, HU02 | HU01, HU02 | RF01 · avance 1 §7.1 | CA01, CA02 | O4 | R03 | Abierto (CC-13) |
+| INC-006 | ADLCDS-121 | CP-SEG04 (EJ-15) | HU01, HU02 | HU01, HU02 | RF01 · avance 1 §7.1 | CA01, CA02 | O4 | R03 | Corregido y reprobado (CC-13, opción A) |
 
 ## 4. Historias pendientes (replanificadas por CC-05)
 
@@ -129,7 +129,7 @@ al criterio. Objetivos y riesgos según el anexo, sección 5, y la matriz de rie
 | RNF05 Rendimiento | — | Por diseñar (Sprint 8) | Pendiente |
 | Separación de datos por institución (avance 1, RNF) | `core/mixins.py` | CP-A13 – CP-A15, CP-S10 | Aprobado |
 | Permisos comprobados en el servidor (avance 1, RNF) | `core/permissions.py` | CP-A07, CP-A22 | Aprobado |
-| Sesión con cookie HttpOnly y CSRF (avance 1, §7.1) | `client.ts` (`localStorage`) | CP-SEG04 | **Fallido → INC-006** |
+| Sesión con cookie HttpOnly y CSRF (avance 1, §7.1) | `core/authentication.py`, `config/settings.py` · `client.ts` | CP-SEG04, CP-A28, CP-A29, CP-U08 | Aprobado tras INC-006 |
 | Configuración HTTPS para un ambiente publicado | `config/settings.py` (`DJANGO_HTTPS`) | CP-A26 | Aprobado tras INC-003 |
 | Dependencias sin vulnerabilidades conocidas | `package.json`, `requirements.txt` | CP-SEG01, CP-SEG02 | Aprobado (riesgo residual INC-005) |
 | Sin secretos en el repositorio | Todo el historial de git | CP-SEG03 | Aprobado |
@@ -145,4 +145,4 @@ al criterio. Objetivos y riesgos según el anexo, sección 5, y la matriz de rie
 | Escenarios con prueba de sistema | 18 |
 | Criterios de la línea base (CA01 – CA24) aprobados | 6 de 24 (25 %); 2 parciales |
 | Criterios de la línea base con escenario en el catálogo | 21 de 24 (GAP-02 – GAP-04) |
-| Defectos trazados a su escenario o requisito, corrección y reprueba | 8 de 9 (INC-006 abierto) |
+| Defectos trazados a su escenario o requisito, corrección y reprueba | 9 de 9 |

@@ -17,14 +17,14 @@ a la última ejecución registrada en el [Registro de ejecución](Registro-de-ej
 
 | Nivel | Casos | Pruebas automatizadas | Historias |
 |---|---|---|---|
-| API e integración (CP-A) | 27 | 63 (pytest) | HU01 – HU07, RN, RNF |
-| Unitarias de interfaz (CP-U) | 7 | 16 (Vitest) | HU01 – HU03, HU07 |
-| Sistema (CP-S) | 21 | 42 (Playwright: 21 × 2 dispositivos) | HU01 – HU07, RNF03, RNF04, WCAG |
+| API e integración (CP-A) | 30 | 69 (pytest) | HU01 – HU07, RN, RNF |
+| Unitarias de interfaz (CP-U) | 9 | 28 (Vitest) | HU01 – HU05, HU07 |
+| Sistema (CP-S) | 21 | 42 (Playwright: 21 × 2 dispositivos), también sobre la versión compilada | HU01 – HU07, RNF03, RNF04, WCAG |
 | Seguridad (CP-SEG) | 4 | Herramientas de análisis (no se cuentan como pruebas automatizadas) | RNF de seguridad |
-| **Total** | **59** | **121** | |
+| **Total** | **64** | **139** | |
 
-Resultado de la última ejecución: 58 casos aprobados (CP-SEG01 con riesgo residual aceptado) y **1 fallido
-(CP-SEG04 → INC-006, abierto)**.
+Resultado de la última ejecución: **64 de 64 casos aprobados** (CP-SEG01 con riesgo residual aceptado; CP-SEG04
+aprobado tras corregir INC-006).
 
 Correspondencia con la **línea base del avance 1** (CA01 – CA24): este incremento cubre CA01 – CA08 (CA02 y CA05
 parcialmente); CA09 – CA24 corresponden a HU08 – HU12 del catálogo, planificadas para los Sprints 4 – 6. El detalle
@@ -46,7 +46,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu01_e1_inicio_de_sesion_exitoso` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -64,7 +64,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu01_e2_correo_con_mayusculas_y_espacios` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -82,7 +82,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu01_e3_credenciales_invalidas_mismo_mensaje[contrasena-incorrecta]`<br>`test_hu01_e3_credenciales_invalidas_mismo_mensaje[correo-inexistente]` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -100,7 +100,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu01_e4_cuenta_desactivada`<br>`test_hu01_e4_institucion_desactivada_impide_acceso` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -118,25 +118,25 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu01_e5_campos_vacios` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
-### CP-A06 — Cerrar sesión invalida el token
+### CP-A06 — Cerrar sesión invalida la sesión en el servidor
 
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU02-E1, E3 |
 | Criterio de la línea base (avance 1) | — (escenario agregado en el refinamiento) |
-| Objetivo | Cerrar sesión invalida el token |
+| Objetivo | Cerrar sesión invalida la sesión en el servidor |
 | Precondiciones | Sesión iniciada. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
-| Datos de prueba | Token del usuario |
-| Pasos | POST `/auth/logout/`; luego GET `/auth/me/` con el mismo token |
-| Resultado esperado | 204; luego 401 "Debe iniciar sesión." |
+| Datos de prueba | Cookie de sesión del usuario |
+| Pasos | POST `/auth/logout/`; luego GET `/auth/me/` con la cookie anterior |
+| Resultado esperado | 204 y cookie vaciada; luego 401 "Debe iniciar sesión." |
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
-| Pruebas automatizadas | `test_hu02_e1_cerrar_sesion_elimina_el_token`<br>`test_hu02_e3_token_anterior_ya_no_es_valido` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Pruebas automatizadas | `test_hu02_e1_cerrar_sesion_elimina_la_sesion`<br>`test_hu02_e3_sesion_anterior_ya_no_es_valida` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -154,7 +154,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu03_e3_docente_no_modifica_la_institucion`<br>`test_hu03_e3_docente_no_accede_a_gestion_de_instituciones`<br>`test_hu03_e2_plataforma_no_accede_a_gestion_escolar`<br>`test_hu04_solo_plataforma_registra_instituciones` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -172,7 +172,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu04_e1_registrar_institucion_y_administradora`<br>`test_hu04_e2_institucion_con_varios_niveles` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -190,7 +190,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu04_e3_nombre_duplicado_sin_distinguir_mayusculas` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -208,7 +208,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu04_e4_niveles_invalidos[levels0]`<br>`test_hu04_e4_niveles_invalidos[levels1]`<br>`test_hu04_e4_niveles_invalidos[levels2]`<br>`test_hu04_e4_correo_de_administradora_en_uso` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -226,7 +226,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu05_e1_actualizar_datos_de_mi_institucion`<br>`test_hu05_e2_agregar_nivel` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -244,7 +244,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu05_e3_datos_invalidos_no_se_guardan[name-   ]`<br>`test_hu05_e3_datos_invalidos_no_se_guardan[email-no-es-correo]`<br>`test_hu05_e4_no_quitar_nivel_con_estudiantes_activos` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -262,7 +262,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu06_e1_lista_solo_estudiantes_de_mi_institucion`<br>`test_hu06_e2_misma_identificacion_en_dos_instituciones` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -280,7 +280,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu06_e3_estudiante_de_otra_institucion_responde_404[consultar]`<br>`test_hu06_e3_estudiante_de_otra_institucion_responde_404[editar]`<br>`test_hu06_e3_estudiante_de_otra_institucion_responde_404[desactivar]`<br>`test_hu06_e3_no_se_puede_crear_en_otra_institucion` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -298,7 +298,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu06_e4_institucion_ajena_responde_404[get]`<br>`test_hu06_e4_institucion_ajena_responde_404[patch]`<br>`test_hu06_e4_mi_institucion_devuelve_la_propia` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -316,7 +316,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Ejecución 1: **falló** (estudiante inactivo) → INC-001 / ADLCDS-103. Reprueba: aprobado |
 | Estado | Aprobado tras reprueba |
 | Pruebas automatizadas | `test_hu07_e1_registrar_estudiante`<br>`test_adlcds_103_estudiante_nuevo_queda_activo_en_cualquier_formato[multipart]`<br>`test_adlcds_103_estudiante_nuevo_queda_activo_en_cualquier_formato[json]` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -334,7 +334,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu07_e2_editar_apellido`<br>`test_hu07_e2_desactivados_ocultos_salvo_filtro` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -352,7 +352,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[ana]`<br>`test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[MORA]`<br>`test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[1111]` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -370,7 +370,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu07_e4_identificacion_duplicada`<br>`test_hu07_e4_editar_a_identificacion_existente` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -388,7 +388,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Aprobado. Las variantes de fecha vacía se agregaron como regresión de INC-002 / ADLCDS-104 |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu07_e5_fecha_de_nacimiento_futura`<br>`test_adlcds_104_fecha_invalida_con_mensaje_claro[vacia]`<br>`test_adlcds_104_fecha_invalida_con_mensaje_claro[nula]`<br>`test_adlcds_104_fecha_invalida_con_mensaje_claro[formato]`<br>`test_hu07_e5_nivel_que_no_pertenece_a_la_institucion` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -406,7 +406,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_rn04_formato_de_identificacion[123]`<br>`test_rn04_formato_de_identificacion[111111111111111111111]`<br>`test_rn04_formato_de_identificacion[1-111/111]` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -424,7 +424,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu07_docente_consulta_pero_no_modifica`<br>`test_rn06_no_existe_borrado_fisico` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -442,7 +442,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_rnf01_contrasena_guardada_con_hash`<br>`test_rnf02_api_exige_sesion` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -460,7 +460,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_health_responde_ok_sin_autenticacion`<br>`test_metodo_no_permitido_usa_formato_estandar_de_error`<br>`test_error_no_controlado_devuelve_500_sin_traza` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -478,7 +478,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_seed_demo_carga_tres_instituciones_y_es_idempotente` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -496,25 +496,79 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_inc_003_ambiente_https_sin_advertencias_de_despliegue`<br>`test_inc_003_sin_https_check_deploy_advierte` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
-### CP-A27 — Un token anterior inválido no impide iniciar sesión
+### CP-A27 — Una sesión anterior inválida no impide iniciar sesión
 
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU01-E1 · INC-007 |
 | Criterio de la línea base (avance 1) | CA01 |
-| Objetivo | Un token anterior inválido no impide iniciar sesión |
+| Objetivo | Una sesión anterior inválida no impide iniciar sesión |
 | Precondiciones | Cuenta `admin@robles.test` activa. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
-| Datos de prueba | Encabezado `Authorization: Token token-de-una-sesion-anterior` |
-| Pasos | POST `/auth/login/` con el encabezado |
-| Resultado esperado | 200 con token nuevo (antes: 401 "Debe iniciar sesión.") |
+| Datos de prueba | Cookie `sessionid` inválida y encabezado `Authorization` de una versión anterior |
+| Pasos | POST `/auth/login/`; GET `/auth/me/` |
+| Resultado esperado | 200 y la sesión nueva queda activa (antes: 401 "Debe iniciar sesión.") |
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
-| Pruebas automatizadas | `test_inc_007_token_anterior_invalido_no_impide_iniciar_sesion` |
-| Evidencia | `evidencias/EV_pytest_ejecucion-5_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Pruebas automatizadas | `test_inc_007_sesion_anterior_invalida_no_impide_iniciar_sesion` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Responsable | Luis |
+| Fecha | 2026-11-05 |
+
+### CP-A28 — Sesión en cookie HttpOnly, SameSite=Lax, con vencimiento por inactividad
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | RF01 · INC-006 · avance 1 §7.1 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | Sesión en cookie HttpOnly, SameSite=Lax, con vencimiento por inactividad |
+| Precondiciones | Cuenta activa. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Correo y contraseña válidos |
+| Pasos | POST `/auth/login/`; leer la cookie; GET `/auth/me/` |
+| Resultado esperado | Respuesta sin token; cookie `sessionid` HttpOnly y SameSite=Lax con `max-age` de 2 h, renovada en cada petición |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_inc_006_sesion_en_cookie_httponly_samesite`<br>`test_inc_006_sesion_vence_por_inactividad`<br>`test_hu01_e1_inicio_de_sesion_exitoso` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Responsable | Luis |
+| Fecha | 2026-11-05 |
+
+### CP-A29 — Las escrituras exigen el token CSRF
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | RF01 · INC-006 · OWASP ASVS V3 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | Las escrituras exigen el token CSRF |
+| Precondiciones | Sesión iniciada con verificación CSRF activa. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Sin y con `X-CSRFToken` |
+| Pasos | GET `/auth/csrf/`; POST `/auth/logout/` sin token y con token |
+| Resultado esperado | 403 sin token; 204 con token; la cookie `csrftoken` es legible por la interfaz (no HttpOnly) |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_inc_006_escrituras_exigen_token_csrf`<br>`test_inc_006_csrf_entrega_cookie_legible_por_la_interfaz` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
+| Responsable | Luis |
+| Fecha | 2026-11-05 |
+
+### CP-A30 — Latencia configurable de la API de pruebas
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | Plan de pruebas §5 (robustez) |
+| Criterio de la línea base (avance 1) | — (escenario agregado en el refinamiento) |
+| Objetivo | Latencia configurable de la API de pruebas |
+| Precondiciones | Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | `NEXORA_LATENCIA_MAX_MS` = 500 y sin definir |
+| Pasos | Invocar el middleware con rutas de la API y fuera de ella |
+| Resultado esperado | Demora entre 0 y 0,5 s solo en `/api/`; sin la variable no hay demora |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_latencia_aleatoria_solo_en_la_api`<br>`test_sin_variable_no_hay_latencia` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-6_20261105.txt` · artefacto `reportes-backend` de CI (EJ-11) |
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
@@ -610,17 +664,17 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
 
-### CP-U06 — Un 401 solo cierra la sesión si corresponde al token vigente
+### CP-U06 — Un 401 solo cierra la sesión si corresponde a la sesión vigente
 
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU02-E3 · INC-007 |
 | Criterio de la línea base (avance 1) | CA01 |
-| Objetivo | Un 401 solo cierra la sesión si corresponde al token vigente |
+| Objetivo | Un 401 solo cierra la sesión si corresponde a la sesión vigente |
 | Precondiciones | Manejador de sesión vencida registrado |
-| Datos de prueba | 401 con el token vigente; 401 tardío de un token ya reemplazado |
+| Datos de prueba | 401 de la sesión vigente; 401 tardío de una sesión ya reemplazada |
 | Pasos | Ejecutar `apiGet('/auth/me/')` en cada caso |
-| Resultado esperado | Se cierra la sesión en el primer caso; en el segundo se conserva el token nuevo |
+| Resultado esperado | Se cierra la sesión en el primer caso; en el segundo se conserva la nueva |
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `client.test.ts › sesión vencida (2 pruebas)` |
@@ -628,20 +682,56 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
 
-### CP-U07 — El token se borra del navegador aunque el servidor no responda al cierre de sesión
+### CP-U07 — El cierre de sesión es inmediato en la interfaz y se completa en el servidor aunque se recargue
 
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU02-E1 · INC-009 |
 | Criterio de la línea base (avance 1) | CA01 |
-| Objetivo | El token se borra del navegador aunque el servidor no responda al cierre de sesión |
-| Precondiciones | Sesión iniciada; `POST /auth/logout/` sin respuesta |
+| Objetivo | El cierre de sesión es inmediato en la interfaz y se completa en el servidor aunque se recargue |
+| Precondiciones | Sesión iniciada; `POST /auth/logout/` sin respuesta; marca de cierre pendiente al abrir |
 | Datos de prueba | — |
-| Pasos | Pulsar Cerrar sesión |
-| Resultado esperado | `localStorage` sin token y pantalla de ingreso |
+| Pasos | Pulsar Cerrar sesión; abrir la aplicación con la marca pendiente |
+| Resultado esperado | Pantalla de ingreso y marca pendiente; al abrir, se llama a `/auth/logout/` antes que a `/auth/me/` y se borra la marca |
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
-| Pruebas automatizadas | `App.test.tsx › INC-009` |
+| Pruebas automatizadas | `App.test.tsx › INC-009 (2 pruebas)` |
+| Evidencia | Artefacto `reportes-frontend` de CI (`junit.xml`) |
+| Responsable | Samuel |
+| Fecha | 2026-11-05 |
+
+### CP-U08 — La interfaz envía la cookie y el token CSRF, nunca un token propio
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | RF01 · INC-006 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | La interfaz envía la cookie y el token CSRF, nunca un token propio |
+| Precondiciones | — |
+| Datos de prueba | Cookie `csrftoken` presente y ausente |
+| Pasos | Ejecutar `apiPost('/students/')` |
+| Resultado esperado | `credentials: include`, encabezado `X-CSRFToken`, sin `Authorization`; si falta la cookie, primero GET `/auth/csrf/` |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `client.test.ts › sesión en cookie con CSRF (2 pruebas)` |
+| Evidencia | Artefacto `reportes-frontend` de CI (`junit.xml`) |
+| Responsable | Samuel |
+| Fecha | 2026-11-05 |
+
+### CP-U09 — Formularios de instituciones, mi institución y estudiantes
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU04, HU05, HU07 · A11Y-01, A11Y-02 |
+| Criterio de la línea base (avance 1) | CA03, CA05, CA07, CA08 |
+| Objetivo | Formularios de instituciones, mi institución y estudiantes |
+| Precondiciones | API simulada |
+| Datos de prueba | Altas, errores de la API, desactivación y búsqueda |
+| Pasos | Llenar y enviar cada formulario |
+| Resultado esperado | Datos enviados a la API, confirmaciones y errores por campo; foco en el formulario al abrirlo; título de pestaña por pantalla |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `pages.test.tsx (9 pruebas)` |
 | Evidencia | Artefacto `reportes-frontend` de CI (`junit.xml`) |
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
@@ -1008,17 +1098,17 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
 
-### CP-S21 — Cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009)
+### CP-S21 — Un cierre de sesión que no llegó al servidor se completa al volver a abrir (reprueba INC-009)
 
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU02-E1 · INC-009 |
 | Criterio de la línea base (avance 1) | CA01 |
-| Objetivo | Cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009) |
+| Objetivo | Un cierre de sesión que no llegó al servidor se completa al volver a abrir (reprueba INC-009) |
 | Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
-| Datos de prueba | `/auth/logout/` retrasado 3 s |
+| Datos de prueba | El primer `POST /auth/logout/` se aborta |
 | Pasos | Ingresar; Cerrar sesión; recargar de inmediato |
-| Resultado esperado | Pantalla de ingreso y sin token en el navegador |
+| Resultado esperado | Pantalla de ingreso y la API responde 401 en `/auth/me/` (la sesión quedó cerrada en el servidor) |
 | Resultado obtenido | Coincide con el esperado en computadora y teléfono |
 | Estado | Aprobado |
 | Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S21 |
@@ -1082,8 +1172,8 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Objetivo | La sesión usa cookies HttpOnly y protección CSRF, como fija la arquitectura aprobada |
 | Herramienta y comando | Revisión de `frontend/src/api/client.ts` y `config/settings.py` |
 | Resultado esperado | Credencial de sesión no accesible desde JavaScript |
-| Resultado obtenido | El token se guarda en `localStorage` y se envía como `Authorization: Token` → **INC-006** |
-| Estado | Fallido |
+| Resultado obtenido | Antes: token en `localStorage` (**INC-006**, fallido). Tras `796cef8`: cookie de sesión HttpOnly y SameSite=Lax, `X-CSRFToken` en las escrituras (CP-A28, CP-A29, CP-U08) |
+| Estado | Aprobado tras INC-006 |
 | Evidencia | Revisión de código · [Revisión de seguridad](Revision-seguridad.md) |
 | Responsable | Samuel (revisión pendiente de Luis) |
 | Fecha | 2026-11-05 |
@@ -1093,4 +1183,4 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-04 | Versión inicial: 44 casos para HU01 – HU07. |
-| 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: cada caso indica su criterio CA01 – CA24 de la línea base. Nuevos CP-A26, CP-A27, CP-U05 – CP-U07, CP-S16 – CP-S21 y CP-SEG01 – CP-SEG04 (seguridad, accesibilidad e INC-003 – INC-009). Evidencias de las ejecuciones EJ-14 – EJ-22. |
+| 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: cada caso indica su criterio CA01 – CA24 de la línea base. Nuevos CP-A26 – CP-A30, CP-U05 – CP-U09, CP-S16 – CP-S21 y CP-SEG01 – CP-SEG04 (seguridad, accesibilidad, robustez e INC-003 – INC-009). Sesión en cookie HttpOnly (INC-006). Evidencias de las ejecuciones EJ-14 – EJ-25. |
