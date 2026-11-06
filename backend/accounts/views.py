@@ -1,6 +1,8 @@
+from django.contrib.auth import login as start_session
+from django.contrib.auth import logout as end_session
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -10,10 +12,12 @@ from .models import User, normalize_email
 from .serializers import LoginSerializer, UserSerializer
 
 
+# INC-007: sin autenticación previa, para que un token anterior inválido no impida iniciar sesión.
 @api_view(["POST"])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def login(request):
-    """HU01: inicia sesión con correo y contraseña y devuelve un token."""
+    """HU01: inicia sesión con correo y contraseña; la sesión queda en una cookie HttpOnly."""
     serializer = LoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -25,14 +29,23 @@ def login(request):
     if not user.is_active or (user.institution and not user.institution.is_active):
         raise AccountDisabled()
 
-    token, _ = Token.objects.get_or_create(user=user)
-    return Response({"token": token.key, "user": UserSerializer(user).data})
+    start_session(request._request, user)
+    return Response({"user": UserSerializer(user).data})
 
 
 @api_view(["POST"])
 def logout(request):
-    """HU02: elimina el token, de modo que deja de ser válido."""
-    Token.objects.filter(user=request.user).delete()
+    """HU02: cierra la sesión en el servidor y elimina la cookie, de modo que deja de ser válida."""
+    end_session(request._request)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@ensure_csrf_cookie
+@api_view(["GET"])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def csrf(request):
+    """Entrega la cookie `csrftoken` que la interfaz envía en X-CSRFToken en cada escritura."""
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -1,0 +1,5 @@
+Evidencia: auditoría de dependencias del backend (pip-audit 2.9.0, base de datos PyPI/OSV)
+Fecha: 2026-11-05
+
+$ pip-audit -r requirements.txt
+No known vulnerabilities found

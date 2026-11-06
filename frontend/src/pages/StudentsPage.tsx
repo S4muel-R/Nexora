@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ApiError, apiGet, apiPatch, apiPost, errorMessage } from '../api/client'
 import { levelLabel } from '../api/types'
 import type { Institution, Level, Student } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { Alert, Field } from '../components/Field'
+import { usePageTitle } from '../components/usePageTitle'
 
 interface StudentForm {
   identification: string
@@ -19,9 +20,12 @@ const EMPTY: StudentForm = { identification: '', first_name: '', last_name: '', 
 /** HU07: lista con búsqueda, registro, edición y desactivación de estudiantes. */
 export function StudentsPage() {
   const { user } = useAuth()
+  usePageTitle('Estudiantes')
   const canEdit = user?.role === 'institution_admin'
   const [students, setStudents] = useState<Student[]>([])
   const [levels, setLevels] = useState<Level[]>([])
+  // INC-004: el formulario solo se abre cuando los niveles de la institución ya cargaron.
+  const [levelsLoaded, setLevelsLoaded] = useState(false)
   const [search, setSearch] = useState('')
   const [includeInactive, setIncludeInactive] = useState(false)
   const [listError, setListError] = useState<string | null>(null)
@@ -29,6 +33,11 @@ export function StudentsPage() {
   const [form, setForm] = useState<StudentForm>(EMPTY)
   const [formError, setFormError] = useState<ApiError | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  // A11Y-02 (WCAG 2.4.3): al abrir el formulario, el foco pasa a su encabezado.
+  const formHeading = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    if (editing) formHeading.current?.focus()
+  }, [editing])
 
   const load = useCallback(() => {
     const params = new URLSearchParams()
@@ -49,10 +58,22 @@ export function StudentsPage() {
   }, [load])
 
   useEffect(() => {
+    let active = true
     apiGet<Institution>('/my-institution/')
-      .then((institution) => setLevels(institution.levels))
-      .catch(() => setLevels([]))
+      .then((institution) => active && setLevels(institution.levels))
+      .catch(() => active && setLevels([]))
+      .finally(() => active && setLevelsLoaded(true))
+    return () => {
+      active = false
+    }
   }, [])
+
+  // INC-004: si el formulario se abrió antes de cargar los niveles, preseleccionar el único nivel al llegar.
+  useEffect(() => {
+    if (editing === 'new' && levels.length === 1) {
+      setForm((current) => (current.level ? current : { ...current, level: levels[0] }))
+    }
+  }, [editing, levels])
 
   const openForm = (student: Student | 'new') => {
     setEditing(student)
@@ -107,7 +128,7 @@ export function StudentsPage() {
       <div className="page-header">
         <h1>Estudiantes</h1>
         {canEdit && !editing && (
-          <button type="button" className="button" onClick={() => openForm('new')}>
+          <button type="button" className="button" onClick={() => openForm('new')} disabled={!levelsLoaded}>
             Registrar estudiante
           </button>
         )}
@@ -121,7 +142,9 @@ export function StudentsPage() {
           noValidate
           aria-label={editing === 'new' ? 'Registrar estudiante' : 'Editar estudiante'}
         >
-          <h2>{editing === 'new' ? 'Nuevo estudiante' : 'Editar estudiante'}</h2>
+          <h2 ref={formHeading} tabIndex={-1}>
+            {editing === 'new' ? 'Nuevo estudiante' : 'Editar estudiante'}
+          </h2>
           {formError && <Alert kind="error">{formError.message}</Alert>}
           <div className="grid-2">
             <Field
@@ -226,7 +249,12 @@ export function StudentsPage() {
               <td data-label="Estado">{student.is_active ? 'Activo' : 'Desactivado'}</td>
               {canEdit && (
                 <td data-label="Acciones" className="row-actions">
-                  <button type="button" className="button button--small" onClick={() => openForm(student)}>
+                  <button
+                    type="button"
+                    className="button button--small"
+                    onClick={() => openForm(student)}
+                    disabled={!levelsLoaded}
+                  >
                     Editar
                   </button>
                   <button

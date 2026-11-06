@@ -1,0 +1,9 @@
+{
+  "pantalla": "estudiantes-formulario-errores",
+  "dispositivo": "telefono",
+  "url": "/estudiantes",
+  "reglas_aprobadas": 25,
+  "reglas_no_aplicables": 37,
+  "revision_manual": [],
+  "violaciones": []
+}

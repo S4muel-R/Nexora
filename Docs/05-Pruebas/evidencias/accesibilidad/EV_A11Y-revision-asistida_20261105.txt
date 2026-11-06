@@ -1,0 +1,9 @@
+Evidencia: revisión asistida de accesibilidad (reflujo 320 px, idioma, orden de foco, anuncio de errores)
+Fecha: 2026-11-05 · commit 9599320 · Chromium (Playwright 1.64.1) · node scripts/a11y_manual.cjs frontend http://localhost:5174
+
+reflujo 320px | ingresar | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | instituciones | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | mi-institucion | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | estudiantes | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+orden de foco tras abrir el formulario | input:Identificación → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Nombre → input:Apellidos → select:Nivel
+errores | alerta con role=alert: "Los datos enviados no son válidos." | campos aria-invalid=4 | con aria-describedby=4

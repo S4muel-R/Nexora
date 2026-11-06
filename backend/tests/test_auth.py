@@ -1,8 +1,9 @@
 """HU01 Iniciar sesión · HU02 Cerrar sesión (RF01)."""
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
-from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 
 from accounts.models import User
 
@@ -18,10 +19,61 @@ def test_hu01_e1_inicio_de_sesion_exitoso(api_client, robles_admin):
 
     assert response.status_code == 200
     body = response.json()
-    assert body["token"]
+    assert "token" not in body
     assert body["user"]["role"] == "institution_admin"
     assert body["user"]["institution"]["name"] == "Escuela Los Robles"
     assert "password" not in body["user"]
+
+
+def test_inc_007_sesion_anterior_invalida_no_impide_iniciar_sesion(api_client, robles_admin):
+    api_client.cookies[settings.SESSION_COOKIE_NAME] = "sesion-anterior-invalida"
+    api_client.credentials(HTTP_AUTHORIZATION="Token token-de-una-version-anterior")
+
+    response = api_client.post(LOGIN, {"email": "admin@robles.test", "password": PASSWORD})
+
+    assert response.status_code == 200
+    assert api_client.get(reverse("me")).json()["email"] == "admin@robles.test"
+
+
+def test_inc_006_sesion_en_cookie_httponly_samesite(api_client, robles_admin):
+    response = api_client.post(LOGIN, {"email": "admin@robles.test", "password": PASSWORD})
+
+    cookie = response.cookies[settings.SESSION_COOKIE_NAME]
+    assert cookie.value
+    assert cookie["httponly"]
+    assert cookie["samesite"] == "Lax"
+    assert api_client.get(reverse("me")).status_code == 200
+
+
+def test_inc_006_escrituras_exigen_token_csrf(robles_admin):
+    client = APIClient(enforce_csrf_checks=True)
+    client.post(LOGIN, {"email": "admin@robles.test", "password": PASSWORD})
+
+    without_token = client.post(reverse("logout"))
+    assert without_token.status_code == 403
+
+    client.get(reverse("csrf"))
+    csrf_token = client.cookies[settings.CSRF_COOKIE_NAME].value
+    with_token = client.post(reverse("logout"), HTTP_X_CSRFTOKEN=csrf_token)
+    assert with_token.status_code == 204
+
+
+def test_inc_006_csrf_entrega_cookie_legible_por_la_interfaz(api_client):
+    response = api_client.get(reverse("csrf"))
+
+    assert response.status_code == 204
+    cookie = response.cookies[settings.CSRF_COOKIE_NAME]
+    assert cookie.value
+    assert not cookie["httponly"]
+
+
+def test_inc_006_sesion_vence_por_inactividad(api_client, robles_admin):
+    response = api_client.post(LOGIN, {"email": "admin@robles.test", "password": PASSWORD})
+
+    max_age = int(response.cookies[settings.SESSION_COOKIE_NAME]["max-age"])
+    assert max_age == settings.SESSION_COOKIE_AGE
+    assert settings.SESSION_COOKIE_AGE <= 2 * 60 * 60
+    assert settings.SESSION_SAVE_EVERY_REQUEST
 
 
 def test_hu01_e2_correo_con_mayusculas_y_espacios(api_client, robles_admin):
@@ -78,18 +130,20 @@ def test_rnf01_contrasena_guardada_con_hash(robles_admin):
     assert robles_admin.check_password(PASSWORD)
 
 
-def test_hu02_e1_cerrar_sesion_elimina_el_token(client_for, robles_admin):
+def test_hu02_e1_cerrar_sesion_elimina_la_sesion(client_for, robles_admin):
     client = client_for(robles_admin)
 
     response = client.post(reverse("logout"))
 
     assert response.status_code == 204
-    assert not Token.objects.filter(user=robles_admin).exists()
+    assert response.cookies[settings.SESSION_COOKIE_NAME].value == ""
 
 
-def test_hu02_e3_token_anterior_ya_no_es_valido(client_for, robles_admin):
+def test_hu02_e3_sesion_anterior_ya_no_es_valida(client_for, robles_admin):
     client = client_for(robles_admin)
+    old_session = client.cookies[settings.SESSION_COOKIE_NAME].value
     client.post(reverse("logout"))
+    client.cookies[settings.SESSION_COOKIE_NAME] = old_session
 
     response = client.get(reverse("me"))
 

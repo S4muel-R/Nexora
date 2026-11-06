@@ -1,0 +1,9 @@
+{
+  "pantalla": "inicio-plataforma",
+  "dispositivo": "telefono",
+  "url": "/",
+  "reglas_aprobadas": 16,
+  "reglas_no_aplicables": 46,
+  "revision_manual": [],
+  "violaciones": []
+}

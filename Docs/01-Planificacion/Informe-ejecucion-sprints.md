@@ -4,12 +4,17 @@
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, secciones 4.2 y 22 (segundo entregable) |
 | Código | S3-02 / S4-02 (informe de avance) |
-| Versión | 1.0 |
-| Fecha de corte | 2026-11-04 |
-| Fuentes | Jira ADLCDS, historial de GitHub, [Métricas](Metricas.md), [Gestión de cambios](Gestion-de-cambios.md) |
+| Versión | 1.1 |
+| Fecha de corte | 2026-11-05 |
+| Fuentes | Jira ADLCDS ([backlog exportado](Backlog-Jira.md)), historial de GitHub, [Métricas](Metricas.md), [Gestión de cambios](Gestion-de-cambios.md) |
 
 Estado de cada tarea al corte: **Hecha** (cumple su criterio de entrega y está en GitHub), **Parcial** (avance
-verificable con pendientes) o **Pendiente**.
+verificable con pendientes) o **Pendiente**. En Jira, las tareas hechas están en *En curso*: pasan a *Listo* cuando su PR
+se integra en `main` con la revisión de otro integrante (Estándares, sección 6). Al corte no hay PR integrados, por lo
+que ninguna tarea está en *Listo*.
+
+Capacidad de referencia (anexo del avance 1, sección 3): **450 h teóricas** (3 integrantes × 10 h × 15 semanas). No hay
+registro de horas consumidas; se registra desde el Sprint 4.
 
 ## Sprint 1 — Inicio y necesidades (20/10 – 03/11)
 
@@ -96,15 +101,18 @@ estudiantes (CC-05).
 |---|---|
 | Tareas completadas / comprometidas | 13 / 15 (**87 %**) + 6 adelantadas del Sprint 4 |
 | Historias implementadas y probadas | HU01 – HU07 (28 puntos), pendientes de integrar por PR |
-| Defectos detectados | 2 (INC-001 alta, INC-002 baja), ambos corregidos y reprobados |
-| Cambios realizados | CC-05, CC-07, CC-08, CC-09 |
-| Pruebas | 102 automatizadas aprobadas; 28/28 escenarios cubiertos |
-| Problemas encontrados | Sin revisión de PR por pares todavía; sin ejecución en CI con PostgreSQL |
-| Acciones de mejora | Abrir los PR con revisión de Luis y Wilberth; Sprint Review grabado |
+| Defectos detectados | 9 (INC-001 – INC-009): 3 altos, 4 medios, 2 bajos; los 9 corregidos y reprobados |
+| Cambios realizados | CC-05, CC-07 – CC-09, CC-11 – CC-17 |
+| Pruebas | 139 automatizadas aprobadas sin reintentos, también sobre la versión compilada; 84 con la API lenta; 28/28 escenarios del incremento y 6/24 criterios de la línea base aprobados |
+| Integración continua | 11 PR abiertos; 14 ejecuciones con PostgreSQL 16; las 3 rojas detectaron defectos reales (INC-001, INC-004, INC-008) |
+| Seguridad y accesibilidad | 16/18 controles OWASP ASVS seleccionados cumplen y ninguno incumple; 0 violaciones WCAG detectables en 12 auditorías; A11Y-01 y A11Y-02 resueltos |
+| Problemas encontrados | Sin revisión de PR por pares todavía; defectos asíncronos ocultos por los reintentos del CI (ACR-03); sesión distinta de la arquitectura aprobada (INC-006, ACR-04, ya corregida) |
+| Acciones de mejora | Revisión de los PR por Luis y Wilberth; `failOnFlakyTests`, auditoría de dependencias y recorridos sobre la versión compilada en el CI (hecho); suite con latencia antes de cada entrega; Sprint Review grabado |
 
 ## Decisiones para el siguiente sprint
 
-1. Integrar el incremento en `main` por PR revisados (MP-03) y cerrar INC-001 e INC-002.
-2. Completar las tareas de gestión trasladadas (S1-01 – S1-04, S2-02, S2-03).
-3. Realizar las sesiones de consulta y validar los supuestos marcados en S1-11 y en el catálogo.
-4. Sprint 4: HU08 (docentes) y HU09 (grupos), con Definition of Ready aplicada.
+1. Integrar el incremento en `main` por PR revisados (MP-03) y cerrar INC-001 – INC-005 e INC-007 – INC-009.
+2. Ratificar CC-13 (sesión en cookie HttpOnly, ya aplicada) y registrar las horas por tarea.
+3. Completar las tareas de gestión trasladadas (S1-01 – S1-04, S2-02, S2-03) y replanificar los sprints en Jira (CC-01).
+4. Realizar las sesiones de consulta y validar los supuestos marcados en S1-11 y en el catálogo.
+5. Sprint 4: periodo lectivo (GAP-01), HU08 (docentes) y HU09 (grupos), con Definition of Ready aplicada.

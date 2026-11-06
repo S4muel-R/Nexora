@@ -1,0 +1,94 @@
+Evidencia: INC-007 reproducido con CP-S19 antes de la corrección
+Fecha: 2026-11-05 · token inválido de una sesión anterior en localStorage y /auth/me/ retrasado 1,5 s
+Origen: CI de PR #11 (https://github.com/S4muel-R/Nexora/actions/runs/42147274526), CP-S10 intermitente en teléfono
+
+
+Running 2 tests using 1 worker
+
+  x  1 [computadora] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (5.7s)
+  x  2 [telefono] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (5.7s)
+
+
+  1) [computadora] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /^Hola,/ })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: /^Hola,/ }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: /^Hola,/ })
+
+
+       at helpers.ts:19
+
+      17 |   await page.getByLabel('Contraseña').fill(password)
+      18 |   await page.getByRole('button', { name: 'Ingresar' }).click()
+    > 19 |   await expect(page.getByRole('heading', { name: /^Hola,/ })).toBeVisible()
+         |                                                               ^
+      20 | }
+      21 |
+      22 | /** Guarda una captura como evidencia: EV_<caso>_<paso>_<proyecto>_<fecha>.png (Estándares, sección 2). */
+        at login (C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\helpers.ts:19:63)
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\acceso.spec.ts:76:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [telefono] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /^Hola,/ })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: /^Hola,/ }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: /^Hola,/ })
+
+
+       at helpers.ts:19
+
+      17 |   await page.getByLabel('Contraseña').fill(password)
+      18 |   await page.getByRole('button', { name: 'Ingresar' }).click()
+    > 19 |   await expect(page.getByRole('heading', { name: /^Hola,/ })).toBeVisible()
+         |                                                               ^
+      20 | }
+      21 |
+      22 | /** Guarda una captura como evidencia: EV_<caso>_<paso>_<proyecto>_<fecha>.png (Estándares, sección 2). */
+        at login (C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\helpers.ts:19:63)
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\acceso.spec.ts:76:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--telefono\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--telefono\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--telefono\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\acceso-HU01-–-HU03-Acceso--4f2ee-ión-nueva-reprueba-INC-007--telefono\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [computadora] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) 
+    [telefono] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) 

@@ -36,25 +36,74 @@ const NETWORK_ERROR: ApiErrorBody = {
   message: 'No se pudo conectar con el servidor. Revise su conexión e intente de nuevo.',
 }
 
-const TOKEN_KEY = 'nexora.token'
 let unauthorizedHandler: (() => void) | null = null
 
-export const tokenStore = {
-  get: (): string | null => {
+/**
+ * La sesión vive en una cookie HttpOnly que JavaScript no puede leer (avance 1, §7.1; INC-006). La interfaz solo lleva
+ * una "época" que cambia en cada inicio o cierre de sesión: una respuesta 401 de una época anterior no cierra la sesión
+ * actual (INC-007).
+ */
+let sessionEpoch = 0
+export const newSessionEpoch = () => ++sessionEpoch
+export const currentSessionEpoch = () => sessionEpoch
+
+const LOGOUT_PENDING_KEY = 'nexora.cierre-pendiente'
+
+/** INC-009: marca que hay un cierre de sesión por confirmar en el servidor, aunque la página se cierre o recargue. */
+export const logoutPending = {
+  get: (): boolean => {
     try {
-      return localStorage.getItem(TOKEN_KEY)
+      return localStorage.getItem(LOGOUT_PENDING_KEY) === '1'
+    } catch {
+      return false
+    }
+  },
+  set: (pending: boolean) => {
+    try {
+      if (pending) localStorage.setItem(LOGOUT_PENDING_KEY, '1')
+      else localStorage.removeItem(LOGOUT_PENDING_KEY)
+    } catch {
+      // Sin almacenamiento, el cierre depende de que la petición termine.
+    }
+  },
+}
+
+function readCookie(name: string): string | null {
+  const match = document.cookie.split('; ').find((item) => item.startsWith(`${name}=`))
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : null
+}
+
+/** Devuelve el token CSRF de la cookie `csrftoken`; si aún no existe, lo pide a la API. */
+export async function csrfToken(fetchImpl: typeof fetch = fetch): Promise<string | null> {
+  let token = readCookie('csrftoken')
+  if (!token) {
+    try {
+      await fetchImpl(`${API_URL}/auth/csrf/`, { credentials: 'include' })
     } catch {
       return null
     }
-  },
-  set: (token: string | null) => {
-    try {
-      if (token) localStorage.setItem(TOKEN_KEY, token)
-      else localStorage.removeItem(TOKEN_KEY)
-    } catch {
-      // Sin almacenamiento disponible la sesión dura solo mientras la pestaña esté abierta.
-    }
-  },
+    token = readCookie('csrftoken')
+  }
+  return token
+}
+
+/**
+ * INC-009: cierra la sesión en el servidor. `keepalive` permite que la petición termine aunque la página se cierre;
+ * si aun así no se confirma, la marca de cierre pendiente hace que se repita al volver a abrir la aplicación.
+ */
+export async function apiLogout(fetchImpl: typeof fetch = fetch): Promise<void> {
+  try {
+    const token = await csrfToken(fetchImpl)
+    const response = await fetchImpl(`${API_URL}/auth/logout/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { Accept: 'application/json', ...(token ? { 'X-CSRFToken': token } : {}) },
+      keepalive: true,
+    })
+    if (response.ok || response.status === 401) logoutPending.set(false)
+  } catch {
+    // Sin conexión queda la marca de cierre pendiente y se reintenta al abrir la aplicación.
+  }
 }
 
 /** Se ejecuta cuando la API responde 401: la sesión ya no es válida (HU02-E3). */
@@ -84,15 +133,19 @@ export async function apiRequest<T>(
   fetchImpl: typeof fetch = fetch,
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
-  const token = tokenStore.get()
-  if (token) headers.Authorization = `Token ${token}`
   if (body !== undefined) headers['Content-Type'] = 'application/json'
+  const epoch = sessionEpoch
 
   let response: Response
   try {
+    if (method !== 'GET') {
+      const token = await csrfToken(fetchImpl)
+      if (token) headers['X-CSRFToken'] = token
+    }
     response = await fetchImpl(`${API_URL}${path}`, {
       method,
       headers,
+      credentials: 'include',
       body: body === undefined ? undefined : JSON.stringify(body),
     })
   } catch {
@@ -101,7 +154,8 @@ export async function apiRequest<T>(
 
   if (!response.ok) {
     const error = await parseError(response)
-    if (response.status === 401 && token) unauthorizedHandler?.()
+    // INC-007: solo se cierra la sesión si el 401 corresponde a la sesión vigente, no a una anterior ya reemplazada.
+    if (response.status === 401 && epoch === sessionEpoch) unauthorizedHandler?.()
     throw error
   }
   if (response.status === 204) return undefined as T

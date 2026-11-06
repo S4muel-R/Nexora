@@ -1,0 +1,10 @@
+Evidencia: revisión asistida de accesibilidad tras A11Y-01 y A11Y-02 (títulos por pantalla, foco al abrir el formulario)
+Fecha: 2026-11-05 · Chromium · node scripts/a11y_manual.cjs frontend http://localhost:5174
+
+reflujo 320px | ingresar | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | instituciones | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | mi-institucion | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+reflujo 320px | estudiantes | scrollWidth=320 clientWidth=320 | sin desplazamiento horizontal | lang=es
+orden de foco tras abrir el formulario | input:Identificación → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Fecha de nacimiento → input:Nombre → input:Apellidos → select:Nivel
+errores | alerta con role=alert: "Los datos enviados no son válidos." | campos aria-invalid=4 | con aria-describedby=4
+títulos de pestaña | Ingresar · Nexora → Inicio · Nexora → Mi institución · Nexora → Estudiantes · Nexora

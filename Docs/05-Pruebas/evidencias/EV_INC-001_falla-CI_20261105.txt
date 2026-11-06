@@ -1,0 +1,69 @@
+Evidencia: INC-001 reproducido en GitHub Actions con PostgreSQL
+PR: https://github.com/S4muel-R/Nexora/pull/4 (rama feature/ADLCDS-28-backend-incremento, sin la corrección)
+Ejecución: https://github.com/S4muel-R/Nexora/actions/runs/42144515765
+Fecha: 2026-11-05 (hora de Costa Rica)
+
+##[group]Run pytest --cov --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov --junitxml=reports/junit.xml
+pytest --cov --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov --junitxml=reports/junit.xml
+shell: /usr/bin/bash -e {0}
+env:
+##[endgroup]
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+django: version: 5.2.19, settings: config.settings_test (from ini)
+rootdir: /home/runner/work/Nexora/Nexora/backend
+configfile: pyproject.toml
+testpaths: tests
+plugins: django-4.14.0, cov-7.1.0
+collected 54 items
+
+tests/test_auth.py ...........                                           [ 20%]
+tests/test_health.py .                                                   [ 22%]
+tests/test_institutions.py ................                              [ 51%]
+tests/test_isolation.py .........                                        [ 68%]
+tests/test_students.py F..............                                   [ 96%]
+tests/test_health.py ..                                                  [100%]
+
+=================================== FAILURES ===================================
+______________________ test_hu07_e1_registrar_estudiante _______________________
+
+client_for = <function client_for.<locals>._client at 0x7c6d30d68220>
+robles_admin = <User: admin@robles.test>
+robles = <Institution: Escuela Los Robles>
+
+    def test_hu07_e1_registrar_estudiante(client_for, robles_admin, robles):
+        response = client_for(robles_admin).post(STUDENTS, payload())
+    
+        assert response.status_code == 201
+        student = Student.objects.get(identification="1-1111-1111")
+        assert student.institution == robles
+>       assert student.is_active
+E       assert False
+E        +  where False = <Student: Mora, Ana>.is_active
+
+tests/test_students.py:40: AssertionError
+- generated xml file: /home/runner/work/Nexora/Nexora/backend/reports/junit.xml -
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.16-final-0 _______________
+
+Name                      Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+config/__init__.py            0      0   100%
+config/settings.py           33      3    91%   22-24
+config/settings_test.py       5      0   100%
+config/urls.py               12      0   100%
+core/__init__.py              0      0   100%
+core/apps.py                  4      0   100%
+core/exceptions.py           40      0   100%
+core/mixins.py                5      0   100%
+core/permissions.py          16      0   100%
+core/views.py                10      0   100%
+-------------------------------------------------------
+TOTAL                       125      3    98%
+Coverage HTML written to dir reports/htmlcov
+Coverage XML written to file reports/coverage.xml
+=========================== short test summary info ============================
+FAILED tests/test_students.py::test_hu07_e1_registrar_estudiante - assert False
+ +  where False = <Student: Mora, Ana>.is_active
+========================= 1 failed, 53 passed in 1.92s =========================
+##[error]Process completed with exit code 1.

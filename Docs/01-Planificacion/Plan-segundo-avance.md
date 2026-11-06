@@ -117,7 +117,7 @@ aparecen al probar; no se introducen fallas a propósito.
 | Ejecución en CI | Ejecución de GitHub Actions en verde tras la corrección | Enlace en el informe de incidente |
 
 Nombre de archivos: `EV_<CP|INC>-<id>_<paso|falla|reprueba>_<AAAAMMDD>.png`, por ejemplo
-`EV_INC-003_falla_20261106.png`.
+`EV_INC-004_falla-CI_telefono_20261105.png`.
 
 ## 4. Orden de ejecución
 

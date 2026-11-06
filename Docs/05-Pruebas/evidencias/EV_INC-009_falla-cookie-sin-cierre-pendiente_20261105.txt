@@ -1,0 +1,44 @@
+Evidencia: CP-S21 con sesión en cookie, contra la versión sin la marca de cierre pendiente (falla esperada): el primer aviso de cierre se pierde y la sesión sigue válida en el servidor
+Fecha: 2026-11-05
+
+
+Running 1 test using 1 worker
+
+  x  1 [computadora] › e2e\acceso.spec.ts:81:3 › HU01 – HU03 Acceso y opciones por rol › CP-S21 HU02-E1 cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009) (15.1s)
+
+
+  1) [computadora] › e2e\acceso.spec.ts:81:3 › HU01 – HU03 Acceso y opciones por rol › CP-S21 HU02-E1 cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 200
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+       95 |     await expect
+       96 |       .poll(async () => (await page.request.get(`${API_URL}/auth/me/`)).status(), { timeout: 15_000 })
+    >  97 |       .toBe(401)
+          |        ^
+       98 |     await evidence(page, info, 'CP-S21', 'sesion-cerrada')
+       99 |   })
+      100 | })
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\acceso.spec.ts:97:8
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--76414-la-sesión-reprueba-INC-009--computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\acceso-HU01-–-HU03-Acceso--76414-la-sesión-reprueba-INC-009--computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--76414-la-sesión-reprueba-INC-009--computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\acceso-HU01-–-HU03-Acceso--76414-la-sesión-reprueba-INC-009--computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [computadora] › e2e\acceso.spec.ts:81:3 › HU01 – HU03 Acceso y opciones por rol › CP-S21 HU02-E1 cerrar sesión y recargar enseguida no restaura la sesión (reprueba INC-009) 

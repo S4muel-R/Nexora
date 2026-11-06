@@ -1,0 +1,280 @@
+Evidencia: suite de sistema contra la API con latencia aleatoria de 0 a 700 ms por petición (prueba de robustez), ANTES de corregir INC-004 (reabierto) e INC-009
+Fecha: 2026-11-05 · commit b403436 + corrección de INC-008 · settings temporales con middleware de latencia (no versionados) · --retries=0 --repeat-each=2
+
+
+Running 80 tests using 1 worker
+
+  ok  1 [computadora] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) (10.8s)
+  ok  2 [computadora] › e2e\accesibilidad.spec.ts:64:3 › Accesibilidad › CP-S17 — inicio de sesión solo con teclado y foco visible (948ms)
+  ok  3 [computadora] › e2e\acceso.spec.ts:5:3 › HU01 – HU03 Acceso y opciones por rol › CP-S01 HU01-E1 la administradora inicia sesión y ve su institución (771ms)
+  ok  4 [computadora] › e2e\acceso.spec.ts:12:3 › HU01 – HU03 Acceso y opciones por rol › CP-S02 HU01-E3 credenciales inválidas muestran un mensaje genérico (1.4s)
+  ok  5 [computadora] › e2e\acceso.spec.ts:22:3 › HU01 – HU03 Acceso y opciones por rol › CP-S03 HU01-E5 campos vacíos se marcan como obligatorios (518ms)
+  ok  6 [computadora] › e2e\acceso.spec.ts:31:3 › HU01 – HU03 Acceso y opciones por rol › CP-S04 HU02-E1/E2 cerrar sesión y volver atrás pide ingresar (2.3s)
+  ok  7 [computadora] › e2e\acceso.spec.ts:42:3 › HU01 – HU03 Acceso y opciones por rol › CP-S05 HU03-E1/E2 cada rol ve solo sus opciones (2.3s)
+  ok  8 [computadora] › e2e\acceso.spec.ts:55:3 › HU01 – HU03 Acceso y opciones por rol › CP-S06 HU03-E3 el docente no entra a la gestión de instituciones (2.8s)
+  ok  9 [computadora] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (4.9s)
+  ok 10 [computadora] › e2e\estudiantes.spec.ts:5:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S10 HU06-E1/E2 cada institución ve solo sus estudiantes (5.3s)
+  x  11 [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante (7.1s)
+  ok 12 [computadora] › e2e\estudiantes.spec.ts:43:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S12 HU07-E4 identificación duplicada (2.6s)
+  ok 13 [computadora] › e2e\estudiantes.spec.ts:58:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S13 HU07-E5 fecha vacía muestra mensaje claro (reprueba ADLCDS-104) (2.4s)
+  ok 14 [computadora] › e2e\estudiantes.spec.ts:70:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S14 HU07-E2 desactivar y reactivar (7.2s)
+  ok 15 [computadora] › e2e\estudiantes.spec.ts:85:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S15 HU07 el docente consulta sin poder modificar (1.4s)
+  ok 16 [computadora] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) (4.4s)
+  ok 17 [computadora] › e2e\instituciones.spec.ts:5:3 › HU04 – HU05 Instituciones › CP-S07 HU04-E1 la plataforma registra una institución y su administradora entra (3.7s)
+  ok 18 [computadora] › e2e\instituciones.spec.ts:35:3 › HU04 – HU05 Instituciones › CP-S08 HU04-E3 nombre duplicado (2.4s)
+  ok 19 [computadora] › e2e\instituciones.spec.ts:52:3 › HU04 – HU05 Instituciones › CP-S09 HU05-E1 la administradora actualiza el teléfono (5.6s)
+  ok 20 [computadora] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (5.2s)
+  ok 21 [computadora] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) (10.4s)
+  ok 22 [computadora] › e2e\accesibilidad.spec.ts:64:3 › Accesibilidad › CP-S17 — inicio de sesión solo con teclado y foco visible (1.4s)
+  ok 23 [computadora] › e2e\acceso.spec.ts:5:3 › HU01 – HU03 Acceso y opciones por rol › CP-S01 HU01-E1 la administradora inicia sesión y ve su institución (1.3s)
+  ok 24 [computadora] › e2e\acceso.spec.ts:12:3 › HU01 – HU03 Acceso y opciones por rol › CP-S02 HU01-E3 credenciales inválidas muestran un mensaje genérico (1.3s)
+  ok 25 [computadora] › e2e\acceso.spec.ts:22:3 › HU01 – HU03 Acceso y opciones por rol › CP-S03 HU01-E5 campos vacíos se marcan como obligatorios (457ms)
+  ok 26 [computadora] › e2e\acceso.spec.ts:31:3 › HU01 – HU03 Acceso y opciones por rol › CP-S04 HU02-E1/E2 cerrar sesión y volver atrás pide ingresar (3.3s)
+  ok 27 [computadora] › e2e\acceso.spec.ts:42:3 › HU01 – HU03 Acceso y opciones por rol › CP-S05 HU03-E1/E2 cada rol ve solo sus opciones (2.9s)
+  ok 28 [computadora] › e2e\acceso.spec.ts:55:3 › HU01 – HU03 Acceso y opciones por rol › CP-S06 HU03-E3 el docente no entra a la gestión de instituciones (3.3s)
+  ok 29 [computadora] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (5.0s)
+  ok 30 [computadora] › e2e\estudiantes.spec.ts:5:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S10 HU06-E1/E2 cada institución ve solo sus estudiantes (4.4s)
+  x  31 [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante (7.1s)
+  ok 32 [computadora] › e2e\estudiantes.spec.ts:43:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S12 HU07-E4 identificación duplicada (3.1s)
+  ok 33 [computadora] › e2e\estudiantes.spec.ts:58:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S13 HU07-E5 fecha vacía muestra mensaje claro (reprueba ADLCDS-104) (2.9s)
+  ok 34 [computadora] › e2e\estudiantes.spec.ts:70:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S14 HU07-E2 desactivar y reactivar (7.1s)
+  ok 35 [computadora] › e2e\estudiantes.spec.ts:85:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S15 HU07 el docente consulta sin poder modificar (1.4s)
+  ok 36 [computadora] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) (3.8s)
+  ok 37 [computadora] › e2e\instituciones.spec.ts:5:3 › HU04 – HU05 Instituciones › CP-S07 HU04-E1 la plataforma registra una institución y su administradora entra (4.1s)
+  ok 38 [computadora] › e2e\instituciones.spec.ts:35:3 › HU04 – HU05 Instituciones › CP-S08 HU04-E3 nombre duplicado (1.7s)
+  ok 39 [computadora] › e2e\instituciones.spec.ts:52:3 › HU04 – HU05 Instituciones › CP-S09 HU05-E1 la administradora actualiza el teléfono (4.5s)
+  ok 40 [computadora] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (5.7s)
+  x  41 [telefono] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) (10.2s)
+  ok 42 [telefono] › e2e\accesibilidad.spec.ts:64:3 › Accesibilidad › CP-S17 — inicio de sesión solo con teclado y foco visible (2.2s)
+  ok 43 [telefono] › e2e\acceso.spec.ts:5:3 › HU01 – HU03 Acceso y opciones por rol › CP-S01 HU01-E1 la administradora inicia sesión y ve su institución (2.1s)
+  ok 44 [telefono] › e2e\acceso.spec.ts:12:3 › HU01 – HU03 Acceso y opciones por rol › CP-S02 HU01-E3 credenciales inválidas muestran un mensaje genérico (1.4s)
+  ok 45 [telefono] › e2e\acceso.spec.ts:22:3 › HU01 – HU03 Acceso y opciones por rol › CP-S03 HU01-E5 campos vacíos se marcan como obligatorios (577ms)
+  ok 46 [telefono] › e2e\acceso.spec.ts:31:3 › HU01 – HU03 Acceso y opciones por rol › CP-S04 HU02-E1/E2 cerrar sesión y volver atrás pide ingresar (3.4s)
+  ok 47 [telefono] › e2e\acceso.spec.ts:42:3 › HU01 – HU03 Acceso y opciones por rol › CP-S05 HU03-E1/E2 cada rol ve solo sus opciones (3.1s)
+  ok 48 [telefono] › e2e\acceso.spec.ts:55:3 › HU01 – HU03 Acceso y opciones por rol › CP-S06 HU03-E3 el docente no entra a la gestión de instituciones (2.4s)
+  ok 49 [telefono] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (5.0s)
+  ok 50 [telefono] › e2e\estudiantes.spec.ts:5:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S10 HU06-E1/E2 cada institución ve solo sus estudiantes (5.1s)
+  x  51 [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante (6.6s)
+  ok 52 [telefono] › e2e\estudiantes.spec.ts:43:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S12 HU07-E4 identificación duplicada (3.4s)
+  ok 53 [telefono] › e2e\estudiantes.spec.ts:58:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S13 HU07-E5 fecha vacía muestra mensaje claro (reprueba ADLCDS-104) (3.1s)
+  ok 54 [telefono] › e2e\estudiantes.spec.ts:70:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S14 HU07-E2 desactivar y reactivar (5.5s)
+  ok 55 [telefono] › e2e\estudiantes.spec.ts:85:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S15 HU07 el docente consulta sin poder modificar (3.4s)
+  ok 56 [telefono] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) (3.5s)
+  ok 57 [telefono] › e2e\instituciones.spec.ts:5:3 › HU04 – HU05 Instituciones › CP-S07 HU04-E1 la plataforma registra una institución y su administradora entra (4.4s)
+  ok 58 [telefono] › e2e\instituciones.spec.ts:35:3 › HU04 – HU05 Instituciones › CP-S08 HU04-E3 nombre duplicado (2.8s)
+  ok 59 [telefono] › e2e\instituciones.spec.ts:52:3 › HU04 – HU05 Instituciones › CP-S09 HU05-E1 la administradora actualiza el teléfono (4.7s)
+  ok 60 [telefono] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (5.9s)
+  ok 61 [telefono] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) (10.5s)
+  ok 62 [telefono] › e2e\accesibilidad.spec.ts:64:3 › Accesibilidad › CP-S17 — inicio de sesión solo con teclado y foco visible (1.5s)
+  ok 63 [telefono] › e2e\acceso.spec.ts:5:3 › HU01 – HU03 Acceso y opciones por rol › CP-S01 HU01-E1 la administradora inicia sesión y ve su institución (1.9s)
+  ok 64 [telefono] › e2e\acceso.spec.ts:12:3 › HU01 – HU03 Acceso y opciones por rol › CP-S02 HU01-E3 credenciales inválidas muestran un mensaje genérico (1.4s)
+  ok 65 [telefono] › e2e\acceso.spec.ts:22:3 › HU01 – HU03 Acceso y opciones por rol › CP-S03 HU01-E5 campos vacíos se marcan como obligatorios (572ms)
+  ok 66 [telefono] › e2e\acceso.spec.ts:31:3 › HU01 – HU03 Acceso y opciones por rol › CP-S04 HU02-E1/E2 cerrar sesión y volver atrás pide ingresar (2.9s)
+  ok 67 [telefono] › e2e\acceso.spec.ts:42:3 › HU01 – HU03 Acceso y opciones por rol › CP-S05 HU03-E1/E2 cada rol ve solo sus opciones (2.8s)
+  ok 68 [telefono] › e2e\acceso.spec.ts:55:3 › HU01 – HU03 Acceso y opciones por rol › CP-S06 HU03-E3 el docente no entra a la gestión de instituciones (2.9s)
+  ok 69 [telefono] › e2e\acceso.spec.ts:63:3 › HU01 – HU03 Acceso y opciones por rol › CP-S19 HU01-E1 una validación tardía de la sesión anterior no cierra la sesión nueva (reprueba INC-007) (5.0s)
+  ok 70 [telefono] › e2e\estudiantes.spec.ts:5:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S10 HU06-E1/E2 cada institución ve solo sus estudiantes (5.0s)
+  x  71 [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante (7.2s)
+  ok 72 [telefono] › e2e\estudiantes.spec.ts:43:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S12 HU07-E4 identificación duplicada (3.4s)
+  ok 73 [telefono] › e2e\estudiantes.spec.ts:58:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S13 HU07-E5 fecha vacía muestra mensaje claro (reprueba ADLCDS-104) (2.1s)
+  ok 74 [telefono] › e2e\estudiantes.spec.ts:70:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S14 HU07-E2 desactivar y reactivar (5.4s)
+  ok 75 [telefono] › e2e\estudiantes.spec.ts:85:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S15 HU07 el docente consulta sin poder modificar (2.9s)
+  ok 76 [telefono] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) (4.6s)
+  ok 77 [telefono] › e2e\instituciones.spec.ts:5:3 › HU04 – HU05 Instituciones › CP-S07 HU04-E1 la plataforma registra una institución y su administradora entra (3.9s)
+  ok 78 [telefono] › e2e\instituciones.spec.ts:35:3 › HU04 – HU05 Instituciones › CP-S08 HU04-E3 nombre duplicado (2.8s)
+  ok 79 [telefono] › e2e\instituciones.spec.ts:52:3 › HU04 – HU05 Instituciones › CP-S09 HU05-E1 la administradora actualiza el teléfono (5.7s)
+  ok 80 [telefono] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (5.9s)
+
+
+  1) [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('status')
+    Expected: "Valeria Prueba Computadora fue registrado."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('status') with timeout 5000ms
+      - waiting for getByRole('status')
+
+
+      33 |     await form.getByRole('button', { name: 'Guardar' }).click()
+      34 |
+    > 35 |     await expect(page.getByRole('status')).toHaveText(`Valeria ${lastName} fue registrado.`)
+         |                                            ^
+      36 |     await page.getByLabel('Buscar').fill(identification)
+      37 |     const list = page.getByRole('table', { name: 'Lista de estudiantes' })
+      38 |     await expect(list.getByText(identification)).toBeVisible()
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\estudiantes.spec.ts:35:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('status')
+    Expected: "Valeria Prueba Computadora fue registrado."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('status') with timeout 5000ms
+      - waiting for getByRole('status')
+
+
+      33 |     await form.getByRole('button', { name: 'Guardar' }).click()
+      34 |
+    > 35 |     await expect(page.getByRole('status')).toHaveText(`Valeria ${lastName} fue registrado.`)
+         |                                            ^
+      36 |     await page.getByLabel('Buscar').fill(identification)
+      37 |     const list = page.getByRole('table', { name: 'Lista de estudiantes' })
+      38 |     await expect(list.getByText(identification)).toBeVisible()
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\estudiantes.spec.ts:35:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora-repeat1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora-repeat1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-computadora-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [telefono] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Mi institución' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Mi institución' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Mi institución' })
+
+
+      48 |     await login(page, ACCOUNTS.roblesAdmin)
+      49 |     await page.goto('/mi-institucion')
+    > 50 |     await expect(page.getByRole('heading', { name: 'Mi institución' })).toBeVisible()
+         |                                                                         ^
+      51 |     await audit(page, testInfo, 'mi-institucion')
+      52 |     await page.goto('/estudiantes')
+      53 |     await expect(page.getByRole('heading', { name: 'Estudiantes' })).toBeVisible()
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\accesibilidad.spec.ts:50:73
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\accesibilidad-Accesibilida-d27da--2-AA-detectables-axe-core--telefono\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\accesibilidad-Accesibilida-d27da--2-AA-detectables-axe-core--telefono\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\accesibilidad-Accesibilida-d27da--2-AA-detectables-axe-core--telefono\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\accesibilidad-Accesibilida-d27da--2-AA-detectables-axe-core--telefono\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('status')
+    Expected: "Valeria Prueba Teléfono fue registrado."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('status') with timeout 5000ms
+      - waiting for getByRole('status')
+
+
+      33 |     await form.getByRole('button', { name: 'Guardar' }).click()
+      34 |
+    > 35 |     await expect(page.getByRole('status')).toHaveText(`Valeria ${lastName} fue registrado.`)
+         |                                            ^
+      36 |     await page.getByLabel('Buscar').fill(identification)
+      37 |     const list = page.getByRole('table', { name: 'Lista de estudiantes' })
+      38 |     await expect(list.getByText(identification)).toBeVisible()
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\estudiantes.spec.ts:35:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('status')
+    Expected: "Valeria Prueba Teléfono fue registrado."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('status') with timeout 5000ms
+      - waiting for getByRole('status')
+
+
+      33 |     await form.getByRole('button', { name: 'Guardar' }).click()
+      34 |
+    > 35 |     await expect(page.getByRole('status')).toHaveText(`Valeria ${lastName} fue registrado.`)
+         |                                            ^
+      36 |     await page.getByLabel('Buscar').fill(identification)
+      37 |     const list = page.getByRole('table', { name: 'Lista de estudiantes' })
+      38 |     await expect(list.getByText(identification)).toBeVisible()
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\estudiantes.spec.ts:35:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono-repeat1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono-repeat1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\estudiantes-HU06-–-HU07-Es-df826-trar-y-buscar-un-estudiante-telefono-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+    [computadora] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+    [telefono] › e2e\accesibilidad.spec.ts:37:3 › Accesibilidad › CP-S16 — pantallas sin violaciones WCAG 2.2 AA detectables (axe-core) 
+    [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+    [telefono] › e2e\estudiantes.spec.ts:22:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S11 HU07-E1/E3 registrar y buscar un estudiante 
+  75 passed (5.3m)

@@ -1,0 +1,41 @@
+Evidencia: Vitest tras INC-006, A11Y-01/02 y pruebas de formularios (cobertura 91,6 % de líneas)
+Fecha: 2026-11-05
+$ npx vitest run --reporter=verbose
+
+
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+
+ ✓ src/api/client.test.ts > parseError > usa el mensaje y los campos del formato estándar 6ms
+ ✓ src/api/client.test.ts > parseError > usa un mensaje genérico si la respuesta no es JSON 1ms
+ ✓ src/api/client.test.ts > apiGet > devuelve los datos cuando la respuesta es correcta 1ms
+ ✓ src/api/client.test.ts > apiGet > convierte una falla de red en ApiError legible 1ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > un 401 de la sesión vigente cierra la sesión 1ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > INC-007: un 401 tardío de una sesión ya reemplazada no cierra la sesión nueva 1ms
+ ✓ src/api/client.test.ts > sesión en cookie con CSRF (INC-006) > las peticiones envían la cookie y las escrituras el token CSRF 8ms
+ ✓ src/api/client.test.ts > sesión en cookie con CSRF (INC-006) > si no hay cookie CSRF la pide a la API antes de escribir 1ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API 250ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas 609ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución 643ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión 14ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve Mi institución y Estudiantes 17ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones 15ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido 11ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro 17ms
+ ✓ src/pages/pages.test.tsx > HU04 Registrar una institución (plataforma) > HU04-E1: envía la institución con su administradora y muestra la confirmación 1577ms
+ ✓ src/App.test.tsx > HU07 Registrar estudiante > INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado 143ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: la sesión se cierra en la interfaz aunque el servidor no responda, y queda el cierre pendiente 77ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla 16ms
+ ✓ src/pages/pages.test.tsx > HU04 Registrar una institución (plataforma) > HU04-E3: muestra el error de nombre duplicado que devuelve la API 140ms
+ ✓ src/pages/pages.test.tsx > HU05 Mi institución > HU05-E1: guarda el teléfono nuevo y confirma 289ms
+ ✓ src/pages/pages.test.tsx > HU05 Mi institución > HU05-E3: muestra el error del campo que rechaza la API 80ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E1: registra un estudiante y confirma; el foco pasa al formulario al abrirlo (A11Y-02) 819ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E4: muestra el error de identificación duplicada 179ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E2: desactiva un estudiante y confirma 341ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E3: la búsqueda consulta la API con el texto escrito 362ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > A11Y-01: cada pantalla tiene su título de pestaña 11ms
+
+ Test Files  3 passed (3)
+      Tests  28 passed (28)
+   Start at  21:51:23
+   Duration  6.90s (transform 446ms, setup 1.24s, import 755ms, tests 5.63s, environment 6.29s)
+

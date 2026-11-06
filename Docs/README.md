@@ -14,18 +14,24 @@ documental de OneDrive (ver S1-12), que usa la misma estructura de carpetas.
 
 ## Segundo entregable
 
+Empezar por la [respuesta al anexo de correcciones del avance 1](01-Planificacion/Respuesta-anexo-avance-1.md): indica
+dónde quedó atendido cada punto de la corrección.
+
 | Criterio (sección 22) | Documento |
 |---|---|
+| Correcciones del avance 1 | [Respuesta al anexo de correcciones](01-Planificacion/Respuesta-anexo-avance-1.md) |
 | Plan de trabajo | [Plan del segundo entregable](01-Planificacion/Plan-segundo-avance.md) |
 | Ejecución del proyecto | [Informe de ejecución de los sprints](01-Planificacion/Informe-ejecucion-sprints.md) |
 | Estándares | [Estándares del proyecto](01-Planificacion/Estandares.md) |
-| Backlog y requisitos | [Catálogo de requisitos y Product Backlog](02-Requisitos/Catalogo-de-requisitos.md) |
+| Backlog y requisitos | [Catálogo de requisitos y Product Backlog](02-Requisitos/Catalogo-de-requisitos.md) · [Backlog de Jira exportado](01-Planificacion/Backlog-Jira.md) ([CSV](01-Planificacion/Backlog-Jira.csv)) |
 | Verificación de requisitos | [Verificación de requisitos](02-Requisitos/Verificacion-de-requisitos.md) |
 | Refinamiento | [Registro de refinamiento](02-Requisitos/Registro-de-refinamiento.md) |
 | Diseño | [Arquitectura, datos y API](03-Diseno/Arquitectura-datos-API.md) |
 | Pruebas (ISO/IEC/IEEE 29119-3) | [Plan de pruebas](05-Pruebas/Plan-de-pruebas.md) · [Especificación de casos](05-Pruebas/Especificacion-de-casos.md) · [Registro de ejecución](05-Pruebas/Registro-de-ejecucion.md) · [Informe de estado](05-Pruebas/Informe-de-estado.md) |
-| Defectos | [Informes de incidente](05-Pruebas/Informes-de-incidente.md) · Jira ADLCDS-103, ADLCDS-104 |
-| Evidencias | [`05-Pruebas/evidencias/`](05-Pruebas/evidencias) (capturas y salidas de pruebas) |
+| Seguridad y accesibilidad | [Revisión de seguridad](05-Pruebas/Revision-seguridad.md) (OWASP ASVS) · [Revisión de accesibilidad](05-Pruebas/Revision-accesibilidad.md) (WCAG 2.2 AA) |
+| Defectos | [Informes de incidente](05-Pruebas/Informes-de-incidente.md) · Jira ADLCDS-103, 104 y 117 – 123 |
+| Evidencias | [`05-Pruebas/evidencias/`](05-Pruebas/evidencias): salidas de pruebas, capturas de fallas y reprueba, `ci/` (GitHub Actions), `e2e/` (Playwright), `seguridad/`, `accesibilidad/` |
+| Integración continua | [Pull requests #1 – #11](https://github.com/S4muel-R/Nexora/pulls) · [GitHub Actions](https://github.com/S4muel-R/Nexora/actions) |
 | Métricas | [Métricas](01-Planificacion/Metricas.md) |
 | Gestión de cambios | [Gestión de cambios](01-Planificacion/Gestion-de-cambios.md) |
 | Trazabilidad | [Matriz de trazabilidad](02-Requisitos/Matriz-de-trazabilidad.md) |

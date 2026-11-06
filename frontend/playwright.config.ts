@@ -8,16 +8,23 @@ import { defineConfig, devices } from '@playwright/test'
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:5173'
 const python = process.env.E2E_PYTHON ?? 'python'
 const settings = '--settings=config.settings_test'
+// E2E_PREVIEW=1 prueba la versión compilada (`vite build` + `vite preview`), que es la que se entrega (ACR-03).
+const variant = process.env.E2E_PREVIEW ? '-compilada' : ''
+const frontendCommand = process.env.E2E_PREVIEW
+  ? 'npm run build && npm run preview -- --port 5173 --strictPort'
+  : 'npm run dev -- --port 5173 --strictPort'
 
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   workers: 1,
   retries: process.env.CI ? 1 : 0,
+  // ACR-03: una prueba que solo pasa al reintentar hace fallar el CI (los reintentos ocultaron INC-004 e INC-007).
+  failOnFlakyTests: !!process.env.CI,
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'reports/playwright', open: 'never' }],
-    ['junit', { outputFile: 'reports/e2e-junit.xml' }],
+    ['html', { outputFolder: `reports/playwright${variant}`, open: 'never' }],
+    ['junit', { outputFile: `reports/e2e-junit${variant}.xml` }],
   ],
   use: {
     baseURL,
@@ -44,7 +51,7 @@ export default defineConfig({
           timeout: 120_000,
         },
         {
-          command: 'npm run dev -- --port 5173 --strictPort',
+          command: frontendCommand,
           url: baseURL,
           reuseExistingServer: false,
           timeout: 120_000,

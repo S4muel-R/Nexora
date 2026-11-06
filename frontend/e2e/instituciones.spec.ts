@@ -61,4 +61,21 @@ test.describe('HU04 – HU05 Instituciones', () => {
     await expect(page.getByLabel('Teléfono')).toHaveValue(phone)
     await evidence(page, info, 'CP-S09', 'actualizado')
   })
+
+  test('CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008)', async ({ page }, info) => {
+    const phone = `2222-${uniqueSuffix().slice(-4)}`
+    await login(page, ACCOUNTS.roblesAdmin)
+    // En desarrollo React monta la pantalla dos veces (StrictMode): la segunda carga responde 1,5 s después.
+    let loads = 0
+    await page.route('**/api/v1/my-institution/', async (route) => {
+      if (route.request().method() === 'GET' && ++loads > 1) await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+    await page.getByRole('link', { name: 'Mi institución' }).first().click()
+    await page.getByLabel('Teléfono').fill(phone)
+    await page.waitForTimeout(2000)
+
+    await expect(page.getByLabel('Teléfono')).toHaveValue(phone)
+    await evidence(page, info, 'CP-S20', 'valor-conservado')
+  })
 })

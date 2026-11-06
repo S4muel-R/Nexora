@@ -5,10 +5,12 @@ import type { Institution } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { Alert, Field } from '../components/Field'
 import { LevelPicker } from '../components/LevelPicker'
+import { usePageTitle } from '../components/usePageTitle'
 
 /** HU05: el personal administrativo consulta y actualiza los datos de su institución; el docente solo consulta. */
 export function MyInstitutionPage() {
   const { user } = useAuth()
+  usePageTitle('Mi institución')
   const canEdit = user?.role === 'institution_admin'
   const [institution, setInstitution] = useState<Institution | null>(null)
   const [form, setForm] = useState<Institution | null>(null)
@@ -17,12 +19,18 @@ export function MyInstitutionPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
+    // INC-008: una respuesta de una carga ya descartada no sobrescribe lo que la persona está editando.
+    let active = true
     apiGet<Institution>('/my-institution/')
       .then((data) => {
+        if (!active) return
         setInstitution(data)
         setForm(data)
       })
-      .catch((err) => setLoadError(errorMessage(err)))
+      .catch((err) => active && setLoadError(errorMessage(err)))
+    return () => {
+      active = false
+    }
   }, [])
 
   if (loadError) return <Alert kind="error">{loadError}</Alert>

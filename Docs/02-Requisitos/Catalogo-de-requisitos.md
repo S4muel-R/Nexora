@@ -5,10 +5,10 @@
 | Código | S1-06 / S2-01 |
 | EDT | 1.2.1.2 |
 | Responsables | Luis (RF), Wilberth (refinamiento) |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
 | Criterio de entrega | Catálogo de requisitos RF01 – RF08 con historias de usuario y criterios de aceptación verificables |
-| Fuentes | Propuesta preliminar, backlog de Jira ADLCDS, guion de consulta S1-10, perfiles S1-11 |
+| Fuentes | Primer avance corregido y su anexo (línea base: RF01 – RF08, CA01 – CA24), propuesta preliminar, backlog de Jira ADLCDS, guion de consulta S1-10, perfiles S1-11 |
 | Verificación | [Verificación de requisitos](Verificacion-de-requisitos.md) · [Registro de refinamiento](Registro-de-refinamiento.md) |
 
 ## 1. Necesidades
@@ -31,14 +31,37 @@ Necesidades identificadas en la propuesta preliminar. Se validan y amplían con 
 
 | ID | Requisito | Necesidad | Historias | Prioridad |
 |---|---|---|---|---|
-| RF01 | El sistema debe permitir iniciar y cerrar sesión con correo y contraseña. | N02 | HU01, HU02 | Alta |
-| RF02 | El sistema debe controlar el acceso por rol (administración de la plataforma, administrativo, docente) y por institución, de modo que ningún usuario consulte o modifique datos de otra institución. | N02, N03 | HU03, HU06 | Alta |
-| RF03 | El sistema debe permitir registrar instituciones con sus niveles educativos y su persona administradora, y actualizar los datos institucionales. | N04 | HU04, HU05 | Alta |
+| RF01 | Acceso y permisos: el sistema debe permitir iniciar y cerrar sesión con correo y contraseña y aplicar los permisos de administración de la plataforma, administración institucional y docente, de modo que ningún usuario consulte o modifique datos de otra institución. | N02, N03 | HU01, HU02, HU03, HU06 | Alta |
+| RF02 | Configuración de la plataforma: el sistema debe permitir crear y activar instituciones con sus niveles y habilitar la cuenta de su administración institucional. | N04 | HU04 | Alta |
+| RF03 | Datos institucionales: el sistema debe permitir mantener los datos esenciales de cada institución, sus niveles y el periodo lectivo de demostración. | N04 | HU05 | Alta |
 | RF04 | El sistema debe permitir registrar, consultar, editar y desactivar estudiantes, sin identificaciones duplicadas dentro de una institución. | N01, N05 | HU07 | Alta |
 | RF05 | El sistema debe permitir administrar al personal docente y vincular cada docente con su cuenta de usuario. | N01, N05 | HU08 | Media |
 | RF06 | El sistema debe permitir crear grupos por nivel y periodo y asignarles estudiantes y docentes. | N06 | HU09 | Media |
 | RF07 | El sistema debe permitir registrar la asistencia por grupo y fecha, y corregirla dejando registro del valor anterior, el nuevo, el motivo, el usuario y la fecha. | N07 | HU10 | Media |
 | RF08 | El sistema debe permitir consultar listados de estudiantes y grupos, y resúmenes de asistencia con filtros. | N08 | HU11, HU12 | Media |
+
+La numeración y el contenido de RF01 – RF08 siguen la línea base del avance 1 (sección 2.3), según el anexo de
+correcciones (CC-11, VR-15). La versión 1.0 de este catálogo había renumerado RF02 y RF03; la correspondencia es:
+RF01 v1.0 + control por rol de RF02 v1.0 → **RF01**; registro de instituciones de RF03 v1.0 → **RF02**; actualización de
+datos de RF03 v1.0 → **RF03**. El aislamiento entre instituciones (HU06) forma parte de RF01 y del requisito no
+funcional de separación de datos del avance 1.
+
+### 2.1 Correspondencia con la línea base del avance 1
+
+| HU del avance 1 | Criterios | Historias de este catálogo | Jira |
+|---|---|---|---|
+| HU01 Acceder según el rol | CA01, CA02 | HU01, HU02, HU03, HU06 | ADLCDS-105, 106, 107, 110 |
+| HU02 Configurar instituciones y accesos | CA03, CA04 | HU04 | ADLCDS-108 |
+| HU03 Definir datos y niveles del centro | CA05, CA06 | HU05, HU06 | ADLCDS-109, 110 |
+| HU04 Mantener estudiantes | CA07, CA08 | HU07 | ADLCDS-111 |
+| HU05 Mantener docentes | CA09, CA10 | HU08 | ADLCDS-112 |
+| HU06 – HU08 Grupos y asignaciones | CA11 – CA16 | HU09 (y HU10 para CA15 – CA16) | ADLCDS-113, 114 |
+| HU09 – HU10 Asistencia y corrección | CA17 – CA20 | HU10 | ADLCDS-114 |
+| HU11 Listados y grupos | CA21, CA22 | HU11 | ADLCDS-115 |
+| HU12 Resumen de asistencia | CA23, CA24 | HU12 | ADLCDS-116 |
+
+El refinamiento dividió y renumeró las historias del avance 1 (REF-01 – REF-17); el cruce escenario por escenario con
+CA01 – CA24, en ambos sentidos, está en la [Matriz de trazabilidad](Matriz-de-trazabilidad.md), sección 2.
 
 ## 3. Requisitos no funcionales
 
@@ -70,10 +93,10 @@ Estimación en puntos de historia (escala Fibonacci). Estado al 2026-11-04.
 |---|---|---|---|---|---|---|---|
 | HU01 | Iniciar sesión | RF01 | Alta | 3 | — | 3 | En curso |
 | HU02 | Cerrar sesión | RF01 | Alta | 1 | HU01 | 3 | En curso |
-| HU03 | Ver solo las opciones de mi rol | RF02 | Alta | 3 | HU01 | 3 | En curso |
-| HU04 | Registrar una institución y su administrador | RF03 | Alta | 5 | HU01 | 3 | En curso |
+| HU03 | Ver solo las opciones de mi rol | RF01 | Alta | 3 | HU01 | 3 | En curso |
+| HU04 | Registrar una institución y su administrador | RF02 | Alta | 5 | HU01 | 3 | En curso |
 | HU05 | Actualizar los datos de mi institución | RF03 | Alta | 3 | HU04 | 3 | En curso |
-| HU06 | Impedir el acceso a datos de otra institución | RF02 | Alta | 5 | HU04 | 3 | En curso |
+| HU06 | Impedir el acceso a datos de otra institución | RF01 | Alta | 5 | HU04 | 3 | En curso |
 | HU07 | Gestionar estudiantes sin duplicados | RF04 | Alta | 8 | HU05, HU06 | 3 – 4 | En curso |
 | HU08 | Gestionar docentes y sus cuentas | RF05 | Media | 5 | HU06 | 4 | Por hacer |
 | HU09 | Crear grupos y asignar estudiantes y docentes | RF06 | Media | 8 | HU07, HU08 | 4 | Por hacer |
@@ -152,6 +175,9 @@ información correcta.
   **entonces** veo el error en el campo y los datos no cambian.
 - **HU05-E4 (error)** — **Dado que** quito un nivel que tiene estudiantes activos, **cuando** guardo, **entonces** veo
   "No se puede quitar un nivel con estudiantes activos".
+- **HU05-E5 (exitoso, REF-16)** — **Dado que** soy `admin@robles.test`, **cuando** defino el periodo lectivo "2026" del
+  2026-02-02 al 2026-12-11 y guardo, **entonces** queda como periodo vigente y los grupos se crean en él. *Pendiente de
+  implementar (Sprint 4, GAP-01).*
 
 ### HU06 — Impedir el acceso a datos de otra institución
 **Como** institución, **quiero** que nadie de otra institución vea ni cambie nuestros datos, **para** proteger la
@@ -204,6 +230,8 @@ grupos.
   **entonces** deja de estar en "4-A" y aparece en "4-B".
 - **HU09-E3 (error)** — **Dado que** el estudiante ya pertenece a un grupo del mismo periodo, **cuando** intento
   asignarlo a otro sin trasladarlo, **entonces** veo "El estudiante ya pertenece a un grupo en este periodo".
+- **HU09-E4 (error, REF-17)** — **Dado que** existe el grupo "4-A" en el periodo 2026, **cuando** intento crear otro
+  "4-A" en el mismo periodo, **entonces** veo "Ya existe un grupo con ese código en este periodo" (CA12).
 
 ### HU10 — Registrar y corregir la asistencia de mi grupo
 **Como** docente, **quiero** marcar la asistencia de mi grupo por fecha y corregirla si me equivoco, **para** llevar un
@@ -217,6 +245,8 @@ registro confiable.
   nuevo, **entonces** el sistema la abre en modo corrección en lugar de duplicarla.
 - **HU10-E4 (error)** — **Dado que** intento corregir sin escribir el motivo, **cuando** guardo, **entonces** veo "El
   motivo es obligatorio".
+- **HU10-E5 (error, REF-17)** — **Dado que** soy docente sin asignación a "4-B", **cuando** intento consultar su lista o
+  guardar su asistencia, **entonces** la API rechaza la operación y no muestra datos del grupo (CA16).
 
 ### HU11 — Consultar listados de estudiantes y grupos
 **Como** personal administrativo, **quiero** consultar listados de estudiantes y la distribución por grupos, **para**
@@ -228,6 +258,8 @@ responder consultas sin preparar listas a mano.
   aparecen grupos y estudiantes de ese nivel.
 - **HU11-E3 (error)** — **Dado que** no hay resultados para el filtro, **cuando** lo aplico, **entonces** veo "No hay
   registros para los filtros seleccionados" en lugar de una tabla vacía.
+- **HU11-E4 (error, REF-17)** — **Dado que** soy docente o pertenezco a otra institución, **cuando** solicito el listado
+  general de estudiantes y grupos, **entonces** la API lo rechaza sin mostrar información restringida (CA22).
 
 ### HU12 — Consultar el resumen de asistencia
 **Como** personal administrativo, **quiero** ver un resumen de asistencia por grupo y rango de fechas, **para** dar
@@ -248,15 +280,15 @@ seguimiento a las ausencias.
 | HU02 | 3 | 1 | 1 | 1 |
 | HU03 | 3 | 1 | 1 | 1 |
 | HU04 | 4 | 1 | 1 | 2 |
-| HU05 | 4 | 1 | 1 | 2 |
+| HU05 | 5 | 2 | 1 | 2 |
 | HU06 | 4 | 1 | 1 | 2 |
 | HU07 | 5 | 1 | 2 | 2 |
 | HU08 | 3 | 1 | 1 | 1 |
-| HU09 | 3 | 1 | 1 | 1 |
-| HU10 | 4 | 1 | 1 | 2 |
-| HU11 | 3 | 1 | 1 | 1 |
+| HU09 | 4 | 1 | 1 | 2 |
+| HU10 | 5 | 1 | 1 | 3 |
+| HU11 | 4 | 1 | 1 | 2 |
 | HU12 | 3 | 1 | 1 | 1 |
-| **Total** | **44** | 12 | 13 | 19 |
+| **Total** | **48** | 13 | 13 | 22 |
 
 Todas las historias cumplen el mínimo de tres escenarios (exitoso, alternativo y de error) de la sección 9 de las
 instrucciones.
@@ -266,3 +298,4 @@ instrucciones.
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-04 | Primera redacción de RF01 – RF08 y HU01 – HU12. Incorpora las correcciones de la verificación del backlog original (VR-01 a VR-14). Pendiente: revisión por pares (VR-P). |
+| 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: RF01 – RF03 vuelven a la numeración de la línea base (CC-11, VR-15); correspondencia con HU01 – HU12 y CA01 – CA24 del avance 1 (sección 2.1); nuevos escenarios HU05-E5, HU09-E4, HU10-E5 y HU11-E4 (REF-16, REF-17). Total: 48 escenarios. |

@@ -4,8 +4,8 @@
 |---|---|
 | Código | S2-04 |
 | Responsable | Wilberth |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
 | Norma | ISO/IEC/IEEE 29119-3, "Test Plan" (estructura) · ISO/IEC/IEEE 29119-2 (proceso) |
 | Criterio de entrega | Plan de pruebas y 3 instituciones ficticias definidas |
 | Relacionados | [Especificación de casos](Especificacion-de-casos.md) · [Registro de ejecución](Registro-de-ejecucion.md) · [Informes de incidente](Informes-de-incidente.md) · [Informe de estado](Informe-de-estado.md) |
@@ -70,7 +70,11 @@ busca lo que los scripts no prevén.
 | Sistema / funcional | Recorridos completos en el navegador | Playwright | Sí |
 | Compatibilidad / usabilidad | Perfil de teléfono (Pixel 7) y computadora (1280 × 800) | Playwright | Sí |
 | Humo | Estado del servicio y conexión a la base de datos | pytest + endpoint `/health/` | Sí |
-| Regresión | Toda la suite en cada Pull Request | GitHub Actions | Sí |
+| Regresión | Toda la suite en cada Pull Request, también los encadenados; una prueba que solo pasa al reintentar hace fallar el CI | GitHub Actions | Sí |
+| Robustez (asincronía) | La suite de sistema contra la API con latencia aleatoria (`NEXORA_LATENCIA_MAX_MS=700`) y sin reintentos; casos con respuestas retrasadas (`page.route`) | Playwright + `core/testing.py` | Sí, antes de cada entrega |
+| Versión compilada | Los recorridos de sistema sobre `vite build` + `vite preview` (`E2E_PREVIEW=1`), que es la versión que se entrega | Playwright | Sí, en cada PR (perfil computadora) |
+| Seguridad estática y de configuración | Dependencias, secretos en el historial, `check --deploy`, sesión en cookie con CSRF, revisión de código contra la arquitectura aprobada (selección de OWASP ASVS) | `npm audit`, `pip-audit`, `scripts/secret_scan.py`, Django | Sí en cada PR: auditorías, CP-A26, CP-A28, CP-A29; secretos por ejecución registrada |
+| Accesibilidad | WCAG 2.2 AA como objetivo: reglas automáticas, teclado, foco, reflujo a 320 px, anuncio de errores | axe-core (`@axe-core/playwright`), Playwright, `scripts/a11y_manual.cjs` | Parcial (CP-S16, CP-S17); lector de pantalla manual pendiente |
 | Exploratoria | Sesiones guiadas por charter sobre formularios y mensajes | Manual, navegador | No |
 
 ## 6. Ambientes
@@ -80,6 +84,7 @@ busca lo que los scripts no prevén.
 | Local | Desarrollo y exploración | SQLite (`config.settings_test`) |
 | CI (GitHub Actions) | Regresión en cada PR | PostgreSQL 16 (API) · SQLite (sistema) |
 | Docker Compose | Demostración del incremento | PostgreSQL 16 |
+| Local con latencia | Robustez (EJ-21, EJ-22) | SQLite, ajustes con middleware de latencia aleatoria |
 
 ## 7. Datos de prueba
 
@@ -103,6 +108,8 @@ Los Robles y en Monteverde para probar HU06-E2. Las pruebas de API crean sus pro
 | Datos ficticios cargados | Cero defectos críticos o altos abiertos |
 | Ambiente local o de CI disponible | Cobertura de código del backend ≥ 85 % |
 | | Defectos corregidos con reprueba y evidencia |
+| | Cero pruebas intermitentes en la última ejecución del CI y suite con latencia aprobada |
+| | Sin avisos críticos o altos de `npm audit --omit=dev` ni de `pip-audit` |
 
 ## 9. Gestión de defectos
 
@@ -113,10 +120,17 @@ Pull Request que referencia la clave de Jira e incluye una prueba de regresión.
 
 | Severidad | Criterio |
 |---|---|
-| Crítica | Expone datos de otra institución, impide iniciar sesión o pierde información |
-| Alta | Una función principal no cumple su escenario de aceptación |
-| Media | Falla con alternativa disponible |
+| Crítica | Expone datos de otra institución, impide de forma sostenida iniciar sesión o pierde información |
+| Alta | Una función principal no cumple su escenario de aceptación, aunque sea de forma intermitente, o la sesión queda expuesta en un equipo compartido |
+| Media | Falla con alternativa disponible, o riesgo de seguridad que requiere otra condición para explotarse |
 | Baja | Problema de presentación o de mensaje que no impide la tarea |
+
+**Pruebas intermitentes.** Una prueba que falla y pasa al reintentar se trata como posible defecto, no como ruido:
+se reproduce con respuestas retrasadas o latencia, se registra como incidente si la causa está en el producto y se
+corrige el script si está en la prueba. Así se encontraron INC-004, INC-007 e INC-008.
+
+**Reaperturas.** Si la reprueba bajo otra condición (latencia, otro dispositivo) vuelve a fallar, el incidente se
+reabre en Jira con un comentario y se registra una segunda corrección (INC-004).
 
 ## 10. Responsables
 
@@ -130,13 +144,14 @@ Pull Request que referencia la clave de Jira e incluye una prueba de regresión.
 
 | Fecha | Actividad |
 |---|---|
-| 2026-11-04 | Plan y diseño de casos; primera ejecución automatizada; exploración de estudiantes |
-| 2026-11-05 | Ejecución manual de aceptación por Wilberth; revisión por pares de casos |
-| 2026-11-06 | Regresión completa en CI; corrección y reprueba de defectos abiertos |
-| 2026-11-07 | Informe de estado y métricas para el segundo entregable |
+| 2026-11-04 | Plan y diseño de casos; primera ejecución automatizada; exploración de estudiantes (hecho) |
+| 2026-11-05 | Regresión en CI de los 11 PR; seguridad, accesibilidad y robustez; corrección y reprueba de INC-003 – INC-009 (hecho) |
+| 2026-11-06 | Revisión de los PR por pares; ejecución manual de aceptación por Wilberth (EJ-12) |
+| 2026-11-07 | Informe de estado y métricas para el segundo entregable; Sprint Review |
 
 ## 12. Historial de versiones
 
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-04 | Versión inicial. |
+| 1.1 | 2026-11-05 | Niveles de robustez, seguridad estática y accesibilidad; ambiente con latencia; criterios de salida sobre pruebas intermitentes y dependencias; políticas de pruebas intermitentes y reaperturas; se precisa la severidad Crítica ("de forma sostenida") y Media (riesgo que requiere otra condición) para clasificar INC-003 – INC-009. |

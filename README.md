@@ -51,6 +51,15 @@ cd frontend && npm run e2e
 `npm run e2e` levanta la API con datos ficticios (`manage.py seed_demo`) y la interfaz, y ejecuta los recorridos de
 Playwright en computadora y teléfono. Las capturas de evidencia quedan en `Docs/05-Pruebas/evidencias/e2e/`.
 
+Variantes:
+
+- `E2E_PREVIEW=1 npm run e2e` prueba la versión compilada (`vite build` + `vite preview`), que es la que se entrega.
+- Con `NEXORA_LATENCIA_MAX_MS=700` en el ambiente de la API, cada petición tarda entre 0 y 700 ms: sirve para encontrar
+  errores que dependen del orden de las respuestas (ejecutar con `--retries=0`).
+
+La sesión vive en una cookie HttpOnly con protección CSRF; la interfaz y la API deben compartir el host (`localhost`) y
+el origen de la interfaz debe estar en `CORS_ALLOWED_ORIGINS`.
+
 ## Forma de trabajo
 
 Ramas, commits, revisiones y Pull Requests siguen los [estándares del proyecto](Docs/01-Planificacion/Estandares.md).
