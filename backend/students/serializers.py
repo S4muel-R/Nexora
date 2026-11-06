@@ -8,6 +8,7 @@ from core.exceptions import ConflictError
 from .models import Student
 
 IDENTIFICATION_PATTERN = re.compile(r"^[A-Za-z0-9-]{5,20}$")
+BIRTH_DATE_MESSAGE = "Ingrese una fecha de nacimiento válida."
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -27,7 +28,17 @@ class StudentSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
         # Sin un valor por defecto explícito, DRF interpreta un booleano ausente en datos de
         # formulario como False y el estudiante quedaba inactivo al registrarse (ADLCDS-103).
-        extra_kwargs = {"is_active": {"default": True}}
+        extra_kwargs = {
+            "is_active": {"default": True},
+            # Mensajes claros en lugar del texto técnico de DRF sobre formatos (ADLCDS-104, RNF04).
+            "birth_date": {
+                "error_messages": {
+                    "required": BIRTH_DATE_MESSAGE,
+                    "null": BIRTH_DATE_MESSAGE,
+                    "invalid": BIRTH_DATE_MESSAGE,
+                }
+            },
+        }
 
     @property
     def institution(self):
