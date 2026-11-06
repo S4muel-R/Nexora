@@ -3,9 +3,9 @@
 | Campo | Valor |
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 7 |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
-| Artefactos revisados | Propuesta preliminar; backlog de Jira ADLCDS (101 tareas, revisión del 2026-11-04); [Catálogo de requisitos v1.0](Catalogo-de-requisitos.md) |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
+| Artefactos revisados | Propuesta preliminar; backlog de Jira ADLCDS (101 tareas, revisión del 2026-11-04); [Catálogo de requisitos v1.0](Catalogo-de-requisitos.md); primer avance corregido con su anexo (revisión del 2026-11-05) |
 | Técnica | Lista de chequeo (sección 1) aplicada a cada artefacto + revisión por pares (sección 4) |
 
 ## 1. Lista de chequeo
@@ -45,6 +45,18 @@ Resumen por criterio:
 | C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 | Total |
 |---|---|---|---|---|---|---|---|---|
 | 3 | 4 | 1 | 2 | 1 | 1 | 1 | 1 | 14 |
+
+## 2.1 Verificación del catálogo contra la línea base del avance 1 (2026-11-05)
+
+Al recibir el anexo de correcciones del avance 1, el catálogo se cruzó con los RF01 – RF08 y los criterios CA01 – CA24
+aprobados en ese avance.
+
+| ID | Criterio | Elemento | Hallazgo | Decisión / corrección |
+|---|---|---|---|---|
+| VR-15 | C3 | Catálogo v1.0, RF02 y RF03 | El catálogo renumeró los RF: RF02 era "control por rol" y RF03 "instituciones", mientras que en el avance 1 RF02 es configuración de la plataforma y RF03 datos institucionales | Se vuelve a la numeración del avance 1 (CC-11); la sección 2 del catálogo indica la correspondencia |
+| VR-16 | C2 | CA05, HU05 | El avance 1 pide configurar niveles **y el periodo lectivo de demostración**; el catálogo y el modelo de datos no tienen periodo | GAP-01 · REF-16: se agrega a HU05 y al modelo antes de HU09 |
+| VR-17 | C6 | CA12, CA16, CA22 | Tres criterios aprobados no tienen escenario en el catálogo: código de grupo duplicado, docente sin asignación y listado sin permiso | GAP-02 – GAP-04 · REF-17: HU09-E4, HU10-E5, HU11-E4 |
+| VR-18 | C3 | Arquitectura del Sprint 2, §7.1 del avance 1 | El contrato de API usa `Authorization: Token` y el avance 1 fija sesiones con cookie HttpOnly y CSRF | INC-006 · CC-13 (decisión pendiente) |
 
 ## 3. Autoverificación del catálogo v1.0
 

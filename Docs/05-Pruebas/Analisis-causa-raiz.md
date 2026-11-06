@@ -4,8 +4,8 @@
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 17 |
 | Técnicas | 5 porqués, Ishikawa (causa-efecto), Pareto |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
 | Estado | Borrador para validar en la retrospectiva del equipo |
 
 > Las causas se apoyan en evidencia verificable (Jira, Git, registros de ejecución). Las marcadas con **[Validar]** son
@@ -97,15 +97,23 @@ verificables.
 
 ## ACR-03 — Defectos del incremento
 
-**Problema.** Se registraron 2 defectos del producto (INC-001, INC-002) y 2 fallas de scripts de prueba.
+**Problema.** Se registraron 9 defectos del producto (INC-001 – INC-009) y 3 fallas de scripts de prueba. Cuatro de
+los defectos (INC-004, INC-007, INC-008, INC-009) dependen del orden o la demora de las respuestas: solo aparecieron en
+el CI o con la API lenta, y el reintento automático dejó en verde una ejecución de INC-004 y una de INC-007. INC-004 se
+reabrió porque su primera corrección no resistió la prueba con latencia.
 
 ### Pareto por origen
 
-| Origen | Cantidad | Detalle |
-|---|---|---|
-| Comportamiento del framework no considerado | 2 | INC-001 (booleano ausente en formularios), INC-002 (mensaje de fecha por defecto) |
-| Configuración de la herramienta de pruebas | 1 | Limpieza del DOM en Vitest |
-| Selector ambiguo en el script | 1 | Playwright, CP-S07 |
+| Origen | Cantidad | % | % acumulado | Detalle |
+|---|---|---|---|---|
+| Comportamiento asíncrono no considerado (orden y demora de las respuestas) | 4 | 33,3 % | 33,3 % | INC-004 (formulario usable antes de cargar los niveles), INC-007 (validación tardía de la sesión anterior), INC-008 (carga repetida que sobrescribe lo escrito), INC-009 (token borrado solo al responder el servidor) |
+| Seguridad sin revisar en el diseño y la configuración | 3 | 25,0 % | 58,3 % | INC-003 (HTTPS), INC-005 (dependencias), INC-006 (sesión distinta de la aprobada) — ver ACR-04 |
+| Scripts de prueba | 3 | 25,0 % | 83,3 % | Limpieza del DOM en Vitest, selector ambiguo en CP-S07, fecha UTC en las capturas |
+| Comportamiento del framework no considerado | 2 | 16,7 % | 100 % | INC-001 (booleano ausente en formularios), INC-002 (mensaje de fecha por defecto) |
+
+La categoría principal es el comportamiento asíncrono: un tercio de las fallas y los defectos más difíciles de
+detectar. Junto con la del framework (INC-001, INC-002) comparte un mismo tipo de causa: supuestos no verificados
+sobre el entorno de ejecución.
 
 ### 5 porqués — INC-001 (severidad alta)
 
@@ -130,11 +138,78 @@ el comportamiento del framework con formularios.
 **Causa raíz.** Los escenarios de error (HU07-E5) no incluían el caso de campo vacío y el estándar de errores no
 definía mensajes por tipo de dato.
 
+### 5 porqués — INC-004, INC-007, INC-008 e INC-009 (comportamiento asíncrono)
+
+| # | Pregunta | Respuesta | Evidencia |
+|---|---|---|---|
+| 1 | ¿Por qué falló el registro (INC-004) y se perdió la sesión (INC-007)? | La interfaz usó datos de un momento anterior: los niveles al pulsar el botón; la respuesta de `/auth/me/` de la sesión anterior | Capturas del CI (`EV_INC-004_falla-CI_*`, `EV_INC-007_falla-CI_*`) |
+| 2 | ¿Por qué se usaron datos de un momento anterior? | El código suponía que las respuestas llegan antes de la siguiente acción de la persona y en el orden en que se piden | `StudentsPage.tsx` (`openForm`), `AuthContext.tsx` |
+| 3 | ¿Por qué no se vio antes del CI? | En el equipo de desarrollo la API local responde en milisegundos; el ambiente del CI es más lento. Además, las pruebas usan el servidor de desarrollo, donde React monta las pantallas dos veces (INC-008) | Pasan en local (EJ-10), fallan en CI (EJ-11, EJ-17, EJ-20) y con latencia (EJ-21) |
+| 4 | ¿Por qué el CI quedó en verde en PR #9 y en la primera ejecución de PR #11? | Playwright reintenta una vez en CI; la segunda vez pasó y el resultado se informó como intermitente sin hacer fallar el flujo | EJ-11, EJ-17 |
+| 5 | ¿Por qué se aceptaba una prueba intermitente? | El plan de pruebas no definía qué hacer con ellas: se trataban como ruido del ambiente | Plan de pruebas v1.0 |
+
+**Causa raíz.** Las pruebas de sistema no simulaban respuestas lentas y el CI aceptaba como aprobada una prueba que
+fallaba de forma intermitente, de modo que un defecto real se confundió con inestabilidad del ambiente. La primera
+corrección de INC-004 se reprobó solo con un retraso fijo en una petición, por eso no detectó el caso de guardar antes
+de la carga.
+
 ### Acciones
 
 | Tipo | Acción | Responsable | Fecha |
 |---|---|---|---|
 | Correctiva | Correcciones CC-08 y CC-09 con pruebas de regresión | Samuel | 2026-11-04 (hecho) |
-| Preventiva | Revisar en cada serializador nuevo los campos booleanos y de fecha (valor por defecto y mensajes); agregarlo a la lista de revisión del PR | Luis | Sprint 4 |
+| Correctiva | Correcciones de INC-004 e INC-007 con reprueba que retrasa las respuestas (CP-S18, CP-S19) y pruebas unitarias y de API | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Una prueba que solo pasa al reintentar hace fallar el CI (`failOnFlakyTests`, commit `b403436`) y se analiza como posible defecto (Plan de pruebas, sección 9) | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Cada pantalla nueva incluye un caso de sistema con la API retrasada (`page.route`) para los datos que carga al abrir | Samuel | Sprint 4 |
+| Preventiva | Antes de cada entrega, ejecutar la suite de sistema contra la API con latencia aleatoria y sin reintentos (EJ-21, EJ-22); llevar el middleware de latencia al repositorio como opción de prueba | Samuel | Sprint 4 |
+| Preventiva | Ejecutar las pruebas de sistema también sobre la versión compilada (`vite build` + `vite preview`), que es la que se entrega | Wilberth | Sprint 4 |
+| Correctiva | Correcciones de INC-008, INC-009 y la reapertura de INC-004 (commit `f15dec5`) | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Revisar en cada serializador nuevo los campos booleanos y de fecha (valor por defecto y mensajes), y en cada pantalla los datos asíncronos; agregado a la lista de revisión del PR (commit `b403436`) | Luis y Samuel | 2026-11-05 (hecho) |
 | Preventiva | Incluir el caso "campo vacío" en los escenarios de error al refinar historias | Wilberth | Sprint 4 |
-| Preventiva | Usar selectores por rol y ámbito (celda, formulario) en Playwright y configurar `cleanup` en Vitest (hecho) | Samuel | 2026-11-04 |
+| Preventiva | Selectores por rol y ámbito en Playwright, `cleanup` en Vitest y fecha local en las evidencias | Samuel | 2026-11-05 (hecho) |
+
+## ACR-04 — Hallazgos de seguridad y desviación de la arquitectura aprobada
+
+**Problema.** La primera revisión de seguridad (EJ-15, EJ-16) encontró tres defectos: configuración HTTPS ausente
+(INC-003), dependencias de desarrollo con avisos críticos (INC-005) y una sesión implementada con token en
+`localStorage` en lugar de la cookie HttpOnly con CSRF aprobada en el avance 1 (INC-006).
+
+### Ishikawa
+
+```
+ Proceso                                  Herramientas                        Requisitos
+ · Revisión de seguridad solo al final    · Sin auditoría de dependencias     · OWASP ASVS citado en el avance 1
+   del incremento                           en el CI                            sin lista de controles
+ · Diseño del Sprint 2 no contrastado     · Sin `check --deploy` en el CI     · RNF de seguridad generales
+   con el avance 1 (sección 7.1)                                                ("comprobar permisos")
+            ╲                                    │                                   ╱
+             ╲───────────────────────────────────┼──────────────────────────────────╱──►  HALLAZGOS DE
+             ╱───────────────────────────────────┼──────────────────────────────────╲     SEGURIDAD
+            ╱                                    │                                   ╲
+ Personas                                 Medición
+ · API e interfaz diseñadas por           · Sin métrica de vulnerabilidades
+   separado, sin revisión cruzada           ni de controles verificados
+   [Validar]
+```
+
+### 5 porqués — INC-006
+
+| # | Pregunta | Respuesta |
+|---|---|---|
+| 1 | ¿Por qué la sesión usa un token en `localStorage`? | El contrato de API (Sprint 2) eligió `TokenAuthentication` de DRF |
+| 2 | ¿Por qué no se detectó que contradecía el avance 1? | El diseño no se revisó contra la sección 7.1 del avance 1 y la decisión no pasó por la gestión de cambios |
+| 3 | ¿Por qué no se revisó? | La verificación de requisitos (VR) cubrió el backlog, pero no el diseño técnico contra la línea base |
+| 4 | ¿Por qué no había esa revisión? | La lista de revisión de PR no pedía comparar con la arquitectura aprobada |
+
+**Causa raíz.** Las decisiones técnicas del Sprint 2 no se verificaron contra la arquitectura aprobada ni se
+registraron como cambios, y la seguridad se revisó por primera vez después de implementar.
+
+### Acciones
+
+| Tipo | Acción | Responsable | Fecha |
+|---|---|---|---|
+| Correctiva | INC-003 e INC-005 corregidos (commits `e867548`, `c42730e`) | Samuel | 2026-11-05 (hecho) |
+| Correctiva | Decidir la corrección de INC-006 (CC-13) | Equipo | Sprint Review |
+| Preventiva | Agregar al CI `npm audit --omit=dev`, `pip-audit` y `check --deploy` con `DJANGO_HTTPS=true` | Wilberth | Sprint 4 |
+| Preventiva | Lista de revisión de PR: respetar la arquitectura aprobada o registrar la desviación (commit `b403436`) | Samuel | 2026-11-05 (hecho) |
+| Preventiva | Matriz de controles OWASP ASVS de la [Revisión de seguridad](Revision-seguridad.md), revisada en cada sprint | Luis | Cada sprint |

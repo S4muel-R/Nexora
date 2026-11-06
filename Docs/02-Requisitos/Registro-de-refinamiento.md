@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 8 |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
 | Backlog | [Catálogo de requisitos](Catalogo-de-requisitos.md) y Jira ADLCDS |
 
 Tipos de cambio: **Nueva**, **Modificada**, **Dividida**, **Eliminada**, **Prioridad**, **Criterios agregados**,
@@ -27,6 +27,8 @@ Tipos de cambio: **Nueva**, **Modificada**, **Dividida**, **Eliminada**, **Prior
 | REF-13 | 2026-11-04 | Prioridad | HU08 Docentes | Sprint 4 junto con estudiantes | Media; se mantiene en Sprint 4 | Reducción del alcance del incremento (CC-05) |
 | REF-14 | 2026-11-04 | Eliminada | Consulta de asistencia por familias | La propuesta menciona la participación futura de familias o personas encargadas | Fuera del alcance de la primera versión | La propuesta la pospone hasta definir las funciones centrales |
 | REF-15 | 2026-11-04 | Nueva | RNF05 Rendimiento | ADLCDS-56 y 99 preparan pruebas de rendimiento sin requisito | Listados en menos de 2 s con 120 estudiantes | VR-14 |
+| REF-16 | 2026-11-05 | Ampliada | HU05 Actualizar los datos de mi institución | CA05 del avance 1 incluye el periodo lectivo de demostración | Nuevo escenario HU05-E5: definir el periodo lectivo vigente (nombre, inicio y fin) | VR-16 · GAP-01 |
+| REF-17 | 2026-11-05 | Criterio agregado | HU09, HU10, HU11 | CA12, CA16 y CA22 del avance 1 no tenían escenario | HU09-E4 (código de grupo duplicado en el periodo), HU10-E5 (docente sin asignación), HU11-E4 (listado sin permiso) | VR-17 · GAP-02 – GAP-04 |
 
 ## Resumen
 
@@ -37,7 +39,8 @@ Tipos de cambio: **Nueva**, **Modificada**, **Dividida**, **Eliminada**, **Prior
 | Modificada | 1 |
 | Eliminada | 1 |
 | Prioridad | 2 |
-| Criterios agregados | 1 (20 escenarios más que lo previsto) |
+| Criterios agregados | 2 (20 escenarios más que lo previsto; 3 por la línea base del avance 1) |
 | Ambigüedad corregida | 2 |
 | Incompletitud corregida | 2 |
-| **Total** | **15** |
+| Ampliada | 1 |
+| **Total** | **17** |

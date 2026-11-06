@@ -1,0 +1,9 @@
+{
+  "pantalla": "ingresar",
+  "dispositivo": "telefono",
+  "url": "/ingresar",
+  "reglas_aprobadas": 13,
+  "reglas_no_aplicables": 49,
+  "revision_manual": [],
+  "violaciones": []
+}

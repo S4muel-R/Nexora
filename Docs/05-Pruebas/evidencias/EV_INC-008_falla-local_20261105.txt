@@ -1,0 +1,92 @@
+Evidencia: INC-008 reproducido con CP-S20 antes de la corrección (segunda carga de /my-institution/ retrasada 1,5 s)
+Fecha: 2026-11-05 · commit b403436
+Origen: CI de PR #11, ejecución https://github.com/S4muel-R/Nexora/actions/runs/42148970848 (CP-S09 intermitente en teléfono; failOnFlakyTests hizo fallar el CI)
+
+
+Running 2 tests using 1 worker
+
+  x  1 [computadora] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (7.9s)
+  x  2 [telefono] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) (7.9s)
+
+
+  1) [computadora] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Teléfono')
+    Expected: "2222-1322"
+    Received: "2222-9782"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Teléfono') with timeout 5000ms
+      - waiting for getByLabel('Teléfono')
+        14 × locator resolved to <input name="phone" id="field-phone" value="2222-9782"/>
+           - unexpected value "2222-9782"
+
+
+      76 |     await page.waitForTimeout(2000)
+      77 |
+    > 78 |     await expect(page.getByLabel('Teléfono')).toHaveValue(phone)
+         |                                               ^
+      79 |     await evidence(page, info, 'CP-S20', 'valor-conservado')
+      80 |   })
+      81 | })
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\instituciones.spec.ts:78:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [telefono] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Teléfono')
+    Expected: "2222-0215"
+    Received: "2222-9782"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Teléfono') with timeout 5000ms
+      - waiting for getByLabel('Teléfono')
+        14 × locator resolved to <input name="phone" id="field-phone" value="2222-9782"/>
+           - unexpected value "2222-9782"
+
+
+      76 |     await page.waitForTimeout(2000)
+      77 |
+    > 78 |     await expect(page.getByLabel('Teléfono')).toHaveValue(phone)
+         |                                               ^
+      79 |     await evidence(page, info, 'CP-S20', 'valor-conservado')
+      80 |   })
+      81 | })
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\instituciones.spec.ts:78:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--telefono\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--telefono\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--telefono\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\instituciones-HU04-–-HU05--679c7--escribió-reprueba-INC-008--telefono\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [computadora] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) 
+    [telefono] › e2e\instituciones.spec.ts:65:3 › HU04 – HU05 Instituciones › CP-S20 HU05-E1 una respuesta repetida de la carga no borra lo que se escribió (reprueba INC-008) 

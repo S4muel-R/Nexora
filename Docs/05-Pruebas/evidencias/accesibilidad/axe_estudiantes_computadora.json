@@ -1,0 +1,11 @@
+{
+  "pantalla": "estudiantes",
+  "dispositivo": "computadora",
+  "url": "/estudiantes",
+  "reglas_aprobadas": 20,
+  "reglas_no_aplicables": 41,
+  "revision_manual": [
+    "th-has-data-cells"
+  ],
+  "violaciones": []
+}

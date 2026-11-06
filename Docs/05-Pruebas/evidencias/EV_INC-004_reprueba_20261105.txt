@@ -1,0 +1,25 @@
+Evidencia: reprueba de INC-004 con Vitest después de la corrección
+Fecha: 2026-11-05 · src/pages/StudentsPage.tsx (efecto que preselecciona el único nivel)
+
+
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+
+ ✓ src/api/client.test.ts > parseError > usa el mensaje y los campos del formato estándar 7ms
+ ✓ src/api/client.test.ts > parseError > usa un mensaje genérico si la respuesta no es JSON 1ms
+ ✓ src/api/client.test.ts > apiGet > devuelve los datos cuando la respuesta es correcta 2ms
+ ✓ src/api/client.test.ts > apiGet > convierte una falla de red en ApiError legible 2ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API 207ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas 568ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución 622ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión 14ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve Mi institución y Estudiantes 15ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones 14ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido 16ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro 26ms
+ ✓ src/App.test.tsx > HU07 Registrar estudiante > INC-004: el único nivel se preselecciona aunque los niveles lleguen después de abrir el formulario 74ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  19:54:26
+   Duration  5.66s (transform 225ms, setup 1.07s, import 467ms, tests 1.57s, environment 5.60s)
+

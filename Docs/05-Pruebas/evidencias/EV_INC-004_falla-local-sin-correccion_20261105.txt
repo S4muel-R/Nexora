@@ -1,0 +1,50 @@
+Evidencia: CP-S18 ejecutado contra la versión sin corregir (falla esperada) — confirma que la prueba detecta INC-004
+Fecha: 2026-11-05
+
+
+Running 1 test using 1 worker
+
+  x  1 [computadora] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) (5.8s)
+
+
+  1) [computadora] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByRole('form', { name: 'Registrar estudiante' }).getByLabel('Nivel')
+    Expected: "primaria"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByRole('form', { name: 'Registrar estudiante' }).getByLabel('Nivel') with timeout 5000ms
+      - waiting for getByRole('form', { name: 'Registrar estudiante' }).getByLabel('Nivel')
+        14 × locator resolved to <select name="level" id="field-level">…</select>
+           - unexpected value ""
+
+
+      104 |     const form = page.getByRole('form', { name: 'Registrar estudiante' })
+      105 |
+    > 106 |     await expect(form.getByLabel('Nivel')).toHaveValue('primaria')
+          |                                            ^
+      107 |     await evidence(page, info, 'CP-S18', 'nivel-preseleccionado')
+      108 |   })
+      109 | })
+        at C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\frontend\e2e\estudiantes.spec.ts:106:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-e09d9-uen-tarde-reprueba-INC-004--computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\estudiantes-HU06-–-HU07-Es-e09d9-uen-tarde-reprueba-INC-004--computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\estudiantes-HU06-–-HU07-Es-e09d9-uen-tarde-reprueba-INC-004--computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\estudiantes-HU06-–-HU07-Es-e09d9-uen-tarde-reprueba-INC-004--computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [computadora] › e2e\estudiantes.spec.ts:95:3 › HU06 – HU07 Estudiantes y aislamiento › CP-S18 HU07-E1 nivel preseleccionado aunque los niveles carguen tarde (reprueba INC-004) 

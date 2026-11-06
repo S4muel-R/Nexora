@@ -5,8 +5,8 @@
 | Código | S2-05 (incluye la nota técnica S1-07) |
 | EDT | 1.2.2.2 |
 | Responsable | Luis |
-| Versión | 1.0 |
-| Fecha | 2026-11-04 |
+| Versión | 1.1 |
+| Fecha | 2026-11-05 |
 | Criterio de entrega | Arquitectura, base de datos y API diseñadas |
 | Alcance | Incremento del segundo entregable: HU01 – HU07 |
 
@@ -110,8 +110,8 @@ los Estándares, sección 3.
 
 | Método y ruta | Rol | Cuerpo | Respuesta |
 |---|---|---|---|
-| `POST /auth/login/` (pública) | — | `{ "email", "password" }` | `200 { "token", "user": { "id", "email", "first_name", "last_name", "role", "institution": { "id", "name" } \| null } }` · `400 invalid_credentials` · `403 account_disabled` |
-| `POST /auth/logout/` | Cualquiera | — | `204` (elimina el token) |
+| `POST /auth/login/` (pública; ignora cualquier encabezado `Authorization`, INC-007) | — | `{ "email", "password" }` | `200 { "token", "user": { "id", "email", "first_name", "last_name", "role", "institution": { "id", "name" } \| null } }` · `400 invalid_credentials` · `403 account_disabled` |
+| `POST /auth/logout/` | Cualquiera | — | `204` (elimina el token). La interfaz borra el token local **antes** de llamar y envía la petición con `keepalive` (INC-009) |
 | `GET /auth/me/` | Cualquiera | — | `200` usuario actual · `401` |
 
 ### Instituciones
@@ -133,6 +133,15 @@ los Estándares, sección 3.
 | `POST /students/` | `institution_admin` | `{ "identification", "first_name", "last_name", "birth_date", "level" }` | `201` · `400` campos · `409` identificación duplicada |
 | `GET /students/{id}/` | `institution_admin`, `teacher` | — | `200` · `404` si es de otra institución |
 | `PATCH /students/{id}/` | `institution_admin` | Campos editables, incluido `is_active` | `200` · `400` · `404` · `409` |
+
+### Desviación abierta respecto del avance 1 (INC-006)
+
+El avance 1 (sección 7.1) fija sesiones con cookies HttpOnly y protección CSRF. Este contrato usa `Authorization: Token`
+con el token guardado en `localStorage`. La desviación se detectó en la revisión de seguridad del 2026-11-05 (CP-SEG04,
+[Revisión de seguridad](../05-Pruebas/Revision-seguridad.md)) y su corrección se decide en CC-13. Mientras tanto, el
+contrato documenta el comportamiento real del sistema.
+
+Para un ambiente publicado, `DJANGO_HTTPS=true` activa la redirección a HTTPS, las cookies seguras y HSTS (INC-003).
 
 ## 5. Pantallas del prototipo (S2-07)
 

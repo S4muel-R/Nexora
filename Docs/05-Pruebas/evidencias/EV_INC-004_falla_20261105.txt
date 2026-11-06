@@ -1,0 +1,48 @@
+Evidencia: INC-004 reproducido con Vitest antes de la corrección
+Fecha: 2026-11-05 · Rama test/ADLCDS-92-accesibilidad-seguridad · prueba src/App.test.tsx (INC-004)
+Origen: CI de PR #10, ejecución https://github.com/S4muel-R/Nexora/actions/runs/42144543564 (CP-S11 falló)
+
+
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+
+ ↓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API
+ ↓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas
+ ↓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución
+ ↓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión
+ ↓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve Mi institución y Estudiantes
+ ↓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones
+ ↓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido
+ ↓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro
+ × src/App.test.tsx > HU07 Registrar estudiante > INC-004: el único nivel se preselecciona aunque los niveles lleguen después de abrir el formulario 1339ms
+   → expect(element).toHaveValue(primaria)
+
+Expected the element to have value:
+  primaria
+Received:
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > HU07 Registrar estudiante > INC-004: el único nivel se preselecciona aunque los niveles lleguen después de abrir el formulario
+Error: expect(element).toHaveValue(primaria)
+
+Expected the element to have value:
+  primaria
+Received:
+
+ ❯ src/App.test.tsx:166:42
+    164|     const level = screen.getByLabelText('Nivel')
+    165|     expect(await screen.findByRole('option', { name: 'Primaria' })).to…
+    166|     await vi.waitFor(() => expect(level).toHaveValue('primaria'))
+       |                                          ^
+    167|   })
+    168| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  19:53:36
+   Duration  5.56s (transform 252ms, setup 540ms, import 457ms, tests 1.34s, environment 2.88s)
+

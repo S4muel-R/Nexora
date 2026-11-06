@@ -1,0 +1,29 @@
+Evidencia: ejecución 3 de Vitest
+Fecha: 2026-11-05 · commit f15dec5
+$ npx vitest run --reporter=verbose
+
+
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+
+ ✓ src/api/client.test.ts > parseError > usa el mensaje y los campos del formato estándar 6ms
+ ✓ src/api/client.test.ts > parseError > usa un mensaje genérico si la respuesta no es JSON 1ms
+ ✓ src/api/client.test.ts > apiGet > devuelve los datos cuando la respuesta es correcta 2ms
+ ✓ src/api/client.test.ts > apiGet > convierte una falla de red en ApiError legible 1ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > un 401 del token vigente cierra la sesión 2ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > INC-007: un 401 tardío de un token ya reemplazado no cierra la sesión nueva 1ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API 243ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas 567ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución 645ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión 21ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve Mi institución y Estudiantes 31ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones 14ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido 15ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro 30ms
+ ✓ src/App.test.tsx > HU07 Registrar estudiante > INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado 127ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: el token se borra del navegador aunque el servidor no responda al cierre de sesión 58ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  20:43:43
+   Duration  5.99s (transform 391ms, setup 1.10s, import 587ms, tests 1.77s, environment 5.65s)
+

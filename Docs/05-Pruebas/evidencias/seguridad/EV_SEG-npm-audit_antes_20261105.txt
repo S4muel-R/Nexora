@@ -1,0 +1,19 @@
+Evidencia: auditoría de dependencias del frontend (npm audit) ANTES de la corrección
+Fecha: 2026-11-05 · Rama test/ADLCDS-92-accesibilidad-seguridad · vitest 3.2.x
+
+Resumen: {'info': 0, 'low': 0, 'moderate': 11, 'high': 0, 'critical': 2, 'total': 13}
+Dependencias: {'prod': 8, 'dev': 362, 'optional': 54, 'peer': 7, 'peerOptional': 0, 'total': 369}
+
+@typescript-eslint/eslint-plugin | moderate | rango >=6.16.0 | depende de @typescript-eslint/parser, @typescript-eslint/type-utils, @typescript-eslint/utils
+@typescript-eslint/parser | moderate | rango >=6.16.0 | depende de @typescript-eslint/typescript-estree
+@typescript-eslint/type-utils | moderate | rango >=6.16.0 | depende de @typescript-eslint/typescript-estree, @typescript-eslint/utils
+@typescript-eslint/typescript-estree | moderate | rango >=6.16.0 | depende de minimatch
+@typescript-eslint/utils | moderate | rango >=6.16.0 | depende de @typescript-eslint/typescript-estree
+@vitest/coverage-v8 | moderate | rango 2.0.0-beta.1 - 4.1.10 | depende de test-exclude, vitest
+@vitest/mocker | moderate | rango <=4.1.11 | Vitest: Path Traversal / Arbitrary File Read via @vitest/mocker Redirect Mock https://github.com/advisories/GHSA-82fw-gwwq-j7x9; Vitest: Code injection via unauthenticated manual mock registration https://github.com/advisories/GHSA-qxg6-89mg-rqv8
+glob | moderate | rango 9.0.0 - 14.0.1 | Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal https://github.com/advisories/GHSA-3g3m-2fjr-6pw4
+minimatch | moderate | rango 7.0.0 - 11.0.0 | minimatch has potential denial of service via globparts amplification https://github.com/advisories/GHSA-g3hv-75wg-m249
+test-exclude | moderate | rango >=7.0.0 | depende de glob, minimatch
+tinypool | critical | rango <=2.1.1 | Tinypool: Prototype Pollution gadget in worker options leads to Remote Code Execution https://github.com/advisories/GHSA-5gmw-xhrv-c9v3; Tinypool: Prototype Pollution Gadget to RCE in run() options https://github.com/advisories/GHSA-85c8-ppgw-ccpr
+typescript-eslint | moderate | rango * | depende de @typescript-eslint/eslint-plugin, @typescript-eslint/parser, @typescript-eslint/typescript-estree, @typescript-eslint/utils
+vitest | critical | rango 0.0.95 - 4.1.10 | Vitest: Path Traversal / Arbitrary File Read via @vitest/mocker Redirect Mock https://github.com/advisories/GHSA-82fw-gwwq-j7x9
