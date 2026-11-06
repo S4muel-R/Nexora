@@ -1,0 +1,37 @@
+........................................................                 [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.7-final-0 _______________
+
+Name                          Stmts   Miss  Cover
+-------------------------------------------------
+accounts\__init__.py              0      0   100%
+accounts\admin.py                11      0   100%
+accounts\apps.py                  4      0   100%
+accounts\models.py               41      6    85%
+accounts\serializers.py          14      0   100%
+accounts\views.py                28      1    96%
+config\__init__.py                0      0   100%
+config\settings.py               33      3    91%
+config\settings_test.py           5      0   100%
+config\urls.py                   12      0   100%
+core\__init__.py                  0      0   100%
+core\apps.py                      4      0   100%
+core\exceptions.py               40      0   100%
+core\mixins.py                    5      0   100%
+core\permissions.py              16      0   100%
+core\views.py                    10      0   100%
+institutions\__init__.py          0      0   100%
+institutions\admin.py             3      0   100%
+institutions\apps.py              4      0   100%
+institutions\models.py           23      1    96%
+institutions\serializers.py      60      2    97%
+institutions\views.py            23      1    96%
+students\__init__.py              0      0   100%
+students\admin.py                 7      0   100%
+students\apps.py                  4      0   100%
+students\models.py               17      1    94%
+students\serializers.py          37      0   100%
+students\views.py                26      2    92%
+-------------------------------------------------
+TOTAL                           427     17    96%
+56 passed in 1.24s
