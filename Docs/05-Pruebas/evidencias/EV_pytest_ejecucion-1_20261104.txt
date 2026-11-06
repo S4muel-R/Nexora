@@ -1,0 +1,22 @@
+.....................................F................                   [100%]
+================================== FAILURES ===================================
+______________________ test_hu07_e1_registrar_estudiante ______________________
+
+client_for = <function client_for.<locals>._client at 0x000001CC46DD8F40>
+robles_admin = <User: admin@robles.test>
+robles = <Institution: Escuela Los Robles>
+
+    def test_hu07_e1_registrar_estudiante(client_for, robles_admin, robles):
+        response = client_for(robles_admin).post(STUDENTS, payload())
+    
+        assert response.status_code == 201
+        student = Student.objects.get(identification="1-1111-1111")
+        assert student.institution == robles
+>       assert student.is_active
+E       assert False
+E        +  where False = <Student: Mora, Ana>.is_active
+
+tests\test_students.py:40: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_students.py::test_hu07_e1_registrar_estudiante - assert False
+1 failed, 53 passed in 0.82s

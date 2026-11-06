@@ -17,11 +17,32 @@ DEFAULT_MESSAGES = {
     status.HTTP_409_CONFLICT: "El registro ya existe.",
 }
 
+STATUS_CODES = {
+    status.HTTP_403_FORBIDDEN: "permission_denied",
+    status.HTTP_404_NOT_FOUND: "not_found",
+}
 
-class ConflictError(exceptions.APIException):
+
+class NexoraError(exceptions.APIException):
+    """Error propio de Nexora: su mensaje se envía tal cual a la persona usuaria."""
+
+
+class ConflictError(NexoraError):
     status_code = status.HTTP_409_CONFLICT
     default_detail = DEFAULT_MESSAGES[status.HTTP_409_CONFLICT]
     default_code = "conflict"
+
+
+class InvalidCredentials(NexoraError):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Correo o contraseña incorrectos."
+    default_code = "invalid_credentials"
+
+
+class AccountDisabled(NexoraError):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = "Su cuenta está desactivada. Contacte a la administración."
+    default_code = "account_disabled"
 
 
 def _error(code: str, message: str, fields: dict | None, http_status: int) -> Response:
@@ -52,8 +73,11 @@ def api_exception_handler(exc, context):
             response.status_code,
         )
 
-    code = exc.get_codes() if isinstance(exc, exceptions.APIException) else "error"
+    if isinstance(exc, NexoraError):
+        return _error(exc.get_codes(), str(exc.detail), None, response.status_code)
+
+    code = exc.get_codes() if isinstance(exc, exceptions.APIException) else None
     if not isinstance(code, str):
-        code = "error"
-    message = DEFAULT_MESSAGES.get(response.status_code, str(getattr(exc, "detail", exc)))
+        code = STATUS_CODES.get(response.status_code, "error")
+    message = DEFAULT_MESSAGES.get(response.status_code, "Ocurrió un error.")
     return _error(code, message, None, response.status_code)
