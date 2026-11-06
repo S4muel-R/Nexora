@@ -5,6 +5,7 @@ import { levelLabel } from '../api/types'
 import type { Institution, Level } from '../api/types'
 import { Alert, Field } from '../components/Field'
 import { LevelPicker } from '../components/LevelPicker'
+import { usePageTitle } from '../components/usePageTitle'
 
 const EMPTY_FORM = {
   name: '',
@@ -17,6 +18,7 @@ const EMPTY_FORM = {
 
 /** HU04: la administración de la plataforma consulta y registra instituciones con su administrador. */
 export function InstitutionsPage() {
+  usePageTitle('Instituciones')
   const [institutions, setInstitutions] = useState<Institution[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
   const [form, setForm] = useState(EMPTY_FORM)

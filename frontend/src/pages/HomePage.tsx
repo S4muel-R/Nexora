@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { ROLE_LABELS, navFor } from '../auth/navigation'
+import { usePageTitle } from '../components/usePageTitle'
 
 export function HomePage() {
   const { user } = useAuth()
+  usePageTitle('Inicio')
   if (!user) return null
   return (
     <section>

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ApiError, apiGet, apiPatch, apiPost, errorMessage } from '../api/client'
 import { levelLabel } from '../api/types'
 import type { Institution, Level, Student } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { Alert, Field } from '../components/Field'
+import { usePageTitle } from '../components/usePageTitle'
 
 interface StudentForm {
   identification: string
@@ -19,6 +20,7 @@ const EMPTY: StudentForm = { identification: '', first_name: '', last_name: '', 
 /** HU07: lista con búsqueda, registro, edición y desactivación de estudiantes. */
 export function StudentsPage() {
   const { user } = useAuth()
+  usePageTitle('Estudiantes')
   const canEdit = user?.role === 'institution_admin'
   const [students, setStudents] = useState<Student[]>([])
   const [levels, setLevels] = useState<Level[]>([])
@@ -31,6 +33,11 @@ export function StudentsPage() {
   const [form, setForm] = useState<StudentForm>(EMPTY)
   const [formError, setFormError] = useState<ApiError | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  // A11Y-02 (WCAG 2.4.3): al abrir el formulario, el foco pasa a su encabezado.
+  const formHeading = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    if (editing) formHeading.current?.focus()
+  }, [editing])
 
   const load = useCallback(() => {
     const params = new URLSearchParams()
@@ -135,7 +142,9 @@ export function StudentsPage() {
           noValidate
           aria-label={editing === 'new' ? 'Registrar estudiante' : 'Editar estudiante'}
         >
-          <h2>{editing === 'new' ? 'Nuevo estudiante' : 'Editar estudiante'}</h2>
+          <h2 ref={formHeading} tabIndex={-1}>
+            {editing === 'new' ? 'Nuevo estudiante' : 'Editar estudiante'}
+          </h2>
           {formError && <Alert kind="error">{formError.message}</Alert>}
           <div className="grid-2">
             <Field
