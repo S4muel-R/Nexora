@@ -12,6 +12,13 @@ documental de OneDrive (ver S1-12), que usa la misma estructura de carpetas.
 | `05-Pruebas` | Plan y resultados de pruebas |
 | `06-Entregables` | Versiones finales (`.docx` / `.pdf`) entregadas al docente |
 
+## Documentos de gestión
+
+| Documento | Estado |
+|---|---|
+| [Plan de trabajo para el segundo entregable](01-Planificacion/Plan-segundo-avance.md) | v3 |
+| [Estándares del proyecto](01-Planificacion/Estandares.md) | v1.0 |
+
 ## Sprint 1
 
 | Código | EDT | Documento | Estado |
