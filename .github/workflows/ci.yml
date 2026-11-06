@@ -1,5 +1,5 @@
 # Integración continua de Nexora.
-# Disparador: cada push a main y cada Pull Request hacia main.
+# Disparador: cada push a main y cada Pull Request (también los encadenados, cuya base es otra rama).
 # Etapas: análisis estático → pruebas automatizadas con cobertura → compilación → artefactos (reportes de evidencia).
 name: CI
 
@@ -7,7 +7,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   backend:
