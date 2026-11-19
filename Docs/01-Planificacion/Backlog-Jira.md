@@ -4,12 +4,12 @@
 |---|---|
 | Referencia | Anexo de correcciones del avance 1, secciones 1 y 9 ("exportación del backlog vigente") |
 | Fuente | Jira Cloud, proyecto ADLCDS, tablero 2: https://proyectosulacit.atlassian.net/jira/software/projects/ADLCDS/boards/2 |
-| Fecha de corte | 2026-11-05 |
+| Fecha de corte | 2026-11-18 |
 | Método | Consulta JQL `project = ADLCDS ORDER BY key ASC` mediante la API de Jira, con los cambios de estado registrados después de la consulta; archivo CSV: [Backlog-Jira.csv](Backlog-Jira.csv) |
-| Elementos | 122 (101 tareas, 12 historias, 9 defectos) |
+| Elementos | 125 (101 tareas, 12 historias, 12 defectos). El CSV corresponde al corte del 2026-11-05 (122 elementos); los cambios del 2026-11-18 (ADLCDS-112 – 116 a *En curso*, ADLCDS-124 – 126 nuevos) se registran solo en esta tabla |
 
 > El estado es el del tablero a la fecha de corte. *Listo* exige el PR integrado en `main` (Estándares, sección 6);
-> por eso ninguna tarea está en *Listo* aunque su entregable esté en GitHub: los PR #1 – #11 esperan la revisión de
+> por eso ninguna tarea está en *Listo* aunque su entregable esté en GitHub: los PR #1 – #12 esperan la revisión de
 > otro integrante. Las fechas de los sprints son las cargadas en Jira (CC-01 pendiente).
 
 ## 1. Resumen por sprint y estado
@@ -24,8 +24,8 @@
 | Sprint 6 Reportes de interfaz | 13 | 0 | 0 | 13 |
 | Sprint 7 arranque de pruebas | 13 | 1 | 0 | 14 |
 | Sprint 8 Validación de uso | 10 | 0 | 0 | 10 |
-| Sin sprint | 5 | 16 | 0 | 21 |
-| **Total** | **76** | **46** | **0** | **122** |
+| Sin sprint | 0 | 24 | 0 | 24 |
+| **Total** | **71** | **54** | **0** | **125** |
 
 ## 2. Elementos
 
@@ -141,11 +141,11 @@
 | [ADLCDS-109](https://proyectosulacit.atlassian.net/browse/ADLCDS-109) | Historia | HU05 Actualizar los datos de mi institución | En curso | Sin asignar | Alta | Sin sprint |
 | [ADLCDS-110](https://proyectosulacit.atlassian.net/browse/ADLCDS-110) | Historia | HU06 Impedir el acceso a datos de otra institución | En curso | Sin asignar | Máxima | Sin sprint |
 | [ADLCDS-111](https://proyectosulacit.atlassian.net/browse/ADLCDS-111) | Historia | HU07 Gestionar estudiantes sin duplicados | En curso | Sin asignar | Alta | Sin sprint |
-| [ADLCDS-112](https://proyectosulacit.atlassian.net/browse/ADLCDS-112) | Historia | HU08 Gestionar docentes y sus cuentas | Por hacer | Sin asignar | Media | Sin sprint |
-| [ADLCDS-113](https://proyectosulacit.atlassian.net/browse/ADLCDS-113) | Historia | HU09 Crear grupos y asignar estudiantes y docentes | Por hacer | Sin asignar | Media | Sin sprint |
-| [ADLCDS-114](https://proyectosulacit.atlassian.net/browse/ADLCDS-114) | Historia | HU10 Registrar y corregir la asistencia de mi grupo | Por hacer | Sin asignar | Media | Sin sprint |
-| [ADLCDS-115](https://proyectosulacit.atlassian.net/browse/ADLCDS-115) | Historia | HU11 Consultar listados de estudiantes y grupos | Por hacer | Sin asignar | Media | Sin sprint |
-| [ADLCDS-116](https://proyectosulacit.atlassian.net/browse/ADLCDS-116) | Historia | HU12 Consultar el resumen de asistencia | Por hacer | Sin asignar | Media | Sin sprint |
+| [ADLCDS-112](https://proyectosulacit.atlassian.net/browse/ADLCDS-112) | Historia | HU08 Gestionar docentes y sus cuentas | En curso | Sin asignar | Media | Sin sprint |
+| [ADLCDS-113](https://proyectosulacit.atlassian.net/browse/ADLCDS-113) | Historia | HU09 Crear grupos y asignar estudiantes y docentes | En curso | Sin asignar | Media | Sin sprint |
+| [ADLCDS-114](https://proyectosulacit.atlassian.net/browse/ADLCDS-114) | Historia | HU10 Registrar y corregir la asistencia de mi grupo | En curso | Sin asignar | Media | Sin sprint |
+| [ADLCDS-115](https://proyectosulacit.atlassian.net/browse/ADLCDS-115) | Historia | HU11 Consultar listados de estudiantes y grupos | En curso | Sin asignar | Media | Sin sprint |
+| [ADLCDS-116](https://proyectosulacit.atlassian.net/browse/ADLCDS-116) | Historia | HU12 Consultar el resumen de asistencia | En curso | Sin asignar | Media | Sin sprint |
 | [ADLCDS-117](https://proyectosulacit.atlassian.net/browse/ADLCDS-117) | Defecto | INC-007 Una sesión anterior inválida impide o cierra el nuevo inicio de sesión | En curso | Samuel Ramirez Perez | Alta | Sin sprint |
 | [ADLCDS-118](https://proyectosulacit.atlassian.net/browse/ADLCDS-118) | Defecto | INC-003 Sin configuración HTTPS para un ambiente publicado | En curso | Samuel Ramirez Perez | Media | Sin sprint |
 | [ADLCDS-119](https://proyectosulacit.atlassian.net/browse/ADLCDS-119) | Defecto | INC-004 El nivel no se preselecciona si el formulario de estudiante se abre antes de cargar los niveles | En curso | Samuel Ramirez Perez | Alta | Sin sprint |
@@ -153,3 +153,6 @@
 | [ADLCDS-121](https://proyectosulacit.atlassian.net/browse/ADLCDS-121) | Defecto | INC-006 La sesión usa un token en localStorage en lugar de cookie HttpOnly con CSRF (desviación del avance 1) | En curso | Luis Lobo Zeledon | Alta | Sin sprint |
 | [ADLCDS-122](https://proyectosulacit.atlassian.net/browse/ADLCDS-122) | Defecto | INC-009 Cerrar sesión y recargar enseguida restaura la sesión (el token no se borra hasta que responde el servidor) | En curso | Samuel Ramirez Perez | Alta | Sin sprint |
 | [ADLCDS-123](https://proyectosulacit.atlassian.net/browse/ADLCDS-123) | Defecto | INC-008 Una carga repetida de Mi institución sobrescribe lo que se está escribiendo | En curso | Samuel Ramirez Perez | Media | Sin sprint |
+| [ADLCDS-124](https://proyectosulacit.atlassian.net/browse/ADLCDS-124) | Defecto | INC-010 Crear grupo se habilita antes de cargar los niveles y el nivel queda vacío | En curso | Sin asignar | Media | Sin sprint |
+| [ADLCDS-125](https://proyectosulacit.atlassian.net/browse/ADLCDS-125) | Defecto | INC-011 Una respuesta tardía de otra fecha reemplaza la lista de asistencia y se guarda en la fecha equivocada | En curso | Sin asignar | Alta | Sin sprint |
+| [ADLCDS-126](https://proyectosulacit.atlassian.net/browse/ADLCDS-126) | Defecto | INC-012 Un cierre de sesión que responde tarde borra la sesión iniciada después | En curso | Sin asignar | Alta | Sin sprint |

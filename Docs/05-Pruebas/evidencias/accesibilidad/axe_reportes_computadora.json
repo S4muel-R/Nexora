@@ -1,0 +1,9 @@
+{
+  "pantalla": "reportes",
+  "dispositivo": "computadora",
+  "url": "/reportes",
+  "reglas_aprobadas": 22,
+  "reglas_no_aplicables": 40,
+  "revision_manual": [],
+  "violaciones": []
+}

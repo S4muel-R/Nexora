@@ -4,9 +4,9 @@
 |---|---|
 | Norma | ISO/IEC/IEEE 29119-3, "Incident Report" · clasificación por ISO/IEC 25010:2023 |
 | Referencia | Instrucciones del Proyecto Integrador, sección 16 · Anexo de correcciones del avance 1, secciones 7 y 9 |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
-| Fuente oficial | Jira ADLCDS, tipo *Bug* (ADLCDS-103, 104 y 117 – 123) |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
+| Fuente oficial | Jira ADLCDS, tipo *Bug* (ADLCDS-103, 104, 117 – 126) |
 
 Ciclo de vida: **Detección → Registro → Clasificación → Análisis → Asignación → Corrección → Reprueba → Cierre**.
 En Jira: *Por hacer* (registrado y asignado) → *En curso* (en corrección o corregido pendiente de integración) →
@@ -30,6 +30,9 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | INC-007 | [ADLCDS-117](https://proyectosulacit.atlassian.net/browse/ADLCDS-117) | Una sesión anterior inválida impide o cierra el nuevo inicio de sesión | Autenticación (interfaz y API) | Alta | Alta | Fiabilidad · Seguridad | CI de PR #11 (intermitente, EJ-17) | Corregido y reprobado · pendiente de integrar |
 | INC-008 | [ADLCDS-123](https://proyectosulacit.atlassian.net/browse/ADLCDS-123) | Una carga repetida de Mi institución sobrescribe lo que se está escribiendo | Mi institución (interfaz) | Baja | Media | Adecuación funcional | CI de PR #11 con `failOnFlakyTests` (EJ-20) | Corregido y reprobado · pendiente de integrar |
 | INC-009 | [ADLCDS-122](https://proyectosulacit.atlassian.net/browse/ADLCDS-122) | Cerrar sesión y recargar enseguida restaura la sesión | Autenticación (interfaz) | Alta | Alta | Seguridad | Suite con API lenta (EJ-21) | Corregido y reprobado · pendiente de integrar |
+| INC-010 | [ADLCDS-124](https://proyectosulacit.atlassian.net/browse/ADLCDS-124) | Crear grupo se habilita antes de cargar los niveles y el nivel queda vacío | Grupos (interfaz) | Media | Media | Adecuación funcional | Suite de sistema sobre la versión compilada (EJ-26) | Corregido y reprobado · pendiente de integrar |
+| INC-011 | [ADLCDS-125](https://proyectosulacit.atlassian.net/browse/ADLCDS-125) | Una respuesta tardía de otra fecha reemplaza la lista de asistencia y se guarda en la fecha equivocada | Asistencia (interfaz) | Alta | Alta | Adecuación funcional · Fiabilidad | Suite con API lenta (EJ-26) | Corregido y reprobado · pendiente de integrar |
+| INC-012 | [ADLCDS-126](https://proyectosulacit.atlassian.net/browse/ADLCDS-126) | Un cierre de sesión que responde tarde borra la sesión iniciada después | Autenticación (interfaz y API) | Alta | Alta | Fiabilidad | Suite con API lenta (EJ-27) | Corregido y reprobado · pendiente de integrar |
 
 ---
 
@@ -254,6 +257,86 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 
 ---
 
+## INC-010 — Crear grupo se habilita antes de cargar los niveles y el nivel queda vacío
+
+| Campo | Valor |
+|---|---|
+| Identificador | INC-010 · Jira [ADLCDS-124](https://proyectosulacit.atlassian.net/browse/ADLCDS-124) |
+| Descripción | En Grupos, el botón "Crear grupo" se habilitaba en cuanto cargaban los periodos, aunque `/my-institution/` (los niveles) no hubiera respondido. El formulario se abría con Nivel vacío y al guardar la API respondía "Los datos enviados no son válidos.". |
+| Módulo afectado | Frontend · `src/pages/GroupsPage.tsx` |
+| Historia / escenario | HU09-E1 · RF06 · CA11 |
+| Caso de prueba | CP-S25 (detección); CP-U12 (reprueba) |
+| Característica ISO/IEC 25010 | Adecuación funcional → corrección funcional |
+| Ambiente | Local, Chromium 1280 × 800, versión compilada (`vite preview`), `67f59b4` (EJ-26). Esperado "Ya existe un grupo con ese código en este periodo.", obtenido "Los datos enviados no son válidos." |
+| Pasos para reproducir | 1. Ingresar como `admin@robles.test`. 2. Abrir Grupos con `/my-institution/` lento. 3. Pulsar Crear grupo antes de que responda. 4. Escribir un código y Guardar. |
+| Resultado esperado | El formulario se abre con el único nivel de la institución (primaria) preseleccionado. |
+| Resultado obtenido | Nivel vacío y error de validación genérico. |
+| Severidad / prioridad | Media / Media — hay alternativa (elegir el nivel), pero el error no explica la causa. |
+| Responsable | Samuel |
+| Análisis | Es el mismo patrón de INC-004 en una pantalla nueva: la lección de ACR-03 (esperar los datos de los que depende un formulario) no se convirtió en una regla verificable para pantallas nuevas. Ver ACR-05. |
+| Corrección | El botón se habilita cuando terminan de cargar los niveles, y el único nivel se preselecciona aunque llegue después de abrir el formulario. Commit `a5fe124`. |
+| Resultado de reprueba | CP-U12 falla sin la corrección y pasa con ella; Vitest 49/49. CP-S25 aprobado en desarrollo, versión compilada y con latencia (EJ-27). |
+| Evidencia | `evidencias/EV_INC-010-011_falla_20261118.txt` · `EV_INC-010-011_reprueba_20261118.txt` · `e2e/EV_CP-S25_*` |
+| Estado | Corregido y reprobado; se cierra al integrar el PR #12. |
+
+---
+
+## INC-011 — Una respuesta tardía de otra fecha reemplaza la lista de asistencia y se guarda en la fecha equivocada
+
+| Campo | Valor |
+|---|---|
+| Identificador | INC-011 · Jira [ADLCDS-125](https://proyectosulacit.atlassian.net/browse/ADLCDS-125) |
+| Descripción | En Asistencia, al cambiar la fecha mientras todavía cargaba la lista de hoy, la respuesta tardía de hoy reemplazaba la lista de la fecha elegida. Al guardar, la asistencia quedaba registrada en la fecha de hoy. |
+| Módulo afectado | Frontend · `src/pages/AttendancePage.tsx` |
+| Historia / escenario | HU10-E1 · RF07 · CA17 |
+| Caso de prueba | CP-S29 con la API lenta (detección); CP-U13 y CP-S29 con latencia (reprueba) |
+| Característica ISO/IEC 25010 | Adecuación funcional → corrección funcional · Fiabilidad |
+| Ambiente | Local, Chromium (computadora y Pixel 7), API con latencia aleatoria de 0 a 700 ms, `67f59b4` (EJ-26). Obtenido en computadora: "Asistencia de 4-A del 2026-11-18 registrada." en lugar de "… del 2026-11-02 …"; en teléfono la lista de la fecha elegida nunca apareció. |
+| Pasos para reproducir | 1. Ingresar como `docente@robles.test`. 2. Abrir Asistencia (carga la lista de hoy). 3. Cambiar la fecha antes de que responda. 4. Guardar. |
+| Resultado esperado | Se muestra y guarda la lista de la fecha elegida. |
+| Resultado obtenido | Se muestra la lista de hoy con el encabezado de hoy y se guarda en la fecha de hoy. |
+| Severidad / prioridad | Alta / Alta — la asistencia queda registrada en otra fecha sin que la persona docente lo note (integridad del registro, RF07). |
+| Responsable | Samuel |
+| Análisis | El mismo patrón de INC-008 (respuesta de una consulta ya reemplazada). La corrección de INC-008 usó un indicador local en esa pantalla, pero no quedó una regla para consultas que dependen de filtros. Ver ACR-05. |
+| Corrección | Solo la respuesta de la última consulta actualiza la lista; además, Guardar no envía una lista que no corresponda al grupo y la fecha seleccionados. Commit `a5fe124`. |
+| Resultado de reprueba | CP-U13 falla sin la corrección y pasa con ella; Vitest 49/49. CP-S29 – CP-S31 con latencia en computadora y teléfono (EJ-27). |
+| Evidencia | `evidencias/EV_INC-010-011_falla_20261118.txt` · `EV_INC-010-011_reprueba_20261118.txt` · `EV_playwright_latencia-3_20261118.txt` |
+| Estado | Corregido y reprobado; se cierra al integrar el PR #12. |
+
+---
+
+## INC-012 — Un cierre de sesión que responde tarde borra la sesión iniciada después
+
+| Campo | Valor |
+|---|---|
+| Identificador | INC-012 · Jira [ADLCDS-126](https://proyectosulacit.atlassian.net/browse/ADLCDS-126) |
+| Descripción | Al cerrar la sesión, la interfaz vuelve de inmediato a la pantalla de ingreso (INC-009) sin esperar la respuesta de `POST /auth/logout/`. Si la persona ingresa enseguida con otra cuenta y esa respuesta llega después del nuevo inicio, su encabezado `Set-Cookie` que elimina `sessionid` borra la cookie de la sesión nueva: la siguiente petición responde 401 y se vuelve a pedir el ingreso. |
+| Módulo afectado | Frontend · `src/auth/AuthContext.tsx` (`login`, `logout`) · Backend · respuesta de `POST /auth/logout/` |
+| Historia / escenario | HU02-E1 y HU01-E1 · RF01 · CA01 |
+| Caso de prueba | CP-S10 con la API lenta (detección); CP-A50, CP-U15, CP-S33 y CP-S34 (reprueba) |
+| Característica ISO/IEC 25010 | Fiabilidad · Adecuación funcional |
+| Ambiente | Local, Chromium, Pixel 7, API con latencia aleatoria de 0 a 700 ms (EJ-27): CP-S10 cerró la sesión de `admin@robles.test`, ingresó como `admin@monteverde.test` y la lista de estudiantes no apareció. No se reprodujo en 5 repeticiones aisladas: depende de que el cierre responda después del ingreso |
+| Pasos para reproducir | 1. Ingresar. 2. Cerrar sesión con la respuesta de `/auth/logout/` retrasada 2 s. 3. Ingresar de inmediato con otra cuenta. 4. Recargar a los 2,5 s. |
+| Resultado esperado | La segunda sesión sigue activa. |
+| Resultado obtenido | Pantalla de ingreso: la sesión nueva se perdió (CP-S33 sin la corrección). |
+| Severidad / prioridad | Alta / Alta — en un equipo compartido la persona que ingresa pierde la sesión sin explicación (HU01-E1); en redes lentas puede ocurrir en cada cambio de cuenta. |
+| Responsable | Samuel · revisión: pendiente Luis |
+| Análisis | La corrección de INC-009 hizo el cierre inmediato en la interfaz, pero no consideró que la respuesta del cierre modifica cookies y puede llegar después de otra operación de sesión. Mismo origen que ACR-03 y ACR-05: respuestas que llegan en otro orden. |
+| Corrección | Dos capas, commit `be47f1c`. Interfaz: el inicio de sesión espera (máximo 10 s) a que termine el cierre en curso, o completa un cierre pendiente, antes de enviar las credenciales. API: la respuesta del cierre ya no envía la cookie de sesión vacía (`core/middleware.py`); la sesión se elimina en el servidor, de modo que la cookie que queda en el navegador ya no sirve (HU02-E3, CP-A06). La segunda capa cubre el caso en que la página se recarga mientras la petición de cierre (`keepalive`) sigue en curso. |
+| Resultado de reprueba | CP-A50 falla sin el cambio de la API; CP-U15 y CP-S33 fallan sin el cambio de la interfaz; con ambos pasan. CP-S34 (ingreso tras recargar) pasa también sin las correcciones: Playwright no mantiene la petición retrasada después de navegar, así que ese caso lo cubre solo CP-A50. Suites completas con latencia, compilada y en desarrollo (EJ-27). |
+| Evidencia | `evidencias/EV_INC-012_falla_20261118.txt` (Vitest) · `EV_INC-012_falla-api_20261118.txt` · `EV_INC-012_falla-e2e_20261118.txt` · `EV_INC-012_falla-e2e-solo-interfaz_20261118.txt` · `EV_INC-012_reprueba_20261118.txt` · `EV_INC-012_reprueba-e2e_20261118.txt` · `EV_playwright_latencia-3_20261118.txt` · `e2e/EV_CP-S33_*`, `EV_CP-S34_*` |
+| Estado | Corregido y reprobado; se cierra al integrar el PR #12. |
+
+---
+
+## Fallas intermitentes sin causa confirmada
+
+| Ejecución | Caso | Observación | Seguimiento |
+|---|---|---|---|
+| EJ-27 (primera corrida con latencia) | CP-S26 en computadora | El mensaje de traslado no apareció en 5 s. No se reprodujo en 33 ejecuciones posteriores (5 aisladas y 28 del archivo completo, con latencia) ni en las suites finales | Se conserva `failOnFlakyTests` en el CI; si reaparece se registra como incidente. Posible causa por confirmar: la lista de grupos no descarta respuestas reemplazadas (mismo patrón que INC-011) |
+
+---
+
 ## Fallas de scripts de prueba (no son defectos del producto)
 
 | Ejecución | Script | Falla | Corrección |
@@ -261,12 +344,15 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | EJ-04 | `frontend/src/test/setup.ts` | Sin `globals: true`, Testing Library no limpiaba el DOM entre pruebas y 4 pruebas veían pantallas de la prueba anterior | `afterEach(cleanup)` |
 | EJ-09 | `frontend/e2e/instituciones.spec.ts` | `getByText(nombre)` encontraba el nombre en la alerta y en la tabla (modo estricto de Playwright) | Selector limitado a la celda de la tabla |
 | EJ-14 | `frontend/e2e/helpers.ts` | Las capturas se nombraban con la fecha UTC: las de EJ-10 (2026-11-04, 20:44 hora local) quedaron como `_20261105`, contra el estándar `AAAAMMDD` local | Fecha local (`toLocaleDateString('en-CA')`). Las capturas de EJ-10 se conservan en el historial de git (`2ee5e0a`); las actuales son de EJ-18 |
+| EJ-26 | `frontend/e2e/docentes-grupos.spec.ts` | En teléfono, el nombre de la sesión está oculto y CP-S23 lo buscaba; "Listado" coincidía también con la tabla y la sección (modo estricto); en el modo tarjeta las celdas pierden el rol `cell` | Texto del inicio, `getByLabel(..., { exact: true })` y `getByText` dentro de la tabla |
+| EJ-26 | `frontend/e2e/asistencia.spec.ts` | CP-S29 suponía que el docente tenía un solo grupo; CP-S25 le asignaba otro y la selección automática no ocurría | Se elige 4-A de forma explícita y CP-S25 quita la asignación al terminar |
+| EJ-27 | Procedimiento de evidencia | Un `git stash` para reproducir la falla de INC-010 e INC-011 cambió el código mientras corría la suite con latencia | La corrida se descartó y se repitió completa (`EV_playwright_latencia-3_20261118.txt`) |
 
 Se registran para el análisis de causa raíz del proceso de pruebas (ACR-03) y para la métrica de eficacia de los
 scripts (MP-05).
 
 ## Estado en Jira
 
-Los nueve incidentes están registrados como *Bug* y en *En curso*: corregidos y reprobados, pendientes de integrar en
-`main` (PR #5, #8 y #11). La reapertura de INC-004 y la corrección de INC-006 quedaron como comentarios en ADLCDS-119 y
+Los doce incidentes están registrados como *Bug* y en *En curso*: corregidos y reprobados, pendientes de integrar en
+`main` (PR #5, #8, #11 y #12). La reapertura de INC-004 y la corrección de INC-006 quedaron como comentarios en ADLCDS-119 y
 ADLCDS-121.

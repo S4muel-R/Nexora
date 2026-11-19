@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 |---|---|
-| Código | S3-03 / S4-03 (casos CA01 – CA16 del backlog original) · S7-14 (accesibilidad) |
+| Código | S3-03 / S4-03 (casos CA01 – CA16 del backlog original) · S7-14 (accesibilidad) · ADLCDS-112 – 116 |
 | Responsables | Wilberth (diseño), Luis (API), Samuel (interfaz) |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
 | Norma | ISO/IEC/IEEE 29119-3, "Test Case Specification" |
 | Plan | [Plan de pruebas](Plan-de-pruebas.md) |
 
@@ -17,18 +17,19 @@ a la última ejecución registrada en el [Registro de ejecución](Registro-de-ej
 
 | Nivel | Casos | Pruebas automatizadas | Historias |
 |---|---|---|---|
-| API e integración (CP-A) | 30 | 69 (pytest) | HU01 – HU07, RN, RNF |
-| Unitarias de interfaz (CP-U) | 9 | 28 (Vitest) | HU01 – HU05, HU07 |
-| Sistema (CP-S) | 21 | 42 (Playwright: 21 × 2 dispositivos), también sobre la versión compilada | HU01 – HU07, RNF03, RNF04, WCAG |
+| API e integración (CP-A) | 50 | 111 (pytest) | HU01 – HU12, RN, RNF |
+| Unitarias de interfaz (CP-U) | 15 | 50 (Vitest) | HU01 – HU05, HU07 – HU12 |
+| Sistema (CP-S) | 34 | 68 (Playwright: 34 × 2 dispositivos), también sobre la versión compilada y con latencia | HU01 – HU12, RNF03, RNF04, WCAG |
 | Seguridad (CP-SEG) | 4 | Herramientas de análisis (no se cuentan como pruebas automatizadas) | RNF de seguridad |
-| **Total** | **64** | **139** | |
+| **Total** | **103** | **229** | |
 
-Resultado de la última ejecución: **64 de 64 casos aprobados** (CP-SEG01 con riesgo residual aceptado; CP-SEG04
-aprobado tras corregir INC-006).
+Resultado de la última ejecución: **103 de 103 casos aprobados** (CP-SEG01 con riesgo residual aceptado; CP-SEG04
+aprobado tras corregir INC-006; CP-S25, CP-S29 y CP-S10 tras corregir INC-010, INC-011 e INC-012).
 
-Correspondencia con la **línea base del avance 1** (CA01 – CA24): este incremento cubre CA01 – CA08 (CA02 y CA05
-parcialmente); CA09 – CA24 corresponden a HU08 – HU12 del catálogo, planificadas para los Sprints 4 – 6. El detalle
-bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-trazabilidad.md), sección 2.
+Correspondencia con la **línea base del avance 1** (CA01 – CA24): CP-A01 – CP-A30, CP-U01 – CP-U09 y CP-S01 – CP-S21
+cubren CA01 – CA08; los casos del tercer incremento (CP-A31 – CP-A50, CP-U10 – CP-U15 y CP-S22 – CP-S34, del
+2026-11-18) cubren el periodo lectivo de CA05 y CA09 – CA24 (HU08 – HU12). El detalle bidireccional está en la
+[Matriz de trazabilidad](../02-Requisitos/Matriz-de-trazabilidad.md), sección 2.
 
 ## 1. Casos de API e integración (pytest)
 
@@ -132,7 +133,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Precondiciones | Sesión iniciada. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
 | Datos de prueba | Cookie de sesión del usuario |
 | Pasos | POST `/auth/logout/`; luego GET `/auth/me/` con la cookie anterior |
-| Resultado esperado | 204 y cookie vaciada; luego 401 "Debe iniciar sesión." |
+| Resultado esperado | 204 y la sesión eliminada en el servidor (desde INC-012 la cookie no se vacía); luego 401 "Debe iniciar sesión." |
 | Resultado obtenido | Coincide con el esperado |
 | Estado | Aprobado |
 | Pruebas automatizadas | `test_hu02_e1_cerrar_sesion_elimina_la_sesion`<br>`test_hu02_e3_sesion_anterior_ya_no_es_valida` |
@@ -217,7 +218,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU05-E1, E2 |
-| Criterio de la línea base (avance 1) | CA05 (parcial: el periodo lectivo no está implementado) |
+| Criterio de la línea base (avance 1) | CA05 (niveles; el periodo lectivo está en CP-A31) |
 | Objetivo | Actualizar datos y niveles de mi institución |
 | Precondiciones | Sesión de `admin@robles.test`. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
 | Datos de prueba | Teléfono 2222-3333, dirección Heredia; nivel preescolar |
@@ -572,6 +573,366 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Responsable | Luis |
 | Fecha | 2026-11-05 |
 
+### CP-A31 — Definir el periodo lectivo vigente
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU05-E5 |
+| Criterio de la línea base (avance 1) | CA05 (periodo lectivo, GAP-01) |
+| Objetivo | Definir el periodo lectivo vigente |
+| Precondiciones | Sesión de `admin@robles.test`; periodo 2025 vigente. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | 2026, del 2026-02-02 al 2026-12-11; fechas invertidas; nombre repetido |
+| Pasos | POST `/periods/`; como docente GET y POST |
+| Resultado esperado | 201 y 2026 queda como único vigente; 400 "La fecha de fin debe ser posterior o igual a la de inicio."; 409 por nombre; docente 200 / 403 |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu05_e5_definir_periodo_vigente`<br>`test_hu05_e5_fechas_invertidas`<br>`test_hu05_e5_nombre_repetido`<br>`test_hu05_e5_docente_consulta_pero_no_crea` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A32 — Registrar docente con su cuenta
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08-E1 |
+| Criterio de la línea base (avance 1) | CA09 |
+| Objetivo | Registrar docente con su cuenta |
+| Precondiciones | Sesión de `admin@robles.test`. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Laura Solís, `docente1@robles.test`, contraseña inicial; sin contraseña |
+| Pasos | POST `/teachers/`; POST `/auth/login/` con la cuenta nueva |
+| Resultado esperado | 201, docente activo con cuenta `teacher` de Los Robles que inicia sesión; sin contraseña: 400 "La contraseña inicial es obligatoria." |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu08_e1_ca09_registrar_docente_con_cuenta`<br>`test_hu08_e1_contrasena_inicial_obligatoria` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A33 — Docente desactivado no ingresa ni recibe asignaciones
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08-E2 |
+| Criterio de la línea base (avance 1) | CA09 |
+| Objetivo | Docente desactivado no ingresa ni recibe asignaciones |
+| Precondiciones | Docente activo y grupo 4-A. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | `is_active=false` |
+| Pasos | PATCH `/teachers/{id}/`; iniciar sesión; listar; asignar al grupo |
+| Resultado esperado | Cuenta desactivada: login 403; fuera de la lista; asignación rechazada (400) |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu08_e2_docente_desactivado_no_inicia_sesion_ni_se_asigna` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A34 — Rechazar correo de docente duplicado
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08-E3 |
+| Criterio de la línea base (avance 1) | CA10 |
+| Objetivo | Rechazar correo de docente duplicado |
+| Precondiciones | Existe `docente1@robles.test`. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | `DOCENTE1@robles.test` |
+| Pasos | POST `/teachers/` |
+| Resultado esperado | 409 "Ya existe una cuenta con ese correo." y no se crea otro docente |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu08_e3_ca10_correo_duplicado` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A35 — Solo el personal administrativo gestiona docentes de su institución
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08 · RN01, RN02 |
+| Criterio de la línea base (avance 1) | CA02 (docentes) |
+| Objetivo | Solo el personal administrativo gestiona docentes de su institución |
+| Precondiciones | Docente de Los Robles. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Docente; administradora de Monteverde |
+| Pasos | GET y POST `/teachers/`; GET `/teachers/{id}/` ajeno |
+| Resultado esperado | 403 para docente; lista vacía y 404 para otra institución |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu08_solo_personal_administrativo`<br>`test_hu08_aislamiento_docentes` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A36 — Crear grupo y asignar estudiantes y docente
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E1 |
+| Criterio de la línea base (avance 1) | CA11, CA13, CA15 |
+| Objetivo | Crear grupo y asignar estudiantes y docente |
+| Precondiciones | Periodo 2026; 25 estudiantes y una docente activos. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Grupo 4-A de primaria; estudiante inactivo o de otro nivel; periodo de otra institución |
+| Pasos | POST `/groups/`, `/groups/{id}/students/`, `/groups/{id}/teachers/`; quitar |
+| Resultado esperado | 201; el grupo muestra 25 estudiantes, su docente y el periodo; inactivos, otro nivel y periodo ajeno: 400 |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu09_e1_ca11_ca13_ca15_crear_grupo_y_asignar`<br>`test_hu09_estudiante_inactivo_o_de_otro_nivel`<br>`test_hu09_periodo_de_otra_institucion`<br>`test_hu09_quitar_estudiante_y_docente` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A37 — Trasladar estudiante entre grupos del periodo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E2 |
+| Criterio de la línea base (avance 1) | CA13 |
+| Objetivo | Trasladar estudiante entre grupos del periodo |
+| Precondiciones | Ana en 4-A; 4-B en el mismo periodo. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Ana, destino 4-B |
+| Pasos | POST `/groups/{4-A}/transfer/` |
+| Resultado esperado | 200; Ana deja 4-A y queda en 4-B |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu09_e2_ca13_trasladar_estudiante` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A38 — Un estudiante pertenece a un solo grupo por periodo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E3 |
+| Criterio de la línea base (avance 1) | CA14 |
+| Objetivo | Un estudiante pertenece a un solo grupo por periodo |
+| Precondiciones | Ana en 4-A; estudiante de Monteverde. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Ana a 4-B; estudiante ajeno |
+| Pasos | POST `/groups/{4-B}/students/` |
+| Resultado esperado | 409 "El estudiante ya pertenece a un grupo en este periodo."; el ajeno 400; 4-B sin cambios |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu09_e3_ca14_estudiante_ya_asignado_en_el_periodo`<br>`test_hu09_e3_ca14_estudiante_de_otra_institucion` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A39 — Código de grupo único en el periodo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E4 |
+| Criterio de la línea base (avance 1) | CA12 |
+| Objetivo | Código de grupo único en el periodo |
+| Precondiciones | Existe 4-A en 2026. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | `4-a` en 2026; `4-A` en 2027 |
+| Pasos | POST `/groups/` |
+| Resultado esperado | 409 "Ya existe un grupo con ese código en este periodo."; en otro periodo 201 |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu09_e4_ca12_codigo_repetido_en_el_periodo` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A40 — Docente sin asignación y otra institución no acceden al grupo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E5 · RN02 |
+| Criterio de la línea base (avance 1) | CA02, CA16 |
+| Objetivo | Docente sin asignación y otra institución no acceden al grupo |
+| Precondiciones | Docente asignada solo a 4-A. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Grupo 4-B; administradora de Monteverde |
+| Pasos | GET, POST y corrección sobre 4-B; GET y PATCH de grupos ajenos |
+| Resultado esperado | 404 sin datos del grupo; ningún registro cambia |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_ca16_docente_solo_ve_sus_grupos`<br>`test_hu10_e5_ca16_docente_sin_asignacion`<br>`test_hu09_aislamiento_grupos`<br>`test_hu10_aislamiento_asistencia` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A41 — Registrar la asistencia del grupo en una fecha
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E1 |
+| Criterio de la línea base (avance 1) | CA15, CA17 |
+| Objetivo | Registrar la asistencia del grupo en una fecha |
+| Precondiciones | 4-A con dos estudiantes y su docente. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | 2026-11-02, presente y ausente; lista incompleta; fecha futura o fuera del periodo; personal administrativo |
+| Pasos | POST `/attendance/`; GET `/attendance/?group=&date=` |
+| Resultado esperado | 201 y la lista muestra cada estado; 400 "Marque el estado de todos los estudiantes del grupo.", "La fecha no puede ser futura." o fuera del periodo; administrativo 403 |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu10_e1_ca15_ca17_registrar_asistencia`<br>`test_hu10_e1_debe_marcar_a_todos`<br>`test_hu10_e1_fecha_futura_o_fuera_del_periodo`<br>`test_hu10_personal_administrativo_consulta_pero_no_registra` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A42 — No duplicar la asistencia de una fecha
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E3 |
+| Criterio de la línea base (avance 1) | CA18 |
+| Objetivo | No duplicar la asistencia de una fecha |
+| Precondiciones | Asistencia de 4-A del 2026-11-02 registrada. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Misma fecha |
+| Pasos | POST `/attendance/` |
+| Resultado esperado | 409 que indica corregirla; sigue un solo registro |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu10_e3_ca18_no_duplica_la_asistencia_del_dia` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A43 — Corregir con historial
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E2 |
+| Criterio de la línea base (avance 1) | CA19 |
+| Objetivo | Corregir con historial |
+| Precondiciones | Ana ausente el 2026-11-02. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Presente, motivo "Llegó tarde"; mismo estado |
+| Pasos | POST `/attendance/{id}/correct/` |
+| Resultado esperado | 200; queda anterior, nuevo, motivo, usuario y fecha; mismo estado 400 |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu10_e2_ca19_corregir_conserva_historial`<br>`test_hu10_correccion_con_el_mismo_estado` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A44 — El motivo de la corrección es obligatorio
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E4 |
+| Criterio de la línea base (avance 1) | CA20 |
+| Objetivo | El motivo de la corrección es obligatorio |
+| Precondiciones | Ana ausente. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Sin motivo, vacío y solo espacios |
+| Pasos | POST `/attendance/{id}/correct/` |
+| Resultado esperado | 400 "El motivo es obligatorio."; el estado no cambia |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu10_e4_ca20_motivo_obligatorio[None]`<br>`test_hu10_e4_ca20_motivo_obligatorio[]`<br>`test_hu10_e4_ca20_motivo_obligatorio[   ]` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A45 — Listados por grupo y estudiante con filtros
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU11-E1, E2, E3 |
+| Criterio de la línea base (avance 1) | CA21 |
+| Objetivo | Listados por grupo y estudiante con filtros |
+| Precondiciones | 4-A (2 estudiantes, docente) y 4-B; grupo 10-1 de secundaria. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Sin filtro; nivel secundaria; nivel sin resultados |
+| Pasos | GET `/reports/groups/`, `/reports/students/` |
+| Resultado esperado | Cada grupo con docente y cantidad; solo secundaria con su grupo; lista vacía |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu11_e1_ca21_listado_por_grupo`<br>`test_hu11_e2_ca21_filtro_por_nivel`<br>`test_hu11_e3_sin_resultados_devuelve_lista_vacia` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A46 — Docente y otra institución no obtienen listados generales
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU11-E4 |
+| Criterio de la línea base (avance 1) | CA22 |
+| Objetivo | Docente y otra institución no obtienen listados generales |
+| Precondiciones | Grupos de Los Robles. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Docente; administradora de Monteverde |
+| Pasos | GET `/reports/groups/` y `/reports/students/` |
+| Resultado esperado | 403 para docente; listas vacías para la otra institución |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu11_e4_ca22_docente_y_otra_institucion` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A47 — Resumen de asistencia por estudiante y del grupo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU12-E1, E2 |
+| Criterio de la línea base (avance 1) | CA23 |
+| Objetivo | Resumen de asistencia por estudiante y del grupo |
+| Precondiciones | Asistencia de cinco fechas en 4-A. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | 2026-11-02 a 2026-11-06; fecha sin registro; docente de 4-A y de 4-B |
+| Pasos | GET `/reports/attendance/` |
+| Resultado esperado | Ana 5 presentes (100 %), Luis 2 ausentes (60 %), grupo 80 %; sin registro: `unrecorded`; docente 200 en 4-A y 404 en 4-B |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu12_e1_ca23_resumen_de_cinco_fechas`<br>`test_hu12_e1_estudiante_sin_registro_en_una_fecha`<br>`test_hu12_e2_docente_solo_sus_grupos` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A48 — Rechazar rango de fechas invertido
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU12-E3 |
+| Criterio de la línea base (avance 1) | CA24 |
+| Objetivo | Rechazar rango de fechas invertido |
+| Precondiciones | 4-A. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Del 2026-11-06 al 2026-11-02 |
+| Pasos | GET `/reports/attendance/` |
+| Resultado esperado | 400 "La fecha inicial debe ser anterior o igual a la final." |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_hu12_e3_ca24_rango_invertido` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A49 — Datos ficticios con periodo, docentes y grupos
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | S3-05 · HU05-E5, HU08, HU09 |
+| Criterio de la línea base (avance 1) | — (escenario agregado en el refinamiento) |
+| Objetivo | Datos ficticios con periodo, docentes y grupos |
+| Precondiciones | Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | — |
+| Pasos | Ejecutar `seed_demo` y `seed_demo --reset` |
+| Resultado esperado | 3 docentes; 4-A con 3 estudiantes y su docente en el periodo vigente; 4-B sin docente |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_seed_demo_carga_periodo_docentes_y_grupos` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
+### CP-A50 — El cierre de una sesión anterior no borra la sesión iniciada después
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU02-E1, HU01-E1 · INC-012 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | El cierre de una sesión anterior no borra la sesión iniciada después |
+| Precondiciones | Dos sesiones de `admin@robles.test`. Base de datos de prueba vacía; datos creados por las fixtures de `tests/conftest.py` |
+| Datos de prueba | Cookie de la sesión anterior |
+| Pasos | POST `/auth/logout/` con la sesión anterior; GET `/auth/me/` con la nueva |
+| Resultado esperado | 204 sin cookie de sesión vacía en la respuesta; la sesión nueva sigue activa (200); la sesión cerrada se elimina en el servidor |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `test_inc_012_cierre_tardio_no_borra_la_sesion_nueva`<br>`test_hu02_e1_cerrar_sesion_elimina_la_sesion` |
+| Evidencia | `evidencias/EV_pytest_ejecucion-7_20261118.txt` · artefacto `reportes-backend` de CI (PR #12) |
+| Responsable | Samuel (revisión pendiente de Luis) |
+| Fecha | 2026-11-18 |
+
 ## 2. Casos unitarios de interfaz (Vitest)
 
 ### CP-U01 — Traducir errores de la API a mensajes legibles
@@ -736,6 +1097,114 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
 
+### CP-U10 — Menú por rol con las opciones de HU08 – HU12
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU03-E1, E3 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | Menú por rol con las opciones de HU08 – HU12 |
+| Precondiciones | Sesión simulada por rol |
+| Datos de prueba | Administrativo, docente |
+| Pasos | Abrir inicio y `/docentes` |
+| Resultado esperado | Administrativo: siete opciones; docente sin Docentes y con acceso restringido a `/docentes` |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `App.test.tsx › HU03 (2 pruebas nuevas; HU03-E1 actualizada)` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-U11 — Periodo lectivo y docentes
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU05-E5, HU08-E1 – E3 |
+| Criterio de la línea base (avance 1) | CA05, CA09, CA10 |
+| Objetivo | Periodo lectivo y docentes |
+| Precondiciones | API simulada |
+| Datos de prueba | Periodo 2026; docente nuevo; correo duplicado |
+| Pasos | Definir periodo; registrar y desactivar docente |
+| Resultado esperado | Datos enviados, confirmaciones y alerta de duplicado; docente consulta periodos sin editarlos |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `academics.test.tsx › HU05-E5, HU08 (5 pruebas)` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-U12 — Grupos: crear, asignar y trasladar; nivel preseleccionado aunque cargue tarde
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E1 – E3 · CA16 · INC-010 |
+| Criterio de la línea base (avance 1) | CA11, CA13, CA14, CA16 |
+| Objetivo | Grupos: crear, asignar y trasladar; nivel preseleccionado aunque cargue tarde |
+| Precondiciones | API simulada; `/my-institution/` retrasado |
+| Datos de prueba | Grupo 4-C; Ana ya en 4-A; traslado a 4-B; docente |
+| Pasos | Crear y guardar; asignar; trasladar; abrir como docente |
+| Resultado esperado | Botón deshabilitado hasta cargar los niveles y nivel preseleccionado; alerta de grupo del periodo; traslado enviado; docente sin edición |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `academics.test.tsx › HU09 (5 pruebas)` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-U13 — Asistencia: registrar, modo corrección y motivo obligatorio; respuesta tardía descartada
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E1 – E4 · INC-011 |
+| Criterio de la línea base (avance 1) | CA17 – CA20 |
+| Objetivo | Asistencia: registrar, modo corrección y motivo obligatorio; respuesta tardía descartada |
+| Precondiciones | API simulada; primera lista retrasada |
+| Datos de prueba | Ana ausente; 409; corrección sin y con motivo; cambio de fecha durante la carga |
+| Pasos | Marcar y guardar; corregir; cambiar la fecha antes de que responda la lista de hoy |
+| Resultado esperado | Confirmación; modo corrección tras 409; "El motivo es obligatorio." en el campo; se muestra y guarda la fecha elegida |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `academics.test.tsx › HU10 (5 pruebas)` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-U14 — Reportes: listados y resumen de asistencia
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU11-E1, E3 · HU12-E1, E3 |
+| Criterio de la línea base (avance 1) | CA21, CA23, CA24 |
+| Objetivo | Reportes: listados y resumen de asistencia |
+| Precondiciones | API simulada |
+| Datos de prueba | Listado vacío; grupo con docente; resumen; rango invertido |
+| Pasos | Abrir Reportes; consultar |
+| Resultado esperado | "No hay registros para los filtros seleccionados." sin tabla; filas con docente y cantidad; porcentaje; error de rango; docente sin Listados |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `academics.test.tsx › HU11 y HU12 (4 pruebas)` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-U15 — El inicio de sesión espera a que el servidor confirme el cierre anterior
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU02-E1, HU01-E1 · INC-012 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | El inicio de sesión espera a que el servidor confirme el cierre anterior |
+| Precondiciones | API simulada; respuesta de `/auth/logout/` retenida |
+| Datos de prueba | Cierre como administradora; ingreso como docente |
+| Pasos | Cerrar sesión; ingresar antes de que responda el cierre; liberar la respuesta |
+| Resultado esperado | El ingreso se envía solo después de confirmar el cierre; luego se muestra el inicio de la docente |
+| Resultado obtenido | Coincide con el esperado |
+| Estado | Aprobado |
+| Pruebas automatizadas | `App.test.tsx › INC-012` |
+| Evidencia | `evidencias/EV_vitest_ejecucion-4_20261118.txt` · artefacto `reportes-frontend` de CI |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
 ## 3. Casos de sistema (Playwright)
 
 ### CP-S01 — Inicio de sesión de la administradora
@@ -820,7 +1289,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
 | Datos de prueba | admin@robles.test; plataforma@nexora.test |
 | Pasos | Ingresar con cada cuenta y leer el menú |
-| Resultado esperado | Inicio · Mi institución · Estudiantes / Inicio · Instituciones |
+| Resultado esperado | Inicio · Mi institución · Estudiantes · Docentes · Grupos · Asistencia · Reportes / Inicio · Instituciones |
 | Resultado obtenido | Coincide con el esperado en computadora y teléfono |
 | Estado | Aprobado |
 | Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S05 |
@@ -887,7 +1356,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU05-E1 |
-| Criterio de la línea base (avance 1) | CA05 (parcial) |
+| Criterio de la línea base (avance 1) | CA05 |
 | Objetivo | Actualizar teléfono de mi institución |
 | Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
 | Datos de prueba | Teléfono 2222-xxxx |
@@ -1085,7 +1554,7 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Campo | Valor |
 |---|---|
 | Historia / escenario | HU05-E1 · INC-008 |
-| Criterio de la línea base (avance 1) | CA05 (parcial) |
+| Criterio de la línea base (avance 1) | CA05 |
 | Objetivo | Una carga repetida no borra lo que se escribió (reprueba INC-008) |
 | Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
 | Datos de prueba | Segunda carga de `/my-institution/` retrasada 1,5 s |
@@ -1115,6 +1584,240 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 | Evidencia | `evidencias/e2e/` `EV_CP-S21_sesion-cerrada_<dispositivo>_20261105.png` |
 | Responsable | Samuel |
 | Fecha | 2026-11-05 |
+
+### CP-S22 — Definir el periodo lectivo vigente
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU05-E5 |
+| Criterio de la línea base (avance 1) | CA05 |
+| Objetivo | Definir el periodo lectivo vigente |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | admin@arcoiris.test; nombre `E2E-xxxxxxxx`; fechas invertidas |
+| Pasos | Definir periodo con fin anterior al inicio; corregir; Guardar; volver a marcar 2026 |
+| Resultado esperado | Error en el campo Fin; luego "Periodo lectivo … guardado como vigente." y la fila Vigente |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S22 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S22_periodo-vigente_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S23 — Registrar docente, que ingresa, y desactivarlo
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08-E1, E2 |
+| Criterio de la línea base (avance 1) | CA09 |
+| Objetivo | Registrar docente, que ingresa, y desactivarlo |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Correo único por ejecución |
+| Pasos | Registrar; ingresar con la cuenta nueva; desactivarla; intentar ingresar |
+| Resultado esperado | Confirmación; la cuenta entra como Personal docente; tras desactivar: "Su cuenta está desactivada. Contacte a la administración." |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S23 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S23_registrado_<dispositivo>_20261118.png`, `EV_CP-S23_desactivado-sin-acceso_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S24 — Correo de docente duplicado
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU08-E3 |
+| Criterio de la línea base (avance 1) | CA10 |
+| Objetivo | Correo de docente duplicado |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | `docente@robles.test` |
+| Pasos | Registrar con correo existente |
+| Resultado esperado | Alerta "Ya existe una cuenta con ese correo." |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S24 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S24_duplicado_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S25 — Crear grupo, asignar docente y validar duplicados
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E1, E3, E4 · HU11-E3 · INC-010 |
+| Criterio de la línea base (avance 1) | CA11, CA12, CA14, CA15 |
+| Objetivo | Crear grupo, asignar docente y validar duplicados |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Código `Gxxxxxxxx`; `4-A`; Ana (en 4-A) |
+| Pasos | Crear 4-A repetido; crear grupo nuevo; asignar a Andrés; asignar a Ana; listado de estudiantes del grupo nuevo; quitar a Andrés |
+| Resultado esperado | "Ya existe un grupo con ese código en este periodo."; grupo con su docente; "El estudiante ya pertenece a un grupo en este periodo."; "No hay registros para los filtros seleccionados." |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S25 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S25_codigo-duplicado_<dispositivo>_20261118.png`, `EV_CP-S25_grupo-creado_<dispositivo>_20261118.png`, `EV_CP-S25_sin-resultados_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S26 — Trasladar estudiante entre 4-A y 4-B
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU09-E2 |
+| Criterio de la línea base (avance 1) | CA13 |
+| Objetivo | Trasladar estudiante entre 4-A y 4-B |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Diego Rodríguez Leiva |
+| Pasos | Abrir su grupo; elegir destino; Trasladar; abrir el destino |
+| Resultado esperado | Confirmación; deja el grupo de origen y aparece en el destino |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S26 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S26_trasladado_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S27 — El docente solo ve sus grupos y no obtiene listados
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E5, HU11-E4, HU12-E2 · CA16, CA22 |
+| Criterio de la línea base (avance 1) | CA16, CA22 |
+| Objetivo | El docente solo ve sus grupos y no obtiene listados |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | docente@robles.test; 4-B sin asignación |
+| Pasos | Consultar la API (grupo, asistencia y listados); abrir Grupos y Reportes |
+| Resultado esperado | API 404 / 404 / 403 / 403; solo 4-A en Grupos; Reportes sin Listados |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S27 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S27_docente-grupos_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S28 — Listados por grupo y nivel; otra institución no ve los grupos
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU11-E1, E2 · CA22 |
+| Criterio de la línea base (avance 1) | CA21, CA22 |
+| Objetivo | Listados por grupo y nivel; otra institución no ve los grupos |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | admin@robles.test; admin@monteverde.test |
+| Pasos | Abrir Reportes; filtrar por primaria; listado de estudiantes; repetir con Monteverde |
+| Resultado esperado | 4-A con Andrés Castro Rojas; Ana en 4-A; Monteverde ve 10-1 y no 4-A |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S28 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S28_listados_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S29 — Registrar asistencia y reabrirla en modo corrección
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E1, E3 · INC-011 |
+| Criterio de la línea base (avance 1) | CA15, CA17, CA18 |
+| Objetivo | Registrar asistencia y reabrirla en modo corrección |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | docente@robles.test; 2026-11-02 (computadora) y 2026-11-03 (teléfono); Bruno ausente |
+| Pasos | Elegir 4-A y la fecha; marcar; Guardar; recargar y volver a la fecha |
+| Resultado esperado | "Asistencia de 4-A del … registrada." con la fecha elegida; al volver solo se ofrece Corregir |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S29 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S29_marcada_<dispositivo>_20261118.png`, `EV_CP-S29_modo-correccion_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S30 — Corregir con motivo obligatorio y conservar el historial
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU10-E2, E4 |
+| Criterio de la línea base (avance 1) | CA19, CA20 |
+| Objetivo | Corregir con motivo obligatorio y conservar el historial |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Bruno ausente |
+| Pasos | Corregir sin motivo; con "Llegó tarde" |
+| Resultado esperado | "El motivo es obligatorio."; luego "Ausente → Presente: Llegó tarde (docente@robles.test, …)" |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S30 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S30_motivo-obligatorio_<dispositivo>_20261118.png`, `EV_CP-S30_historial_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S31 — Resumen de asistencia del grupo del docente
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU12-E1, E2, E3 |
+| Criterio de la línea base (avance 1) | CA23, CA24 |
+| Objetivo | Resumen de asistencia del grupo del docente |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | docente@robles.test; noviembre de 2026 |
+| Pasos | Verificar que 4-B no se ofrece; rango invertido; rango válido |
+| Resultado esperado | "La fecha inicial debe ser anterior o igual a la final."; 100 % por estudiante y del grupo |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S31 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S31_rango-invertido_<dispositivo>_20261118.png`, `EV_CP-S31_resumen_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S33 — Un cierre tardío no cierra la sesión iniciada después en la misma página
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU02-E1, HU01-E1 · INC-012 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | Un cierre tardío no cierra la sesión iniciada después en la misma página |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Respuesta de `/auth/logout/` retrasada 2 s; admin@robles.test y admin@monteverde.test |
+| Pasos | Ingresar; Cerrar sesión; ingresar enseguida con otra cuenta sin recargar; abrir Estudiantes; recargar a los 2,5 s |
+| Resultado esperado | La segunda sesión sigue activa y muestra a Calderón Mora, Javier |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S33 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S33_sesion-siguiente-conservada_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S34 — Un cierre tardío no cierra la sesión iniciada después de recargar
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | HU02-E1, HU01-E1 · INC-012 |
+| Criterio de la línea base (avance 1) | CA01 |
+| Objetivo | Un cierre tardío no cierra la sesión iniciada después de recargar |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | Respuesta de `/auth/logout/` retrasada 2 s |
+| Pasos | Ingresar; Cerrar sesión; abrir `/ingresar` e ingresar con otra cuenta; abrir Estudiantes; recargar a los 2,5 s |
+| Resultado esperado | La segunda sesión sigue activa. Pasa también sin la corrección (ver INC-012): el caso de recarga lo cubre CP-A50 |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S34 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S34_sesion-siguiente-conservada_<dispositivo>_20261118.png` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
+
+### CP-S32 — Pantallas de HU05-E5 y HU08 – HU12 sin violaciones WCAG detectables
+
+| Campo | Valor |
+|---|---|
+| Historia / escenario | RNF03, RNF04 · WCAG 2.2 AA |
+| Criterio de la línea base (avance 1) | — (escenario agregado en el refinamiento) |
+| Objetivo | Pantallas de HU05-E5 y HU08 – HU12 sin violaciones WCAG detectables |
+| Precondiciones | Servidores levantados con `seed_demo`; perfiles Playwright `computadora` (1280 × 800) y `telefono` (Pixel 7) |
+| Datos de prueba | admin@robles.test; docente@robles.test |
+| Pasos | axe-core en docentes con errores, detalle de grupo, reportes, periodos y lista de asistencia |
+| Resultado esperado | 0 violaciones; informe JSON por pantalla |
+| Resultado obtenido | Coincide con el esperado en computadora y teléfono |
+| Estado | Aprobado |
+| Prueba automatizada | `frontend/e2e/*.spec.ts` › CP-S32 |
+| Evidencia | `evidencias/e2e/` `EV_CP-S32_asistencia_<dispositivo>_20261118.png` · informes `evidencias/accesibilidad/axe_<pantalla>_<dispositivo>.json` |
+| Responsable | Samuel |
+| Fecha | 2026-11-18 |
 
 ## 4. Casos de seguridad (revisión estática y de configuración)
 
@@ -1184,3 +1887,4 @@ bidireccional está en la [Matriz de trazabilidad](../02-Requisitos/Matriz-de-tr
 |---|---|---|
 | 1.0 | 2026-11-04 | Versión inicial: 44 casos para HU01 – HU07. |
 | 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: cada caso indica su criterio CA01 – CA24 de la línea base. Nuevos CP-A26 – CP-A30, CP-U05 – CP-U09, CP-S16 – CP-S21 y CP-SEG01 – CP-SEG04 (seguridad, accesibilidad, robustez e INC-003 – INC-009). Sesión en cookie HttpOnly (INC-006). Evidencias de las ejecuciones EJ-14 – EJ-25. |
+| 1.2 | 2026-11-18 | Tercer incremento (HU05-E5, HU08 – HU12, ADLCDS-112 – 116): CP-A31 – CP-A50, CP-U10 – CP-U15 y CP-S22 – CP-S34; cubren CA09 – CA24. Reprueba de INC-010, INC-011 e INC-012. Ejecuciones EJ-26 – EJ-28. |

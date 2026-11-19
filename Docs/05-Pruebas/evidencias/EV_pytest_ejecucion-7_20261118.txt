@@ -1,0 +1,178 @@
+# pytest — EJ-27, commit be47f1c, 2026-11-18 19:50, SQLite (config.settings_test)
+# Comando: python -m pytest -v --cov --cov-report=term
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\backend\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+django: version: 5.2.19, settings: config.settings_test (from ini)
+rootdir: C:\Users\Admin\Desktop\ULASHIT\QA\Nexora\Nexora\backend
+configfile: pyproject.toml
+testpaths: tests
+plugins: platformdirs-4.14.5, cov-7.1.0, django-4.14.0
+collecting ... collected 111 items
+
+tests/test_academics.py::test_hu05_e5_definir_periodo_vigente PASSED     [  0%]
+tests/test_academics.py::test_hu05_e5_fechas_invertidas PASSED           [  1%]
+tests/test_academics.py::test_hu05_e5_nombre_repetido PASSED             [  2%]
+tests/test_academics.py::test_hu05_e5_docente_consulta_pero_no_crea PASSED [  3%]
+tests/test_academics.py::test_hu08_e1_ca09_registrar_docente_con_cuenta PASSED [  4%]
+tests/test_academics.py::test_hu08_e1_contrasena_inicial_obligatoria PASSED [  5%]
+tests/test_academics.py::test_hu08_e2_docente_desactivado_no_inicia_sesion_ni_se_asigna PASSED [  6%]
+tests/test_academics.py::test_hu08_e3_ca10_correo_duplicado PASSED       [  7%]
+tests/test_academics.py::test_hu08_solo_personal_administrativo PASSED   [  8%]
+tests/test_academics.py::test_hu08_aislamiento_docentes PASSED           [  9%]
+tests/test_academics.py::test_hu09_e1_ca11_ca13_ca15_crear_grupo_y_asignar PASSED [  9%]
+tests/test_academics.py::test_hu09_e2_ca13_trasladar_estudiante PASSED   [ 10%]
+tests/test_academics.py::test_hu09_e3_ca14_estudiante_ya_asignado_en_el_periodo PASSED [ 11%]
+tests/test_academics.py::test_hu09_e3_ca14_estudiante_de_otra_institucion PASSED [ 12%]
+tests/test_academics.py::test_hu09_estudiante_inactivo_o_de_otro_nivel PASSED [ 13%]
+tests/test_academics.py::test_hu09_e4_ca12_codigo_repetido_en_el_periodo PASSED [ 14%]
+tests/test_academics.py::test_hu09_periodo_de_otra_institucion PASSED    [ 15%]
+tests/test_academics.py::test_hu09_quitar_estudiante_y_docente PASSED    [ 16%]
+tests/test_academics.py::test_ca16_docente_solo_ve_sus_grupos PASSED     [ 17%]
+tests/test_academics.py::test_hu09_aislamiento_grupos PASSED             [ 18%]
+tests/test_attendance.py::test_hu10_e1_ca15_ca17_registrar_asistencia PASSED [ 18%]
+tests/test_attendance.py::test_hu10_e1_debe_marcar_a_todos PASSED        [ 19%]
+tests/test_attendance.py::test_hu10_e1_fecha_futura_o_fuera_del_periodo PASSED [ 20%]
+tests/test_attendance.py::test_hu10_e3_ca18_no_duplica_la_asistencia_del_dia PASSED [ 21%]
+tests/test_attendance.py::test_hu10_e2_ca19_corregir_conserva_historial PASSED [ 22%]
+tests/test_attendance.py::test_hu10_e4_ca20_motivo_obligatorio[None] PASSED [ 23%]
+tests/test_attendance.py::test_hu10_e4_ca20_motivo_obligatorio[] PASSED  [ 24%]
+tests/test_attendance.py::test_hu10_e4_ca20_motivo_obligatorio[   ] PASSED [ 25%]
+tests/test_attendance.py::test_hu10_correccion_con_el_mismo_estado PASSED [ 26%]
+tests/test_attendance.py::test_hu10_e5_ca16_docente_sin_asignacion PASSED [ 27%]
+tests/test_attendance.py::test_hu10_personal_administrativo_consulta_pero_no_registra PASSED [ 27%]
+tests/test_attendance.py::test_hu10_aislamiento_asistencia PASSED        [ 28%]
+tests/test_attendance.py::test_hu11_e1_ca21_listado_por_grupo PASSED     [ 29%]
+tests/test_attendance.py::test_hu11_e2_ca21_filtro_por_nivel PASSED      [ 30%]
+tests/test_attendance.py::test_hu11_e3_sin_resultados_devuelve_lista_vacia PASSED [ 31%]
+tests/test_attendance.py::test_hu11_e4_ca22_docente_y_otra_institucion PASSED [ 32%]
+tests/test_attendance.py::test_hu12_e1_ca23_resumen_de_cinco_fechas PASSED [ 33%]
+tests/test_attendance.py::test_hu12_e1_estudiante_sin_registro_en_una_fecha PASSED [ 34%]
+tests/test_attendance.py::test_hu12_e2_docente_solo_sus_grupos PASSED    [ 35%]
+tests/test_attendance.py::test_hu12_e3_ca24_rango_invertido PASSED       [ 36%]
+tests/test_auth.py::test_hu01_e1_inicio_de_sesion_exitoso PASSED         [ 36%]
+tests/test_auth.py::test_inc_007_sesion_anterior_invalida_no_impide_iniciar_sesion PASSED [ 37%]
+tests/test_auth.py::test_inc_006_sesion_en_cookie_httponly_samesite PASSED [ 38%]
+tests/test_auth.py::test_inc_006_escrituras_exigen_token_csrf PASSED     [ 39%]
+tests/test_auth.py::test_inc_006_csrf_entrega_cookie_legible_por_la_interfaz PASSED [ 40%]
+tests/test_auth.py::test_inc_006_sesion_vence_por_inactividad PASSED     [ 41%]
+tests/test_auth.py::test_hu01_e2_correo_con_mayusculas_y_espacios PASSED [ 42%]
+tests/test_auth.py::test_hu01_e3_credenciales_invalidas_mismo_mensaje[contrasena-incorrecta] PASSED [ 43%]
+tests/test_auth.py::test_hu01_e3_credenciales_invalidas_mismo_mensaje[correo-inexistente] PASSED [ 44%]
+tests/test_auth.py::test_hu01_e4_cuenta_desactivada PASSED               [ 45%]
+tests/test_auth.py::test_hu01_e4_institucion_desactivada_impide_acceso PASSED [ 45%]
+tests/test_auth.py::test_hu01_e5_campos_vacios PASSED                    [ 46%]
+tests/test_auth.py::test_rnf01_contrasena_guardada_con_hash PASSED       [ 47%]
+tests/test_auth.py::test_hu02_e1_cerrar_sesion_elimina_la_sesion PASSED  [ 48%]
+tests/test_auth.py::test_inc_012_cierre_tardio_no_borra_la_sesion_nueva PASSED [ 49%]
+tests/test_auth.py::test_hu02_e3_sesion_anterior_ya_no_es_valida PASSED  [ 50%]
+tests/test_auth.py::test_rnf02_api_exige_sesion PASSED                   [ 51%]
+tests/test_health.py::test_health_responde_ok_sin_autenticacion PASSED   [ 52%]
+tests/test_institutions.py::test_hu04_e1_registrar_institucion_y_administradora PASSED [ 53%]
+tests/test_institutions.py::test_hu04_e2_institucion_con_varios_niveles PASSED [ 54%]
+tests/test_institutions.py::test_hu04_e3_nombre_duplicado_sin_distinguir_mayusculas PASSED [ 54%]
+tests/test_institutions.py::test_hu04_e4_niveles_invalidos[levels0] PASSED [ 55%]
+tests/test_institutions.py::test_hu04_e4_niveles_invalidos[levels1] PASSED [ 56%]
+tests/test_institutions.py::test_hu04_e4_niveles_invalidos[levels2] PASSED [ 57%]
+tests/test_institutions.py::test_hu04_e4_correo_de_administradora_en_uso PASSED [ 58%]
+tests/test_institutions.py::test_hu04_solo_plataforma_registra_instituciones PASSED [ 59%]
+tests/test_institutions.py::test_hu05_e1_actualizar_datos_de_mi_institucion PASSED [ 60%]
+tests/test_institutions.py::test_hu05_e2_agregar_nivel PASSED            [ 61%]
+tests/test_institutions.py::test_hu05_e3_datos_invalidos_no_se_guardan[name-   ] PASSED [ 62%]
+tests/test_institutions.py::test_hu05_e3_datos_invalidos_no_se_guardan[email-no-es-correo] PASSED [ 63%]
+tests/test_institutions.py::test_hu05_e4_no_quitar_nivel_con_estudiantes_activos PASSED [ 63%]
+tests/test_institutions.py::test_hu03_e3_docente_no_modifica_la_institucion PASSED [ 64%]
+tests/test_institutions.py::test_hu03_e3_docente_no_accede_a_gestion_de_instituciones PASSED [ 65%]
+tests/test_institutions.py::test_hu03_e2_plataforma_no_accede_a_gestion_escolar PASSED [ 66%]
+tests/test_isolation.py::test_hu06_e1_lista_solo_estudiantes_de_mi_institucion PASSED [ 67%]
+tests/test_isolation.py::test_hu06_e2_misma_identificacion_en_dos_instituciones PASSED [ 68%]
+tests/test_isolation.py::test_hu06_e3_estudiante_de_otra_institucion_responde_404[consultar] PASSED [ 69%]
+tests/test_isolation.py::test_hu06_e3_estudiante_de_otra_institucion_responde_404[editar] PASSED [ 70%]
+tests/test_isolation.py::test_hu06_e3_estudiante_de_otra_institucion_responde_404[desactivar] PASSED [ 71%]
+tests/test_isolation.py::test_hu06_e3_no_se_puede_crear_en_otra_institucion PASSED [ 72%]
+tests/test_isolation.py::test_hu06_e4_institucion_ajena_responde_404[get] PASSED [ 72%]
+tests/test_isolation.py::test_hu06_e4_institucion_ajena_responde_404[patch] PASSED [ 73%]
+tests/test_isolation.py::test_hu06_e4_mi_institucion_devuelve_la_propia PASSED [ 74%]
+tests/test_seed_demo.py::test_seed_demo_carga_tres_instituciones_y_es_idempotente PASSED [ 75%]
+tests/test_seed_demo.py::test_seed_demo_carga_periodo_docentes_y_grupos PASSED [ 76%]
+tests/test_students.py::test_hu07_e1_registrar_estudiante PASSED         [ 77%]
+tests/test_students.py::test_adlcds_103_estudiante_nuevo_queda_activo_en_cualquier_formato[multipart] PASSED [ 78%]
+tests/test_students.py::test_adlcds_103_estudiante_nuevo_queda_activo_en_cualquier_formato[json] PASSED [ 79%]
+tests/test_students.py::test_hu07_e2_editar_apellido PASSED              [ 80%]
+tests/test_students.py::test_hu07_e2_desactivados_ocultos_salvo_filtro PASSED [ 81%]
+tests/test_students.py::test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[ana] PASSED [ 81%]
+tests/test_students.py::test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[MORA] PASSED [ 82%]
+tests/test_students.py::test_hu07_e3_buscar_por_nombre_apellido_o_identificacion[1111] PASSED [ 83%]
+tests/test_students.py::test_hu07_e4_identificacion_duplicada PASSED     [ 84%]
+tests/test_students.py::test_hu07_e4_editar_a_identificacion_existente PASSED [ 85%]
+tests/test_students.py::test_hu07_e5_fecha_de_nacimiento_futura PASSED   [ 86%]
+tests/test_students.py::test_adlcds_104_fecha_invalida_con_mensaje_claro[vacia] PASSED [ 87%]
+tests/test_students.py::test_adlcds_104_fecha_invalida_con_mensaje_claro[nula] PASSED [ 88%]
+tests/test_students.py::test_adlcds_104_fecha_invalida_con_mensaje_claro[formato] PASSED [ 89%]
+tests/test_students.py::test_hu07_e5_nivel_que_no_pertenece_a_la_institucion PASSED [ 90%]
+tests/test_students.py::test_rn04_formato_de_identificacion[123] PASSED  [ 90%]
+tests/test_students.py::test_rn04_formato_de_identificacion[111111111111111111111] PASSED [ 91%]
+tests/test_students.py::test_rn04_formato_de_identificacion[1-111/111] PASSED [ 92%]
+tests/test_students.py::test_hu07_docente_consulta_pero_no_modifica PASSED [ 93%]
+tests/test_students.py::test_rn06_no_existe_borrado_fisico PASSED        [ 94%]
+tests/test_health.py::test_metodo_no_permitido_usa_formato_estandar_de_error PASSED [ 95%]
+tests/test_health.py::test_error_no_controlado_devuelve_500_sin_traza PASSED [ 96%]
+tests/test_security_settings.py::test_inc_003_ambiente_https_sin_advertencias_de_despliegue PASSED [ 97%]
+tests/test_security_settings.py::test_inc_003_sin_https_check_deploy_advierte PASSED [ 98%]
+tests/test_testing_tools.py::test_latencia_aleatoria_solo_en_la_api PASSED [ 99%]
+tests/test_testing_tools.py::test_sin_variable_no_hay_latencia PASSED    [100%]
+
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.7-final-0 _______________
+
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+academics\__init__.py                       0      0   100%
+academics\admin.py                          3      0   100%
+academics\apps.py                           5      0   100%
+academics\models.py                        54      3    94%
+academics\serializers.py                  138      9    93%
+academics\views.py                        121     13    89%
+accounts\__init__.py                        0      0   100%
+accounts\admin.py                          11      0   100%
+accounts\apps.py                            4      0   100%
+accounts\models.py                         41      6    85%
+accounts\serializers.py                    14      0   100%
+accounts\views.py                          37      0   100%
+attendance\__init__.py                      0      0   100%
+attendance\admin.py                         3      0   100%
+attendance\apps.py                          5      0   100%
+attendance\models.py                       31      2    94%
+attendance\serializers.py                  38      0   100%
+attendance\views.py                       134      4    97%
+config\__init__.py                          0      0   100%
+config\settings.py                         47      9    81%
+config\settings_test.py                     7      1    86%
+config\urls.py                             17      0   100%
+core\__init__.py                            0      0   100%
+core\apps.py                                4      0   100%
+core\authentication.py                      4      0   100%
+core\exceptions.py                         40      0   100%
+core\management\__init__.py                 0      0   100%
+core\management\commands\__init__.py        0      0   100%
+core\management\commands\seed_demo.py      50      0   100%
+core\middleware.py                         11      0   100%
+core\mixins.py                              5      0   100%
+core\permissions.py                        19      0   100%
+core\testing.py                            10      0   100%
+core\views.py                              10      0   100%
+institutions\__init__.py                    0      0   100%
+institutions\admin.py                       3      0   100%
+institutions\apps.py                        4      0   100%
+institutions\models.py                     23      1    96%
+institutions\serializers.py                60      2    97%
+institutions\views.py                      23      1    96%
+students\__init__.py                        0      0   100%
+students\admin.py                           7      0   100%
+students\apps.py                            4      0   100%
+students\models.py                         17      0   100%
+students\serializers.py                    38      0   100%
+students\views.py                          26      2    92%
+-----------------------------------------------------------
+TOTAL                                    1068     53    95%
+============================ 111 passed in 10.25s =============================

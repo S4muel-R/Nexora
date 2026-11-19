@@ -1,0 +1,9 @@
+{
+  "pantalla": "grupos-detalle",
+  "dispositivo": "telefono",
+  "url": "/grupos",
+  "reglas_aprobadas": 24,
+  "reglas_no_aplicables": 38,
+  "revision_manual": [],
+  "violaciones": []
+}
