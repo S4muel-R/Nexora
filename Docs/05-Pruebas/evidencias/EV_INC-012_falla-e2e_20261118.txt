@@ -1,0 +1,86 @@
+# Playwright CP-S33 y CP-S34 — sin ninguna corrección, 2026-11-18 19:47
+
+Running 4 tests using 1 worker
+
+  x  1 [computadora] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) (8.9s)
+  ok 2 [computadora] › e2e\acceso.spec.ts:140:3 › HU01 – HU03 Acceso y opciones por rol › CP-S34 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después de recargar (reprueba INC-012) (6.7s)
+  x  3 [telefono] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) (8.9s)
+  ok 4 [telefono] › e2e\acceso.spec.ts:140:3 › HU01 – HU03 Acceso y opciones por rol › CP-S34 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después de recargar (reprueba INC-012) (7.5s)
+
+
+  1) [computadora] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier') with timeout 5000ms
+      - waiting for getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')
+
+
+      120 |     await page.waitForTimeout(2500)
+      121 |     await page.reload()
+    > 122 |     await expect(page.getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')).toBeVisible()
+          |                                                                                                                ^
+      123 |     await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible()
+      124 |   }
+      125 |
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--computadora\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--computadora\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--computadora\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--computadora\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [telefono] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier') with timeout 5000ms
+      - waiting for getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')
+
+
+      120 |     await page.waitForTimeout(2500)
+      121 |     await page.reload()
+    > 122 |     await expect(page.getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')).toBeVisible()
+          |                                                                                                                ^
+      123 |     await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible()
+      124 |   }
+      125 |
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--telefono\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--telefono\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--telefono\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\acceso-HU01-–-HU03-Acceso--f78fc-ma-página-reprueba-INC-012--telefono\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [computadora] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) 
+    [telefono] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) 
+  2 passed (47.7s)

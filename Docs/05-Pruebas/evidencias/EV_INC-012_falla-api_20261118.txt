@@ -1,0 +1,22 @@
+# pytest sin la correcci√≥n de INC-012 (sin core.middleware.keep_session_cookie_on_logout), 2026-11-18 19:46
+..............F..                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_inc_012_cierre_tardio_no_borra_la_sesion_nueva _____________
+api_client = <rest_framework.test.APIClient object at 0x000001D26CDF6B30>
+client_for = <function client_for.<locals>._client at 0x000001D26CE680E0>
+robles_admin = <User: admin@robles.test>
+    def test_inc_012_cierre_tardio_no_borra_la_sesion_nueva(api_client, client_for, robles_admin):
+        """El cierre de una sesiÛn anterior no envÌa una cookie vacÌa que borre la sesiÛn nueva."""
+        old = client_for(robles_admin)
+        api_client.post(reverse("login"), {"email": "admin@robles.test", "password": PASSWORD})
+        new_session = api_client.cookies[settings.SESSION_COOKIE_NAME].value
+        response = old.post(reverse("logout"))
+        assert response.status_code == 204
+>       assert settings.SESSION_COOKIE_NAME not in response.cookies
+E       assert 'sessionid' not in <SimpleCookie: sessionid=''>
+E        +  where 'sessionid' = <LazySettings "config.settings_test">.SESSION_COOKIE_NAME
+E        +  and   <SimpleCookie: sessionid=''> = <Response status_code=204>.cookies
+tests\test_auth.py:153: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_inc_012_cierre_tardio_no_borra_la_sesion_nueva
+1 failed, 16 passed in 1.02s

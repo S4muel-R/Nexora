@@ -214,6 +214,38 @@ describe('HU02 Cerrar sesión en un equipo compartido', () => {
     expect(localStorage.getItem('nexora.cierre-pendiente')).toBe('1')
   })
 
+  it('INC-012: iniciar sesión espera a que el servidor confirme el cierre anterior', async () => {
+    const events: string[] = []
+    let releaseLogout: () => void = () => {}
+    const logoutDone = new Promise<void>((resolve) => (releaseLogout = resolve))
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url.endsWith('/auth/me/')) return json(200, users.admin)
+      if (url.endsWith('/auth/logout/')) {
+        events.push('cierre enviado')
+        await logoutDone
+        events.push('cierre confirmado')
+        return new Response(null, { status: 204 })
+      }
+      if (url.endsWith('/auth/login/')) {
+        events.push('ingreso enviado')
+        return json(200, { user: users.teacher })
+      }
+      return json(200, [])
+    })
+    renderAt('/')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }))
+    await userEvent.type(await screen.findByLabelText('Correo'), 'docente@robles.test')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'Nexora-Demo-2026')
+    await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(events).toEqual(['cierre enviado'])
+    releaseLogout()
+
+    expect(await screen.findByRole('heading', { name: 'Hola, Andrés' })).toBeInTheDocument()
+    expect(events).toEqual(['cierre enviado', 'cierre confirmado', 'ingreso enviado'])
+  })
+
   it('INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla', async () => {
     localStorage.setItem('nexora.cierre-pendiente', '1')
     const calls: string[] = []

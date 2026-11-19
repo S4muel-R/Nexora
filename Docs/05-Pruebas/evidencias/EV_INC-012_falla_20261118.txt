@@ -1,0 +1,38 @@
+# Vitest sin la corrección de INC-012 (AuthContext.tsx de a5fe124), 2026-11-18 19:31
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API 359ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas 645ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución 648ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión 25ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve las opciones de su institución 35ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal docente no ve Docentes 25ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre Docentes ve acceso restringido 21ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones 20ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido 15ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro 35ms
+ ✓ src/App.test.tsx > HU07 Registrar estudiante > INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado 167ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: la sesión se cierra en la interfaz aunque el servidor no responda, y queda el cierre pendiente 103ms
+ × src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-012: iniciar sesión espera a que el servidor confirme el cierre anterior 845ms
+   → expected [ 'cierre enviado', 'ingreso enviado' ] to deeply equal [ 'cierre enviado' ]
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla 24ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-012: iniciar sesión espera a que el servidor confirme el cierre anterior
+AssertionError: expected [ 'cierre enviado', 'ingreso enviado' ] to deeply equal [ 'cierre enviado' ]
+- Expected
++ Received
+  [
+    "cierre enviado",
++   "ingreso enviado",
+  ]
+ ❯ src/App.test.tsx:242:20
+    240|     await userEvent.click(screen.getByRole('button', { name: 'Ingresar…
+    241|     await new Promise((resolve) => setTimeout(resolve, 50))
+    242|     expect(events).toEqual(['cierre enviado'])
+       |                    ^
+    243|     releaseLogout()
+    244|
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  19:31:47
+   Duration  8.84s (transform 513ms, setup 794ms, import 830ms, tests 2.97s, environment 3.84s)
