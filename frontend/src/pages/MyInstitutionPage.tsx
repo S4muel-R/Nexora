@@ -5,6 +5,7 @@ import type { Institution } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { Alert, Field } from '../components/Field'
 import { LevelPicker } from '../components/LevelPicker'
+import { PeriodsSection } from '../components/PeriodsSection'
 import { usePageTitle } from '../components/usePageTitle'
 
 /** HU05: el personal administrativo consulta y actualiza los datos de su institución; el docente solo consulta. */
@@ -116,6 +117,7 @@ export function MyInstitutionPage() {
           </div>
         )}
       </form>
+      <PeriodsSection canEdit={canEdit} />
     </section>
   )
 }

@@ -124,7 +124,7 @@ export async function parseError(response: Response): Promise<ApiError> {
   })
 }
 
-type Method = 'GET' | 'POST' | 'PATCH'
+type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE'
 
 export async function apiRequest<T>(
   method: Method,
@@ -166,7 +166,13 @@ export const apiGet = <T>(path: string, fetchImpl?: typeof fetch) =>
   apiRequest<T>('GET', path, undefined, fetchImpl)
 export const apiPost = <T>(path: string, body?: unknown) => apiRequest<T>('POST', path, body)
 export const apiPatch = <T>(path: string, body: unknown) => apiRequest<T>('PATCH', path, body)
+export const apiDelete = <T>(path: string) => apiRequest<T>('DELETE', path)
 
 export function errorMessage(error: unknown): string {
   return error instanceof ApiError ? error.message : 'Ocurrió un error inesperado. Intente de nuevo.'
+}
+
+/** Convierte cualquier error en ApiError para mostrar su mensaje y los errores por campo. */
+export function toApiError(error: unknown): ApiError {
+  return error instanceof ApiError ? error : new ApiError(0, { code: 'error', message: errorMessage(error) })
 }

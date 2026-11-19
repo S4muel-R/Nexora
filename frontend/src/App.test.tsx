@@ -123,11 +123,33 @@ describe('HU03 Opciones por rol', () => {
     return Array.from(nav.querySelectorAll('a')).map((a) => a.textContent)
   }
 
-  it('HU03-E1: el personal administrativo ve Mi institución y Estudiantes', async () => {
+  it('HU03-E1: el personal administrativo ve las opciones de su institución', async () => {
     loginAs(users.admin)
     renderAt('/')
 
-    expect(await menuLinks()).toEqual(['Inicio', 'Mi institución', 'Estudiantes'])
+    expect(await menuLinks()).toEqual([
+      'Inicio',
+      'Mi institución',
+      'Estudiantes',
+      'Docentes',
+      'Grupos',
+      'Asistencia',
+      'Reportes',
+    ])
+  })
+
+  it('HU03-E1: el personal docente no ve Docentes', async () => {
+    loginAs(users.teacher)
+    renderAt('/')
+
+    expect(await menuLinks()).toEqual(['Inicio', 'Mi institución', 'Estudiantes', 'Grupos', 'Asistencia', 'Reportes'])
+  })
+
+  it('HU03-E3: el docente que abre Docentes ve acceso restringido', async () => {
+    loginAs(users.teacher)
+    renderAt('/docentes')
+
+    expect(await screen.findByText('No tiene permiso para realizar esta acción.')).toBeInTheDocument()
   })
 
   it('HU03-E2: la administración de la plataforma ve solo Instituciones', async () => {
