@@ -275,7 +275,7 @@ alternativa o es un riesgo de seguridad que requiere otra condición; **Baja** c
 | Responsable | Samuel |
 | Análisis | Es el mismo patrón de INC-004 en una pantalla nueva: la lección de ACR-03 (esperar los datos de los que depende un formulario) no se convirtió en una regla verificable para pantallas nuevas. Ver ACR-05. |
 | Corrección | El botón se habilita cuando terminan de cargar los niveles, y el único nivel se preselecciona aunque llegue después de abrir el formulario. Commit `a5fe124`. |
-| Resultado de reprueba | CP-U12 falla sin la corrección y pasa con ella; Vitest 49/49. CP-S25 aprobado en desarrollo, versión compilada y con latencia (EJ-27). |
+| Resultado de reprueba | CP-U12 falla sin la corrección y pasa con ella; Vitest 49/49 (50/50 con INC-012). CP-S25 aprobado en desarrollo, versión compilada y con latencia (EJ-27). |
 | Evidencia | `evidencias/EV_INC-010-011_falla_20261118.txt` · `EV_INC-010-011_reprueba_20261118.txt` · `e2e/EV_CP-S25_*` |
 | Estado | Corregido y reprobado; se cierra al integrar el PR #12. |
 

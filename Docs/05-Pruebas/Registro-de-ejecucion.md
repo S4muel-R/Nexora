@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Norma | ISO/IEC/IEEE 29119-3, "Test Execution Log" |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
 | Casos | [Especificación de casos](Especificacion-de-casos.md) |
 
 Cada ejecución registra cuándo, dónde y sobre qué versión se probó, el resultado y la evidencia (anexo del avance 1,
@@ -41,8 +41,11 @@ defectos del producto).
 | EJ-23 | 2026-11-05 | Regresión completa en CI (PR #11, ejecución 4), con `failOnFlakyTests` | GitHub Actions, PostgreSQL 16 | `f15dec5` | 121 | 121 | 0 | En verde sin pruebas intermitentes | [Ejecución 42152244891](https://github.com/S4muel-R/Nexora/actions/runs/42152244891) |
 | EJ-24 | 2026-11-05 | Corrección de INC-006 (sesión en cookie HttpOnly con CSRF), A11Y-01/02 y pruebas de formularios; regresión en desarrollo, sobre la versión compilada y con latencia | Local, SQLite, Chromium; `vite preview`; `NEXORA_LATENCIA_MAX_MS=700` | `61c4593` | 139 + 42 + 84 | 139 + 42 + 84 | 0 | Primera versión con latencia: 3 fallas en 80 (el cierre pendiente borraba la cookie de la sesión nueva), corregido antes del commit. CP-S21 falla sin la marca de cierre pendiente. Final: pytest 69/69 (95 %), Vitest 28/28 (91,6 % de líneas), Playwright 42/42, compilada 42/42, latencia 84/84 | `EV_pytest_ejecucion-6_20261105.txt` · `EV_vitest_ejecucion-4_20261105.txt` · `EV_playwright_ejecucion-5_20261105.txt` · `EV_playwright_compilada_20261105.txt` · `EV_playwright_latencia-3_INC-006-falla_20261105.txt` · `EV_playwright_latencia-4_20261105.txt` · `EV_INC-009_falla-cookie-sin-cierre-pendiente_*` |
 | EJ-25 | 2026-11-05 | Regresión completa en CI con auditoría de dependencias y recorridos sobre la versión compilada | GitHub Actions, PostgreSQL 16 | `61c4593` | 139 + 21 | 139 + 21 | 0 | `pip-audit`: 0; `npm audit --omit=dev`: 0 altos; pytest 69/69, Vitest 28/28, Playwright 42/42 y 21/21 sobre la versión compilada, sin intermitentes | [Ejecución 42159260303](https://github.com/S4muel-R/Nexora/actions/runs/42159260303) · `evidencias/ci/EV_EJ-25_PR11-verde-auditoria-compilada_20261105.png` |
+| EJ-26 | 2026-11-18 | Tercer incremento (HU05-E5, HU08 – HU12): pytest, Vitest y Playwright en desarrollo, sobre la versión compilada y con latencia | Local, Windows, Python 3.13, SQLite, Chromium; `vite preview`; `NEXORA_LATENCIA_MAX_MS=700` | `0766d60`, `67f59b4` | 110 + 47 + 64 + 32 + 64 | 110 + 47 + 64 + 31 + 58 | 3 de producto (4 sin ejecutar por el modo en serie) | **Fallas de producto**: CP-S25 sobre la versión compilada → **INC-010**; CP-S29 con latencia en computadora y teléfono → **INC-011** (la asistencia se guardó con fecha 2026-11-18 en lugar de 2026-11-02). **Fallas del script** en la primera corrida en desarrollo (56/64): texto oculto en teléfono (CP-S23), selector ambiguo "Listado" (CP-S25, CP-S28), celdas sin rol en el modo tarjeta (CP-S27) y un grupo asumido como único (CP-S29); se corrigieron los selectores y CP-S25 deja al docente solo en 4-A | Salida de consola; `evidencias/EV_INC-010-011_falla_20261118.txt` reproduce ambas fallas con Vitest |
+| EJ-27 | 2026-11-18 | Corrección de INC-010, INC-011 e INC-012 y regresión completa | Local, igual que EJ-26 | `a5fe124` → `be47f1c` | 111 + 50 + 68 + 68 + 68 | 111 + 50 + 68 + 68 + 68 | 0 en la ejecución final | Con `a5fe124`, la suite con latencia falló 2 de 64: CP-S10 en teléfono → **INC-012** (la respuesta tardía del cierre borraba la sesión siguiente) y CP-S26 en computadora (no reproducida en 33 ejecuciones más; ver Informes de incidente). CP-U12, CP-U13, CP-U15, CP-A50 y CP-S33 fallan sin su corrección y pasan con ella; CP-S34 no discrimina. Ejecución final sobre `be47f1c`: pytest 111/111 (1015/1068 (95 %)), Vitest 50/50 (627/717 (87,44 %)), Playwright 68/68 en desarrollo con `CI=1`, 68/68 compilada y 68/68 con latencia, sin reintentos. Una corrida anterior con latencia no se cuenta: un `git stash` usado para la evidencia de falla cambió el código durante la ejecución (falla del procedimiento) | `EV_pytest_ejecucion-7_20261118.txt` · `EV_vitest_ejecucion-4_20261118.txt` · `EV_INC-010-011_reprueba_20261118.txt` · `EV_INC-012_*_20261118.txt` · `EV_playwright_latencia-3_20261118.txt` · `EV_playwright_compilada-2_20261118.txt` · `EV_playwright_ejecucion-5_20261118.txt` · capturas `e2e/EV_CP-S*_20261118.png` · informes `accesibilidad/axe_*` |
+| EJ-28 | 2026-11-18 | Regresión completa en CI del PR #12 | GitHub Actions, PostgreSQL 16 | `be47f1c` | 161 + 68 + 34 | 161 + 68 + 34 | 0 | En verde: pytest 111/111 con PostgreSQL, Vitest 50/50, Playwright 68/68 y 34/34 sobre la versión compilada, sin intermitentes (`failOnFlakyTests`) | [Ejecución 44441650355](https://github.com/S4muel-R/Nexora/actions/runs/44441650355) |
 
-## 2. Detalle de EJ-11, EJ-17 – EJ-20, EJ-23 y EJ-25 (GitHub Actions)
+## 2. Detalle de EJ-11, EJ-17 – EJ-20, EJ-23, EJ-25 y EJ-28 (GitHub Actions)
 
 Cada PR ejecuta el flujo `.github/workflows/ci.yml` (desde `f4e6a01` también en los PR encadenados). Los artefactos
 `reportes-backend` (cobertura y JUnit), `reportes-frontend` y `evidencias-e2e` (informe HTML de Playwright y capturas)
@@ -66,6 +69,7 @@ quedan en cada ejecución.
 | #11 | ídem | `f15dec5` | [42152244891](https://github.com/S4muel-R/Nexora/actions/runs/42152244891) | 63/63 · 94 % | 16/16 | 42/42, sin intermitentes | Verde |
 | #11 | ídem | `ff429da`, `ae91c0d` (documentación) | [42153460203](https://github.com/S4muel-R/Nexora/actions/runs/42153460203) · [42153547160](https://github.com/S4muel-R/Nexora/actions/runs/42153547160) | 63/63 | 16/16 | 42/42 | Verde |
 | #11 | ídem | `61c4593` | [42159260303](https://github.com/S4muel-R/Nexora/actions/runs/42159260303) | 69/69 · 95 % · `pip-audit` 0 | 28/28 · `npm audit` 0 altos | 42/42 + 21/21 compilada | Verde |
+| [#12](https://github.com/S4muel-R/Nexora/pull/12) | `feature/ADLCDS-112-docentes-grupos-asistencia-reportes` | `be47f1c` | [44441650355](https://github.com/S4muel-R/Nexora/actions/runs/44441650355) | 111/111 · `pip-audit` 0 | 50/50 · `npm audit` 0 altos | 68/68 + 34/34 compilada | Verde |
 
 Las diferencias de SQLite a PostgreSQL que preocupaban en el plan (unicidad sin distinguir mayúsculas, restricciones)
 no produjeron fallas: las mismas pruebas pasan en ambos motores.
@@ -85,10 +89,10 @@ no produjeron fallas: las mismas pruebas pasan en ambos motores.
 
 | Ejecución final por nivel | Ejecutadas | Aprobadas | % |
 |---|---|---|---|
-| API e integración (EJ-24, CI EJ-25) | 69 | 69 | 100 % |
-| Unitarias de interfaz (EJ-24, CI EJ-25) | 28 | 28 | 100 % |
-| Sistema, incluida accesibilidad (EJ-24, CI EJ-25) | 42 | 42 | 100 % |
-| **Total automatizadas** | **139** | **139** | **100 %** |
-| Sistema sobre la versión compilada (EJ-24) | 42 | 42 | 100 % |
-| Robustez con latencia (EJ-24) | 84 | 84 | 100 % |
+| API e integración (EJ-27, CI EJ-28) | 111 | 111 | 100 % |
+| Unitarias de interfaz (EJ-27, CI EJ-28) | 50 | 50 | 100 % |
+| Sistema, incluida accesibilidad (EJ-27, CI EJ-28) | 68 | 68 | 100 % |
+| **Total automatizadas** | **229** | **229** | **100 %** |
+| Sistema sobre la versión compilada (EJ-27) | 68 | 68 | 100 % |
+| Robustez con latencia (EJ-27) | 68 | 68 | 100 % |
 | Revisiones de seguridad (CP-SEG01 – CP-SEG04) | 4 | 4 | 100 % (CP-SEG04 tras INC-006) |
