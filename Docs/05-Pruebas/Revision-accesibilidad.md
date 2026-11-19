@@ -4,9 +4,9 @@
 |---|---|
 | Referencia | Avance 1, sección 7.2 (WCAG 2.2 nivel AA como objetivo) y sección 8 (accesibilidad) · Anexo de correcciones, sección 7 |
 | Tarea | S7-14 Accesibilidad ([ADLCDS-92](https://proyectosulacit.atlassian.net/browse/ADLCDS-92)), adelantada |
-| Alcance | Pantallas del incremento: ingreso, inicio, instituciones, mi institución, estudiantes y formulario de estudiante con errores, en computadora (1280 × 800) y teléfono (Pixel 7) |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
+| Alcance | Ingreso, inicio, instituciones, mi institución (con periodos), estudiantes, formulario de estudiante con errores, docentes con errores, detalle de grupo, reportes y lista de asistencia, en computadora (1280 × 800) y teléfono (Pixel 7) |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
 | Responsable | Samuel (ejecución) · revisión manual con tecnología de apoyo: pendiente |
 
 > Como advierte el avance 1, **una revisión parcial no acredita conformidad total con WCAG 2.2 AA**. Las herramientas
@@ -32,6 +32,11 @@
 | Mi institución | 19 | 0 / 0 | — |
 | Estudiantes | 20 | 0 / 0 | `th-has-data-cells` (tabla que en teléfono se muestra como tarjetas) |
 | Formulario de estudiante con errores | 25 | 0 / 0 | — |
+| Docentes, formulario con errores (CP-S32) | 25 | 0 / 0 | — |
+| Grupos, detalle de 4-A (CP-S32) | 23 | 0 / 0 | — |
+| Reportes, listado de grupos (CP-S32) | 22 | 0 / 0 | — |
+| Mi institución con periodos lectivos (CP-S32) | 21 | 0 / 0 | — |
+| Asistencia, lista para marcar (CP-S32) | 20 | 0 / 0 | — |
 
 ## 3. Lista de comprobación WCAG 2.2 AA aplicable
 
@@ -41,11 +46,11 @@
 | 1.3.1 | Información y relaciones | Cumple; revisar a mano la tabla en modo tarjeta | axe (`th-has-data-cells` incompleto) |
 | 1.3.5 | Identificar el propósito de la entrada | Cumple: `autocomplete` `username` y `current-password` en el ingreso; `new-password` para la cuenta nueva | Revisión de código |
 | 1.4.3 | Contraste mínimo | Cumple | axe (`color-contrast`) |
-| 1.4.4 / 1.4.10 | Cambio de tamaño y reflujo | Cumple: sin desplazamiento horizontal a 320 px en las 4 pantallas medidas | Revisión asistida |
+| 1.4.4 / 1.4.10 | Cambio de tamaño y reflujo | Cumple en las 4 pantallas medidas a 320 px; docentes, grupos, asistencia y reportes solo se recorrieron en Pixel 7 (412 px): medición a 320 px pendiente | Revisión asistida · CP-S22 – CP-S32 |
 | 1.4.11 | Contraste de componentes | Revisión manual pendiente (bordes de campos y foco) | — |
 | 2.1.1 | Teclado | Cumple en el ingreso y el formulario de estudiantes | CP-S17 · revisión asistida |
 | 2.4.2 | Página titulada | Cumple tras A11Y-01: "Ingresar · Nexora", "Inicio · Nexora", "Mi institución · Nexora", "Estudiantes · Nexora", "Instituciones · Nexora" | Revisión asistida 2 · CP-U09 |
-| 2.4.3 | Orden del foco | Cumple: al abrir el formulario el foco pasa a su encabezado (A11Y-02) y sigue Identificación → Fecha → Nombre → Apellidos → Nivel → Guardar | Revisión asistida 2 · CP-U09 |
+| 2.4.3 | Orden del foco | Cumple: al abrir un formulario (estudiante, docente, grupo, corrección de asistencia) o el detalle de un grupo, el foco pasa a su encabezado (A11Y-02) y sigue Identificación → Fecha → Nombre → Apellidos → Nivel → Guardar | Revisión asistida 2 · CP-U09 |
 | 2.4.6 | Encabezados y etiquetas | Cumple | axe |
 | 2.4.7 | Foco visible | Cumple en el campo de correo | CP-S17 |
 | 2.5.8 | Tamaño del objetivo (mínimo) | Cumple | axe (`target-size`) |
@@ -64,5 +69,6 @@ No se registraron defectos de accesibilidad. Las mejoras detectadas se resolvier
 | A11Y-01 | El título de la pestaña era el mismo en todas las pantallas | 2.4.2 | **Resuelto** (commit `61c4593`, `usePageTitle`) |
 | A11Y-02 | Al abrir el formulario de estudiante con el teclado, el foco no se movía al formulario | 2.4.3 (mejora) | **Resuelto** (commit `61c4593`; CP-U09 lo verifica) |
 | A11Y-03 | Falta una prueba con lector de pantalla (NVDA) y con zoom del 200 % | Varios | Pendiente: sesión manual en el Sprint 7, con la evaluación de uso (O5) |
+| A11Y-04 | Cada estudiante de la lista de asistencia es un grupo de opciones (`fieldset` con su nombre como `legend`), y el traslado de grupo tiene una etiqueta oculta con el nombre del estudiante | 1.3.1, 4.1.2 | Aplicado en el diseño (commit `67f59b4`); confirmar con lector de pantalla en A11Y-03 |
 
 Evidencia de la revisión asistida tras las mejoras: `evidencias/accesibilidad/EV_A11Y-revision-asistida-2_20261105.txt`.

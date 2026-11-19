@@ -5,14 +5,16 @@ import { defineConfig, devices } from '@playwright/test'
  * En CI levanta la API con datos ficticios y la interfaz; en local se pueden reutilizar servidores
  * ya iniciados con E2E_NO_SERVER=1 y E2E_BASE_URL.
  */
-const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:5173'
+// E2E_PORT permite usar otro puerto si 5173 está ocupado (ajuste también CORS_ALLOWED_ORIGINS de la API).
+const port = process.env.E2E_PORT ?? '5173'
+const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${port}`
 const python = process.env.E2E_PYTHON ?? 'python'
 const settings = '--settings=config.settings_test'
 // E2E_PREVIEW=1 prueba la versión compilada (`vite build` + `vite preview`), que es la que se entrega (ACR-03).
 const variant = process.env.E2E_PREVIEW ? '-compilada' : ''
 const frontendCommand = process.env.E2E_PREVIEW
-  ? 'npm run build && npm run preview -- --port 5173 --strictPort'
-  : 'npm run dev -- --port 5173 --strictPort'
+  ? `npm run build && npm run preview -- --port ${port} --strictPort`
+  : `npm run dev -- --port ${port} --strictPort`
 
 export default defineConfig({
   testDir: './e2e',

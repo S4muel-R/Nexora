@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
   apiGet,
@@ -19,6 +19,12 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState | null>(null)
+
+/** Tiempo máximo que el inicio de sesión espera a que termine un cierre anterior (INC-012). */
+const LOGOUT_WAIT_MS = 10_000
+
+const waitAtMost = (promise: Promise<void>, ms: number) =>
+  Promise.race([promise, new Promise<void>((resolve) => setTimeout(resolve, ms))])
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -56,7 +62,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [clearSession])
 
+  // INC-012: el cierre anterior se completa antes de iniciar otra sesión; si su respuesta llegara después, su cookie
+  // vacía borraría la sesión nueva.
+  const pendingLogout = useRef<Promise<void> | null>(null)
+
   const login = useCallback(async (email: string, password: string) => {
+    if (pendingLogout.current) await waitAtMost(pendingLogout.current, LOGOUT_WAIT_MS)
+    else if (logoutPending.get()) await waitAtMost(apiLogout(), LOGOUT_WAIT_MS)
     const result = await apiPost<{ user: User }>('/auth/login/', { email, password })
     newSessionEpoch()
     logoutPending.set(false)
@@ -69,7 +81,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     logoutPending.set(true)
     clearSession()
-    await apiLogout()
+    const request = apiLogout()
+    pendingLogout.current = request
+    try {
+      await request
+    } finally {
+      if (pendingLogout.current === request) pendingLogout.current = null
+    }
   }, [clearSession])
 
   const value = useMemo(() => ({ user, loading, login, logout }), [user, loading, login, logout])

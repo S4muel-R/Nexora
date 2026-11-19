@@ -123,11 +123,33 @@ describe('HU03 Opciones por rol', () => {
     return Array.from(nav.querySelectorAll('a')).map((a) => a.textContent)
   }
 
-  it('HU03-E1: el personal administrativo ve Mi institución y Estudiantes', async () => {
+  it('HU03-E1: el personal administrativo ve las opciones de su institución', async () => {
     loginAs(users.admin)
     renderAt('/')
 
-    expect(await menuLinks()).toEqual(['Inicio', 'Mi institución', 'Estudiantes'])
+    expect(await menuLinks()).toEqual([
+      'Inicio',
+      'Mi institución',
+      'Estudiantes',
+      'Docentes',
+      'Grupos',
+      'Asistencia',
+      'Reportes',
+    ])
+  })
+
+  it('HU03-E1: el personal docente no ve Docentes', async () => {
+    loginAs(users.teacher)
+    renderAt('/')
+
+    expect(await menuLinks()).toEqual(['Inicio', 'Mi institución', 'Estudiantes', 'Grupos', 'Asistencia', 'Reportes'])
+  })
+
+  it('HU03-E3: el docente que abre Docentes ve acceso restringido', async () => {
+    loginAs(users.teacher)
+    renderAt('/docentes')
+
+    expect(await screen.findByText('No tiene permiso para realizar esta acción.')).toBeInTheDocument()
   })
 
   it('HU03-E2: la administración de la plataforma ve solo Instituciones', async () => {
@@ -190,6 +212,38 @@ describe('HU02 Cerrar sesión en un equipo compartido', () => {
 
     expect(await screen.findByRole('button', { name: 'Ingresar' })).toBeInTheDocument()
     expect(localStorage.getItem('nexora.cierre-pendiente')).toBe('1')
+  })
+
+  it('INC-012: iniciar sesión espera a que el servidor confirme el cierre anterior', async () => {
+    const events: string[] = []
+    let releaseLogout: () => void = () => {}
+    const logoutDone = new Promise<void>((resolve) => (releaseLogout = resolve))
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url.endsWith('/auth/me/')) return json(200, users.admin)
+      if (url.endsWith('/auth/logout/')) {
+        events.push('cierre enviado')
+        await logoutDone
+        events.push('cierre confirmado')
+        return new Response(null, { status: 204 })
+      }
+      if (url.endsWith('/auth/login/')) {
+        events.push('ingreso enviado')
+        return json(200, { user: users.teacher })
+      }
+      return json(200, [])
+    })
+    renderAt('/')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }))
+    await userEvent.type(await screen.findByLabelText('Correo'), 'docente@robles.test')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'Nexora-Demo-2026')
+    await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(events).toEqual(['cierre enviado'])
+    releaseLogout()
+
+    expect(await screen.findByRole('heading', { name: 'Hola, Andrés' })).toBeInTheDocument()
+    expect(events).toEqual(['cierre enviado', 'cierre confirmado', 'ingreso enviado'])
   })
 
   it('INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla', async () => {

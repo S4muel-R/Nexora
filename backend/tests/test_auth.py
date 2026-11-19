@@ -2,6 +2,7 @@
 
 import pytest
 from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.urls import reverse
 from rest_framework.test import APIClient
 
@@ -132,11 +133,26 @@ def test_rnf01_contrasena_guardada_con_hash(robles_admin):
 
 def test_hu02_e1_cerrar_sesion_elimina_la_sesion(client_for, robles_admin):
     client = client_for(robles_admin)
+    session_key = client.cookies[settings.SESSION_COOKIE_NAME].value
 
     response = client.post(reverse("logout"))
 
     assert response.status_code == 204
-    assert response.cookies[settings.SESSION_COOKIE_NAME].value == ""
+    assert not Session.objects.filter(session_key=session_key).exists()
+
+
+def test_inc_012_cierre_tardio_no_borra_la_sesion_nueva(api_client, client_for, robles_admin):
+    """El cierre de una sesión anterior no envía una cookie vacía que borre la sesión nueva."""
+    old = client_for(robles_admin)
+    api_client.post(reverse("login"), {"email": "admin@robles.test", "password": PASSWORD})
+    new_session = api_client.cookies[settings.SESSION_COOKIE_NAME].value
+
+    response = old.post(reverse("logout"))
+
+    assert response.status_code == 204
+    assert settings.SESSION_COOKIE_NAME not in response.cookies
+    assert api_client.get(reverse("me")).status_code == 200
+    assert Session.objects.filter(session_key=new_session).exists()
 
 
 def test_hu02_e3_sesion_anterior_ya_no_es_valida(client_for, robles_admin):

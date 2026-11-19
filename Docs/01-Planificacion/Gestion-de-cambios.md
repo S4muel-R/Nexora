@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 18 |
-| Versión | 1.2 |
-| Fecha | 2026-11-05 |
+| Versión | 1.3 |
+| Fecha | 2026-11-18 |
 | Responsable | Wilberth (aprobación del equipo en el Daily / Sprint Review) |
 
 ## 1. Procedimiento
@@ -40,3 +40,6 @@ Los cambios de código siguen además el flujo de ramas y Pull Requests de los [
 | CC-17 | 2026-11-05 | Defectos INC-003, INC-004, INC-007, INC-008, INC-009 | Correcciones con pruebas de regresión y reprueba con la API lenta | Corrección de ADLCDS-117, 118, 119, 122 y 123 | Backend (`settings.py`, vista de inicio de sesión) e interfaz (estudiantes, mi institución, sesión) | HU01, HU02, HU05, HU07 | Aprobado | Samuel | Aplicado (PR #11, pendiente de integrar) |
 | CC-18 | 2026-11-05 | ACR-03 y ACR-04 | El CI audita dependencias (`pip-audit`, `npm audit --omit=dev`) y ejecuta los recorridos también sobre la versión compilada; la API de pruebas acepta latencia configurable (`NEXORA_LATENCIA_MAX_MS`) | Acciones preventivas de los análisis de causa raíz | `ci.yml`, `playwright.config.ts`, `config/settings_test.py`, `core/testing.py` | — | Aprobado | Samuel | Aplicado (`d405db9`) |
 | CC-19 | 2026-11-05 | Revisión de accesibilidad y MQ-04 | Título de pestaña por pantalla (A11Y-01), foco al abrir el formulario de estudiante (A11Y-02) y pruebas unitarias de formularios | Mejoras de WCAG 2.4.2 y 2.4.3; cobertura unitaria del frontend bajo la meta | Interfaz de 5 pantallas; 9 pruebas unitarias nuevas | HU04, HU05, HU07; ADLCDS-92 | Aprobado | Samuel | Aplicado (`61c4593`) |
+| CC-20 | 2026-11-18 | Entrega final (semana 15) y CC-05 | Implementar HU05-E5 y HU08 – HU12 en un solo incremento (rama `feature/ADLCDS-112-docentes-grupos-asistencia-reportes`, PR #12 encadenado sobre el PR #11) en lugar de repartirlas en los Sprints 4 – 6 | CA09 – CA24 seguían pendientes a la fecha de la entrega final; sin ellas la línea base no se puede cerrar | Alcance: 29 puntos más (57 de 57). Nuevas apps `academics` y `attendance`, 4 pantallas y la sección de periodos; 99 casos de prueba. Riesgo: revisión de pares pendiente y supuestos VR-01 (asistencia por día) y VR-13 (cuentas docentes creadas por el personal administrativo) sin validar con usuarios | HU05, HU08 – HU12 · ADLCDS-112 – 116 | Aprobado por Samuel con la potestad delegada por el equipo; ratificar en el Sprint Review | Samuel | Aplicado (`0766d60`, `67f59b4`, `a5fe124`; PR #12 pendiente de revisión) |
+| CC-21 | 2026-11-18 | Defectos INC-010, INC-011 e INC-012 | El botón Crear grupo espera a los niveles; la lista de asistencia descarta respuestas de consultas reemplazadas y no guarda una lista que no corresponde a la selección; el inicio de sesión espera a que termine el cierre anterior y la respuesta del cierre no borra la cookie de sesión | Corrección de ADLCDS-124, 125 y 126 | Interfaz (`GroupsPage.tsx`, `AttendancePage.tsx`, `AuthContext.tsx`), API (`core/middleware.py`) y 6 pruebas de regresión | HU01, HU02, HU09, HU10 | Aprobado | Samuel | Aplicado (`a5fe124`, `be47f1c`, pendiente de integrar) |
+| CC-22 | 2026-11-18 | Ambiente de pruebas | Puerto de la interfaz configurable en Playwright (`E2E_PORT`, con `CORS_ALLOWED_ORIGINS`) | El puerto 5173 estaba ocupado por otro proceso del equipo y la configuración lo exigía fijo | Solo `playwright.config.ts`; el CI conserva 5173 | — | Aprobado | Samuel | Aplicado (`a5fe124`) |

@@ -29,3 +29,10 @@ class TeacherReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return _role(request) == User.Role.INSTITUTION_ADMIN
+
+
+class IsInstitutionAdmin(BasePermission):
+    """Solo el personal administrativo (gestión de docentes, grupos y listados)."""
+
+    def has_permission(self, request, view) -> bool:
+        return _role(request) == User.Role.INSTITUTION_ADMIN

@@ -5,8 +5,8 @@
 | Código | S1-06 / S2-01 |
 | EDT | 1.2.1.2 |
 | Responsables | Luis (RF), Wilberth (refinamiento) |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
 | Criterio de entrega | Catálogo de requisitos RF01 – RF08 con historias de usuario y criterios de aceptación verificables |
 | Fuentes | Primer avance corregido y su anexo (línea base: RF01 – RF08, CA01 – CA24), propuesta preliminar, backlog de Jira ADLCDS, guion de consulta S1-10, perfiles S1-11 |
 | Verificación | [Verificación de requisitos](Verificacion-de-requisitos.md) · [Registro de refinamiento](Registro-de-refinamiento.md) |
@@ -98,11 +98,11 @@ Estimación en puntos de historia (escala Fibonacci). Estado al 2026-11-04.
 | HU05 | Actualizar los datos de mi institución | RF03 | Alta | 3 | HU04 | 3 | En curso |
 | HU06 | Impedir el acceso a datos de otra institución | RF01 | Alta | 5 | HU04 | 3 | En curso |
 | HU07 | Gestionar estudiantes sin duplicados | RF04 | Alta | 8 | HU05, HU06 | 3 – 4 | En curso |
-| HU08 | Gestionar docentes y sus cuentas | RF05 | Media | 5 | HU06 | 4 | Por hacer |
-| HU09 | Crear grupos y asignar estudiantes y docentes | RF06 | Media | 8 | HU07, HU08 | 4 | Por hacer |
-| HU10 | Registrar y corregir la asistencia de mi grupo | RF07 | Media | 8 | HU09 | 5 | Por hacer |
-| HU11 | Consultar listados de estudiantes y grupos | RF08 | Media | 3 | HU09 | 6 | Por hacer |
-| HU12 | Consultar el resumen de asistencia | RF08 | Media | 5 | HU10 | 6 | Por hacer |
+| HU08 | Gestionar docentes y sus cuentas | RF05 | Media | 5 | HU06 | 4 | En curso (implementada y probada; PR #12 en revisión) |
+| HU09 | Crear grupos y asignar estudiantes y docentes | RF06 | Media | 8 | HU07, HU08 | 4 | En curso (implementada y probada; PR #12 en revisión) |
+| HU10 | Registrar y corregir la asistencia de mi grupo | RF07 | Media | 8 | HU09 | 5 | En curso (implementada y probada; PR #12 en revisión) |
+| HU11 | Consultar listados de estudiantes y grupos | RF08 | Media | 3 | HU09 | 6 | En curso (implementada y probada; PR #12 en revisión) |
+| HU12 | Consultar el resumen de asistencia | RF08 | Media | 5 | HU10 | 6 | En curso (implementada y probada; PR #12 en revisión) |
 
 Total: 57 puntos. Incremento del segundo entregable: HU01 – HU07 (28 puntos).
 
@@ -143,7 +143,8 @@ de mi rol.
 que no me corresponden.
 
 - **HU03-E1 (exitoso)** — **Dado que** inicié sesión como `institution_admin`, **cuando** veo el menú, **entonces**
-  aparecen "Mi institución" y "Estudiantes" y no aparece "Instituciones".
+  aparecen "Mi institución", "Estudiantes", "Docentes", "Grupos", "Asistencia" y "Reportes" y no aparece
+  "Instituciones". El personal docente ve las mismas opciones salvo "Docentes".
 - **HU03-E2 (alternativo)** — **Dado que** inicié sesión como `platform_admin`, **cuando** veo el menú, **entonces**
   aparece "Instituciones" y no aparecen opciones de gestión escolar.
 - **HU03-E3 (error)** — **Dado que** soy `teacher`, **cuando** intento abrir directamente la dirección de una pantalla
@@ -176,8 +177,8 @@ información correcta.
 - **HU05-E4 (error)** — **Dado que** quito un nivel que tiene estudiantes activos, **cuando** guardo, **entonces** veo
   "No se puede quitar un nivel con estudiantes activos".
 - **HU05-E5 (exitoso, REF-16)** — **Dado que** soy `admin@robles.test`, **cuando** defino el periodo lectivo "2026" del
-  2026-02-02 al 2026-12-11 y guardo, **entonces** queda como periodo vigente y los grupos se crean en él. *Pendiente de
-  implementar (Sprint 4, GAP-01).*
+  2026-02-02 al 2026-12-11 y guardo, **entonces** queda como periodo vigente y los grupos se crean en él. *Implementado el 2026-11-18
+  (GAP-01 cerrada; CP-A31, CP-S22).*
 
 ### HU06 — Impedir el acceso a datos de otra institución
 **Como** institución, **quiero** que nadie de otra institución vea ni cambie nuestros datos, **para** proteger la
@@ -299,3 +300,4 @@ instrucciones.
 |---|---|---|
 | 1.0 | 2026-11-04 | Primera redacción de RF01 – RF08 y HU01 – HU12. Incorpora las correcciones de la verificación del backlog original (VR-01 a VR-14). Pendiente: revisión por pares (VR-P). |
 | 1.1 | 2026-11-05 | Anexo de correcciones del avance 1: RF01 – RF03 vuelven a la numeración de la línea base (CC-11, VR-15); correspondencia con HU01 – HU12 y CA01 – CA24 del avance 1 (sección 2.1); nuevos escenarios HU05-E5, HU09-E4, HU10-E5 y HU11-E4 (REF-16, REF-17). Total: 48 escenarios. |
+| 1.2 | 2026-11-18 | HU05-E5 y HU08 – HU12 implementadas (ADLCDS-112 – 116, PR #12); HU03-E1 con las opciones nuevas del menú. Supuestos aplicados mientras se validan con usuarios: asistencia por día (VR-01) y cuentas docentes creadas por el personal administrativo (VR-13). |

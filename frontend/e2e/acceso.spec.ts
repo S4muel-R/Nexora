@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
-import { ACCOUNTS, API_URL, evidence, login } from './helpers'
+import type { Page } from '@playwright/test'
+import { ACCOUNTS, API_URL, DEMO_PASSWORD, evidence, login } from './helpers'
 
 test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
   test('CP-S01 HU01-E1 la administradora inicia sesión y ve su institución', async ({ page }, info) => {
@@ -43,7 +44,15 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
     const menu = page.getByRole('navigation', { name: 'Menú principal' })
 
     await login(page, ACCOUNTS.roblesAdmin)
-    await expect(menu.getByRole('link')).toHaveText(['Inicio', 'Mi institución', 'Estudiantes'])
+    await expect(menu.getByRole('link')).toHaveText([
+      'Inicio',
+      'Mi institución',
+      'Estudiantes',
+      'Docentes',
+      'Grupos',
+      'Asistencia',
+      'Reportes',
+    ])
     await evidence(page, info, 'CP-S05', 'menu-administrativo')
     await page.getByRole('button', { name: 'Cerrar sesión' }).click()
 
@@ -96,5 +105,46 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
       .poll(async () => (await page.request.get(`${API_URL}/auth/me/`)).status(), { timeout: 15_000 })
       .toBe(401)
     await evidence(page, info, 'CP-S21', 'sesion-cerrada')
+  })
+
+  /** Retrasa 2 s la respuesta del cierre de sesión, que trae la cookie de sesión vacía (INC-012). */
+  const delayLogoutResponse = (page: Page) =>
+    page.route('**/auth/logout/', async (route) => {
+      const response = await route.fetch()
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await route.fulfill({ response })
+    })
+
+  const expectMonteverdeSession = async (page: Page) => {
+    await page.getByRole('link', { name: 'Estudiantes' }).first().click()
+    await page.waitForTimeout(2500)
+    await page.reload()
+    await expect(page.getByRole('table', { name: 'Lista de estudiantes' }).getByText('Calderón Mora, Javier')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible()
+  }
+
+  test('CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012)', async ({ page }, info) => {
+    await delayLogoutResponse(page)
+    await login(page, ACCOUNTS.roblesAdmin)
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click()
+    // Sin recargar: se ingresa con otra cuenta mientras el cierre sigue sin respuesta.
+    await page.getByLabel('Correo').fill(ACCOUNTS.monteverdeAdmin)
+    await page.getByLabel('Contraseña').fill(DEMO_PASSWORD)
+    await page.getByRole('button', { name: 'Ingresar' }).click()
+    await expect(page.getByRole('heading', { name: /^Hola,/ })).toBeVisible()
+
+    await expectMonteverdeSession(page)
+    await evidence(page, info, 'CP-S33', 'sesion-siguiente-conservada')
+  })
+
+  test('CP-S34 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después de recargar (reprueba INC-012)', async ({ page }, info) => {
+    await delayLogoutResponse(page)
+    await login(page, ACCOUNTS.roblesAdmin)
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click()
+    // `login` abre /ingresar de nuevo: la primera petición de cierre (keepalive) sigue en curso.
+    await login(page, ACCOUNTS.monteverdeAdmin)
+
+    await expectMonteverdeSession(page)
+    await evidence(page, info, 'CP-S34', 'sesion-siguiente-conservada')
   })
 })

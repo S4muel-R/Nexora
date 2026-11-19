@@ -4,8 +4,8 @@
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, sección 17 |
 | Técnicas | 5 porqués, Ishikawa (causa-efecto), Pareto |
-| Versión | 1.2 |
-| Fecha | 2026-11-05 |
+| Versión | 1.3 |
+| Fecha | 2026-11-18 |
 | Estado | Borrador para validar en la retrospectiva del equipo |
 
 > Las causas se apoyan en evidencia verificable (Jira, Git, registros de ejecución). Las marcadas con **[Validar]** son
@@ -213,3 +213,36 @@ registraron como cambios, y la seguridad se revisó por primera vez después de 
 | Preventiva | Agregar al CI `npm audit --omit=dev` y `pip-audit` (commit `d405db9`); `check --deploy` con `DJANGO_HTTPS=true` ya corre en pytest (CP-A26) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Lista de revisión de PR: respetar la arquitectura aprobada o registrar la desviación (commit `b403436`) | Samuel | 2026-11-05 (hecho) |
 | Preventiva | Matriz de controles OWASP ASVS de la [Revisión de seguridad](Revision-seguridad.md), revisada en cada sprint | Luis | Cada sprint |
+
+## ACR-05 — Defectos asíncronos repetidos en las pantallas de HU09 y HU10
+
+**Problema.** Las pantallas nuevas de grupos y asistencia repitieron los dos patrones ya corregidos en el incremento
+anterior: un formulario usable antes de cargar los datos de los que depende (INC-010, igual que INC-004) y una
+respuesta tardía que reemplaza datos más recientes (INC-011, igual que INC-008). INC-011 registraba la asistencia en
+otra fecha (severidad alta). La misma ejecución con latencia encontró INC-012: la respuesta tardía de un cierre de
+sesión borraba la cookie de la sesión siguiente; la corrección de INC-009 había resuelto el orden en la interfaz,
+pero no el de las cookies que fija el servidor.
+
+### 5 porqués — INC-011
+
+| # | Pregunta | Respuesta |
+|---|---|---|
+| 1 | ¿Por qué la asistencia se guardó en otra fecha? | La lista de hoy, que respondió tarde, reemplazó la lista de la fecha elegida y Guardar envió la fecha de la lista |
+| 2 | ¿Por qué la respuesta tardía reemplazó la lista? | La consulta no descartaba respuestas de filtros anteriores |
+| 3 | ¿Por qué no se aplicó la corrección de INC-008? | Esa corrección fue local a Mi institución; no quedó como patrón ni como regla de revisión para consultas con filtros |
+| 4 | ¿Por qué no se detectó al escribir la pantalla? | Las pruebas unitarias respondían de inmediato y la suite de sistema sin latencia pasó 64/64 |
+| 5 | ¿Por qué no había una prueba con la API lenta para la pantalla nueva? | La acción preventiva de ACR-03 ("cada pantalla nueva incluye un caso con la API retrasada", Sprint 4) no se cumplió al diseñar los casos; solo la ejecución completa con latencia, también acción de ACR-03, lo detectó |
+
+**Causa raíz.** Las lecciones de INC-004 e INC-008 quedaron como correcciones puntuales y como una acción preventiva
+sin verificación, no como un patrón de código reutilizable ni como una comprobación que bloquee el PR. La ejecución con
+latencia antes de la entrega (ACR-03) sí funcionó: detectó ambos defectos antes de integrar.
+
+### Acciones
+
+| Tipo | Acción | Responsable | Fecha |
+|---|---|---|---|
+| Correctiva | INC-010 e INC-011 corregidos con regresiones CP-U12 y CP-U13 que fallan sin la corrección (commit `a5fe124`); INC-012 en la interfaz y en la API con CP-A50, CP-U15 y CP-S33 (commit `be47f1c`) | Samuel | 2026-11-18 (hecho) |
+| Preventiva | Ejecutar la suite con latencia y la suite sobre la versión compilada antes de cada PR de interfaz, no solo antes de la entrega | Samuel | 2026-11-18 (hecho en este PR) |
+| Preventiva | Extraer un gancho común de carga que descarte respuestas de consultas reemplazadas y usarlo en todas las pantallas | Samuel | Siguiente sprint |
+| Preventiva | Lista de revisión de PR: "¿la pantalla tiene una prueba unitaria con la respuesta retrasada?" como requisito para aprobar | Wilberth | Siguiente sprint |
+

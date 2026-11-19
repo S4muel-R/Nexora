@@ -1,0 +1,9 @@
+{
+  "pantalla": "asistencia",
+  "dispositivo": "computadora",
+  "url": "/asistencia",
+  "reglas_aprobadas": 20,
+  "reglas_no_aplicables": 42,
+  "revision_manual": [],
+  "violaciones": []
+}

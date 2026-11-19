@@ -5,8 +5,8 @@
 | Código | S2-05 (incluye la nota técnica S1-07) |
 | EDT | 1.2.2.2 |
 | Responsable | Luis |
-| Versión | 1.2 |
-| Fecha | 2026-11-05 |
+| Versión | 1.3 |
+| Fecha | 2026-11-18 |
 | Criterio de entrega | Arquitectura, base de datos y API diseñadas |
 | Alcance | Incremento del segundo entregable: HU01 – HU07 |
 
@@ -61,6 +61,12 @@
 ```
 Institution 1 ──── * User          (User.institution es nulo solo para platform_admin)
 Institution 1 ──── * Student
+Institution 1 ──── * AcademicPeriod (uno vigente)
+Institution 1 ──── * Teacher 1 ──── 1 User (rol teacher)
+AcademicPeriod 1 ── * Group * ──── * Teacher
+Group 1 ──── * Enrollment * ──── 1 Student      (un grupo por estudiante y periodo)
+Group 1 ──── * AttendanceRecord * ──── 1 Student (uno por grupo, estudiante y fecha)
+AttendanceRecord 1 ──── * AttendanceChange      (historial de correcciones)
 ```
 
 ### `accounts_user`
@@ -101,6 +107,39 @@ Institution 1 ──── * Student
 | `is_active` | boolean | Borrado lógico (RN06) |
 | `created_at`, `updated_at` | timestamp | Automáticos |
 
+### `academics_academicperiod` (HU05-E5)
+
+| Campo | Tipo | Reglas |
+|---|---|---|
+| `institution_id` | FK → institution | Lo asigna el servidor |
+| `name` | varchar(50) | Único por institución sin distinguir mayúsculas |
+| `start_date`, `end_date` | date | Fin posterior o igual al inicio |
+| `is_current` | boolean | Al marcar uno como vigente, los demás de la institución dejan de serlo |
+
+### `academics_teacher` (HU08)
+
+| Campo | Tipo | Reglas |
+|---|---|---|
+| `institution_id` | FK → institution | Lo asigna el servidor |
+| `user_id` | FK única → user | Cuenta con rol `teacher` creada junto con el docente; correo único |
+| `is_active` | boolean | Desactivar al docente desactiva su cuenta (HU08-E2) |
+
+### `academics_group` y `academics_enrollment` (HU09)
+
+| Campo | Tipo | Reglas |
+|---|---|---|
+| `group.period_id`, `group.level`, `group.code` | FK, varchar | Periodo y nivel de la institución; código único por periodo sin distinguir mayúsculas (CA12) |
+| `group.teachers` | M2M → teacher | Solo docentes activos de la institución |
+| `enrollment.student_id`, `enrollment.period_id` | FK | Estudiante activo del mismo nivel; **único por estudiante y periodo** (restricción en BD, CA14) |
+
+### `attendance_attendancerecord` y `attendance_attendancechange` (HU10)
+
+| Campo | Tipo | Reglas |
+|---|---|---|
+| `record.group_id`, `student_id`, `date` | FK, date | Único por grupo, estudiante y fecha (CA18); fecha no futura y dentro del periodo |
+| `record.status` | varchar(10) | `presente` o `ausente` |
+| `change.previous_status`, `new_status`, `reason`, `changed_by_id`, `changed_at` | — | Motivo obligatorio (CA20); conserva valor anterior, nuevo, autor y fecha (CA19) |
+
 ## 4. Contrato de API (`/api/v1`)
 
 Todas las rutas exigen la cookie de sesión `sessionid` (HttpOnly, `SameSite=Lax`) salvo las marcadas como públicas; las
@@ -136,6 +175,30 @@ Sin sesión válida la API responde `401`. Los errores siguen el formato de los 
 | `GET /students/{id}/` | `institution_admin`, `teacher` | — | `200` · `404` si es de otra institución |
 | `PATCH /students/{id}/` | `institution_admin` | Campos editables, incluido `is_active` | `200` · `400` · `404` · `409` |
 
+### Periodos, docentes y grupos (HU05-E5, HU08, HU09)
+
+| Método y ruta | Roles | Cuerpo / parámetros | Respuestas |
+|---|---|---|---|
+| `GET, POST /periods/` · `PATCH /periods/{id}/` | `institution_admin` (docente solo consulta) | `{ "name", "start_date", "end_date", "is_current" }` | `200/201` · `400` fechas · `409` nombre repetido |
+| `GET, POST /teachers/` · `PATCH /teachers/{id}/` | `institution_admin` | `{ "first_name", "last_name", "email", "password", "is_active" }` · `?include_inactive=true` | `201` · `400` · `409` correo en uso · `403` docente |
+| `GET, POST /groups/` · `GET, PATCH /groups/{id}/` | `institution_admin`; el docente consulta solo sus grupos | `{ "code", "level", "period" }` · `?period=` | `201` · `409` código repetido · `404` grupo ajeno o sin asignación |
+| `POST /groups/{id}/students/` · `DELETE /groups/{id}/students/{student}/` | `institution_admin` | `{ "students": [ids] }` | `200` grupo actualizado · `400` inactivo, otro nivel u otra institución · `409` ya tiene grupo en el periodo |
+| `POST /groups/{id}/transfer/` | `institution_admin` | `{ "student", "target_group" }` | `200` · `400` destino de otro periodo o nivel |
+| `POST /groups/{id}/teachers/` · `DELETE /groups/{id}/teachers/{teacher}/` | `institution_admin` | `{ "teachers": [ids] }` | `200` · `400` docente desactivado |
+
+### Asistencia y reportes (HU10 – HU12)
+
+| Método y ruta | Roles | Cuerpo / parámetros | Respuestas |
+|---|---|---|---|
+| `GET /attendance/?group=&date=` | `institution_admin`; docente asignado | — | `200` lista con estado, registro y correcciones · `404` grupo ajeno |
+| `POST /attendance/` | Docente asignado al grupo | `{ "group", "date", "entries": [{ "student", "status" }] }` | `201` · `400` faltan estudiantes, fecha futura o fuera del periodo · `403` personal administrativo · `409` ya registrada (modo corrección) |
+| `POST /attendance/{id}/correct/` | Docente asignado al grupo | `{ "status", "reason" }` | `200` con el cambio · `400` "El motivo es obligatorio." |
+| `GET /reports/groups/?level=&period=` · `GET /reports/students/?level=&group=` | `institution_admin` | — | `200` lista (vacía si no hay resultados) · `403` docente |
+| `GET /reports/attendance/?group=&start=&end=` | `institution_admin`; docente asignado | — | `200` presentes, ausentes, sin registro y porcentaje por estudiante y del grupo · `400` rango invertido |
+
+`POST /auth/logout/` elimina la sesión en el servidor y, desde INC-012, no envía la cookie de sesión vacía: una
+respuesta tardía no puede borrar la sesión iniciada después (`core/middleware.py`).
+
 ### Desviación corregida respecto del avance 1 (INC-006)
 
 La versión 1.0 de este contrato usaba `Authorization: Token` con el token guardado en `localStorage`, lo que contradecía
@@ -154,6 +217,11 @@ Para un ambiente publicado, `DJANGO_HTTPS=true` activa la redirección a HTTPS, 
 | 4 | Instituciones: registro con administrador | `platform_admin` | HU04 | Sí |
 | 5 | Mi institución: consulta y actualización | `institution_admin` | HU05 | Sí |
 | 6 | Estudiantes: lista con búsqueda, registro, edición y desactivación | `institution_admin`, `teacher` (consulta) | HU07 | Sí, tarjetas |
+| 7 | Mi institución: periodos lectivos | `institution_admin`, `teacher` (consulta) | HU05-E5 | Sí, tarjetas |
+| 8 | Docentes: lista, registro con cuenta, edición y desactivación | `institution_admin` | HU08 | Sí, tarjetas |
+| 9 | Grupos: lista por periodo, creación y detalle con asignaciones y traslados | `institution_admin`, `teacher` (sus grupos) | HU09 | Sí, tarjetas |
+| 10 | Asistencia: lista por grupo y fecha, modo corrección con motivo e historial | `teacher` (sus grupos), `institution_admin` (consulta) | HU10 | Sí |
+| 11 | Reportes: listados por grupo y estudiante, resumen de asistencia | `institution_admin`; `teacher` solo el resumen de sus grupos | HU11, HU12 | Sí, tarjetas |
 
 El prototipo se construye directamente en React; las capturas en computadora (1280 px) y teléfono (390 px) se guardan
 en `Docs/03-Diseno/prototipo/`.

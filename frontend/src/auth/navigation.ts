@@ -11,6 +11,10 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/instituciones', label: 'Instituciones', roles: ['platform_admin'] },
   { to: '/mi-institucion', label: 'Mi institución', roles: ['institution_admin', 'teacher'] },
   { to: '/estudiantes', label: 'Estudiantes', roles: ['institution_admin', 'teacher'] },
+  { to: '/docentes', label: 'Docentes', roles: ['institution_admin'] },
+  { to: '/grupos', label: 'Grupos', roles: ['institution_admin', 'teacher'] },
+  { to: '/asistencia', label: 'Asistencia', roles: ['institution_admin', 'teacher'] },
+  { to: '/reportes', label: 'Reportes', roles: ['institution_admin', 'teacher'] },
 ]
 
 export const navFor = (role: Role) => NAV_ITEMS.filter((item) => item.roles.includes(role))

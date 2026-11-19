@@ -1,0 +1,10 @@
+# Playwright CP-S33 y CP-S34 — con ambas correcciones, 2026-11-18 19:49
+
+Running 4 tests using 1 worker
+
+  ok 1 [computadora] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) (6.7s)
+  ok 2 [computadora] › e2e\acceso.spec.ts:140:3 › HU01 – HU03 Acceso y opciones por rol › CP-S34 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después de recargar (reprueba INC-012) (6.8s)
+  ok 3 [telefono] › e2e\acceso.spec.ts:126:3 › HU01 – HU03 Acceso y opciones por rol › CP-S33 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después en la misma página (reprueba INC-012) (6.9s)
+  ok 4 [telefono] › e2e\acceso.spec.ts:140:3 › HU01 – HU03 Acceso y opciones por rol › CP-S34 HU02-E1 / HU01-E1 un cierre tardío no cierra la sesión iniciada después de recargar (reprueba INC-012) (7.5s)
+
+  4 passed (40.4s)

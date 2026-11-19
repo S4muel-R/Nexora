@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     "accounts",
     "institutions",
     "students",
+    "academics",
+    "attendance",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "core.middleware.keep_session_cookie_on_logout",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

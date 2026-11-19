@@ -3,8 +3,8 @@
 | Campo | Valor |
 |---|---|
 | Documento revisado | Primer entregable corregido, "Anexo de correcciones — Avance 1" (revisión del 2026-11-04) |
-| Versión | 1.1 |
-| Fecha | 2026-11-05 |
+| Versión | 1.2 |
+| Fecha | 2026-11-18 |
 | Preparado por | Samuel · revisión pendiente de Luis y Wilberth |
 
 Para cada punto del anexo se indica qué se hizo en el segundo entregable, dónde está la evidencia y qué queda pendiente.
@@ -97,3 +97,15 @@ Los seis indicadores del anexo están medidos con fecha de corte, responsable, f
 | Revisión de seguridad y accesibilidad | **Hecho** para la selección de controles; manual con lector de pantalla pendiente |
 | Evaluación con usuarios | **Pendiente** (O5, Sprint 8) |
 | Actas de aceptación | **Pendiente**: aceptación manual EJ-12 y acta del Sprint Review |
+
+## 10. Actualización al 2026-11-18 (entrega final)
+
+| Punto del anexo | Estado al 2026-11-18 |
+|---|---|
+| MVP obligatorio | RF01 – RF08 implementados y probados: el periodo lectivo (GAP-01) y HU08 – HU12 están en el PR #12 (CC-20). Aceptados por usuarios: 0/8 |
+| Pruebas de interfaz de grupos y asistencia | **Hecho**: CP-S22 – CP-S32 (× 2 dispositivos), también sobre la versión compilada y con la API demorada |
+| Aprobación funcional | 99/99 casos; 24/24 criterios de la línea base con casos aprobados por el equipo de desarrollo |
+| Defectos | 11 registrados (4 altos), todos corregidos y reprobados; INC-010 e INC-011 encontrados antes de integrar |
+| Ejecución automatizada | 223 pruebas (pytest 110, Vitest 49, Playwright 64), más 64 sobre la versión compilada y 64 con latencia |
+| Sigue pendiente | Revisión e integración de los PR #1 – #12, aceptación manual EJ-12, evaluación con usuarios (O5), pruebas cruzadas, actas y grabaciones de las ceremonias, registro de horas y acceso del profesor a Jira y OneDrive |
+

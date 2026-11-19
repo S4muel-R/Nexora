@@ -1,5 +1,7 @@
 """Datos ficticios de 3 instituciones para pruebas manuales y de interfaz (S3-05, S4-04).
 
+Incluye el periodo lectivo 2026, la ficha de cada docente y sus grupos (HU05-E5, HU08, HU09).
+
 Uso: python manage.py seed_demo [--reset]
 Todos los datos son inventados. La contraseña de todas las cuentas es DEMO_PASSWORD.
 """
@@ -9,7 +11,9 @@ import datetime
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
+from academics.models import AcademicPeriod, Enrollment, Group, Teacher
 from accounts.models import User
+from attendance.models import AttendanceChange, AttendanceRecord
 from institutions.models import Institution
 from students.models import Student
 
@@ -32,6 +36,11 @@ INSTITUTIONS = [
             ("1-1111-1115", "Elena", "Chaves Umaña", "2016-05-27", "primaria"),
             ("3-3333-3333", "Fabián", "Núñez Brenes", "2015-09-15", "primaria"),
         ],
+        # (código, nivel, identificaciones, ¿con la docente asignada?). Fabián queda sin grupo.
+        "groups": [
+            ("4-A", "primaria", ["1-1111-1111", "1-1111-1112", "1-1111-1113"], True),
+            ("4-B", "primaria", ["1-1111-1114", "1-1111-1115"], False),
+        ],
     },
     {
         "name": "Colegio Monteverde",
@@ -47,6 +56,14 @@ INSTITUTIONS = [
             ("2-2222-2223", "Isabel", "Montero Pérez", "2011-04-18", "secundaria"),
             ("3-3333-3333", "Javier", "Calderón Mora", "2010-12-05", "secundaria"),
         ],
+        "groups": [
+            (
+                "10-1",
+                "secundaria",
+                ["2-2222-2221", "2-2222-2222", "2-2222-2223", "3-3333-3333"],
+                True,
+            ),
+        ],
     },
     {
         "name": "Kínder Arcoíris",
@@ -60,6 +77,7 @@ INSTITUTIONS = [
             ("4-4444-4441", "Lucía", "Vindas Solano", "2021-06-21", "preescolar"),
             ("4-4444-4442", "Mateo", "Barrantes Cruz", "2021-10-03", "preescolar"),
         ],
+        "groups": [("K-1", "preescolar", ["4-4444-4441", "4-4444-4442"], True)],
     },
 ]
 
@@ -73,6 +91,12 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, reset=False, **options):
         if reset:
+            AttendanceChange.objects.all().delete()
+            AttendanceRecord.objects.all().delete()
+            Enrollment.objects.all().delete()
+            Group.objects.all().delete()
+            Teacher.objects.all().delete()
+            AcademicPeriod.objects.all().delete()
             Student.objects.all().delete()
             User.objects.all().delete()
             Institution.objects.all().delete()
@@ -84,7 +108,19 @@ class Command(BaseCommand):
                 defaults={k: data[k] for k in ("levels", "address", "phone", "email")},
             )
             self._user(*data["admin"], User.Role.INSTITUTION_ADMIN, institution)
-            self._user(*data["teacher"], User.Role.TEACHER, institution)
+            teacher_user = self._user(*data["teacher"], User.Role.TEACHER, institution)
+            teacher, _ = Teacher.objects.get_or_create(
+                user=teacher_user, defaults={"institution": institution}
+            )
+            period, _ = AcademicPeriod.objects.get_or_create(
+                institution=institution,
+                name="2026",
+                defaults={
+                    "start_date": datetime.date(2026, 2, 2),
+                    "end_date": datetime.date(2026, 12, 11),
+                    "is_current": True,
+                },
+            )
             for identification, first, last, birth, level in data["students"]:
                 Student.objects.update_or_create(
                     institution=institution,
@@ -97,11 +133,24 @@ class Command(BaseCommand):
                         "is_active": True,
                     },
                 )
+            for code, level, identifications, with_teacher in data["groups"]:
+                group, _ = Group.objects.get_or_create(
+                    institution=institution, period=period, code=code, defaults={"level": level}
+                )
+                if with_teacher:
+                    group.teachers.add(teacher)
+                for identification in identifications:
+                    student = Student.objects.get(
+                        institution=institution, identification=identification
+                    )
+                    if not Enrollment.objects.filter(student=student, period=period).exists():
+                        Enrollment.objects.create(group=group, student=student)
 
         self.stdout.write(
             self.style.SUCCESS(
                 f"Datos ficticios cargados: {Institution.objects.count()} instituciones, "
-                f"{User.objects.count()} usuarios, {Student.objects.count()} estudiantes."
+                f"{User.objects.count()} usuarios, {Student.objects.count()} estudiantes, "
+                f"{Group.objects.count()} grupos."
             )
         )
 

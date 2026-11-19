@@ -4,8 +4,8 @@
 |---|---|
 | Referencia | Instrucciones del Proyecto Integrador, secciones 4.2 y 22 (segundo entregable) |
 | Código | S3-02 / S4-02 (informe de avance) |
-| Versión | 1.1 |
-| Fecha de corte | 2026-11-05 |
+| Versión | 1.2 |
+| Fecha de corte | 2026-11-18 |
 | Fuentes | Jira ADLCDS ([backlog exportado](Backlog-Jira.md)), historial de GitHub, [Métricas](Metricas.md), [Gestión de cambios](Gestion-de-cambios.md) |
 
 Estado de cada tarea al corte: **Hecha** (cumple su criterio de entrega y está en GitHub), **Parcial** (avance
@@ -109,10 +109,41 @@ estudiantes (CC-05).
 | Problemas encontrados | Sin revisión de PR por pares todavía; defectos asíncronos ocultos por los reintentos del CI (ACR-03); sesión distinta de la arquitectura aprobada (INC-006, ACR-04, ya corregida) |
 | Acciones de mejora | Revisión de los PR por Luis y Wilberth; `failOnFlakyTests`, auditoría de dependencias y recorridos sobre la versión compilada en el CI (hecho); suite con latencia antes de cada entrega; Sprint Review grabado |
 
+## Sprints 4 – 6 — Tercer incremento: periodo, docentes, grupos, asistencia y reportes (CC-20)
+
+**Objetivo.** Implementar y probar el periodo lectivo (HU05-E5, GAP-01) y HU08 – HU12 para cubrir CA09 – CA24 antes de
+la entrega final. Por CC-20 los tres sprints planificados se ejecutaron como un solo incremento el 2026-11-18, en la rama
+`feature/ADLCDS-112-docentes-grupos-asistencia-reportes` (PR #12, encadenado sobre el PR #11).
+
+| Historia / tarea | Responsable | Estado |
+|---|---|---|
+| HU05-E5 Periodo lectivo (GAP-01) | Samuel | **Hecha**, pendiente de integrar |
+| HU08 Docentes y sus cuentas (ADLCDS-112) | Samuel (API asignada a Luis en el plan) | **Hecha**, pendiente de integrar |
+| HU09 Grupos y asignaciones (ADLCDS-113) | Samuel | **Hecha**, INC-010 corregido |
+| INC-012 en el cambio de cuenta (HU01, HU02) | Samuel | **Corregido** en la interfaz y la API |
+| HU10 Asistencia y corrección (ADLCDS-114) | Samuel | **Hecha**, INC-011 corregido |
+| HU11 Listados (ADLCDS-115) | Samuel | **Hecha** |
+| HU12 Resumen de asistencia (ADLCDS-116) | Samuel | **Hecha** |
+| Casos CP-A31 – CP-A50, CP-U10 – CP-U15, CP-S22 – CP-S34 | Samuel (diseño por revisar: Wilberth) | **Hechos** |
+| Revisión de pares del PR #12 | Luis y Wilberth | Pendiente |
+| Daily Scrum y Sprint Review de los Sprints 4 – 6 | Equipo | **Sin registro**: no hay actas de estos sprints |
+
+| Indicador | Valor al corte |
+|---|---|
+| Historias implementadas y probadas | HU01 – HU12 (57 de 57 puntos); 29 puntos en este incremento |
+| Defectos detectados | 3 (INC-010 media, INC-011 e INC-012 altas), todos antes de integrar; corregidos y reprobados |
+| Cambios realizados | CC-20 – CC-22 |
+| Pruebas | pytest 111/111 (95 %), Vitest 50/50, Playwright 68/68 en desarrollo, 68/68 compilada y 68/68 con latencia; CI del PR #12: en verde (111, 50, 68 y 34/34 compilada; ejecución 44441650355) |
+| Criterios de la línea base | 24/24 con casos aprobados por el equipo de desarrollo; aceptación manual (EJ-12) y validación con usuarios pendientes |
+| Problemas encontrados | Repetición de defectos asíncronos ya conocidos (ACR-05); todo el incremento lo implementó una sola persona, sin revisión de pares todavía |
+| Acciones de mejora | Gancho común de carga con descarte de respuestas; revisión del PR por Luis y Wilberth; Sprint Review que ratifique CC-20 |
+
 ## Decisiones para el siguiente sprint
 
 1. Integrar el incremento en `main` por PR revisados (MP-03) y cerrar INC-001 – INC-005 e INC-007 – INC-009.
 2. Ratificar CC-13 (sesión en cookie HttpOnly, ya aplicada) y registrar las horas por tarea.
 3. Completar las tareas de gestión trasladadas (S1-01 – S1-04, S2-02, S2-03) y replanificar los sprints en Jira (CC-01).
 4. Realizar las sesiones de consulta y validar los supuestos marcados en S1-11 y en el catálogo.
-5. Sprint 4: periodo lectivo (GAP-01), HU08 (docentes) y HU09 (grupos), con Definition of Ready aplicada.
+5. ~~Sprint 4: periodo lectivo (GAP-01), HU08 (docentes) y HU09 (grupos)~~ — hecho junto con HU10 – HU12 (CC-20).
+6. Sprint 7: revisar e integrar el PR #12, pruebas cruzadas con el equipo asignado y aceptación manual EJ-12.
+7. Sprint 8: validación con usuarios (O5), métricas finales y defensa.
