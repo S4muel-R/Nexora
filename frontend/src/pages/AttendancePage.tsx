@@ -24,6 +24,8 @@ export function AttendancePage() {
   const [error, setError] = useState<ApiError | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [correcting, setCorrecting] = useState<Entry | null>(null)
+  // INC-011: solo la respuesta de la última consulta actualiza la lista; una respuesta tardía de otra fecha se descarta.
+  const latest = useRef(0)
 
   useEffect(() => {
     let active = true
@@ -41,15 +43,19 @@ export function AttendancePage() {
 
   const load = useCallback(() => {
     if (!groupId || !date) {
+      latest.current++
       setSheet(null)
       return Promise.resolve()
     }
+    const request = ++latest.current
     return apiGet<AttendanceSheet>(`/attendance/?group=${groupId}&date=${date}`)
       .then((data) => {
+        if (request !== latest.current) return
         setSheet(data)
         setMarks(Object.fromEntries(data.entries.map((e) => [e.student, e.status ?? 'presente'])))
       })
       .catch((err) => {
+        if (request !== latest.current) return
         setSheet(null)
         setError(toApiError(err))
       })
@@ -63,7 +69,8 @@ export function AttendancePage() {
 
   const handleSave = async (event: FormEvent) => {
     event.preventDefault()
-    if (!sheet) return
+    // INC-011: nunca se guarda una lista que no corresponde al grupo y la fecha seleccionados.
+    if (!sheet || sheet.date !== date || String(sheet.group) !== groupId) return
     setError(null)
     setNotice(null)
     try {

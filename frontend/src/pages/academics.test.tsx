@@ -171,6 +171,33 @@ describe('HU09 Grupos', () => {
     expect(calls.find((c) => c.method === 'POST')?.body).toEqual({ code: '4-C', level: 'primaria', period: 1 })
   })
 
+  it('INC-010: crear grupo se habilita al cargar los niveles y el único nivel queda preseleccionado', async () => {
+    let release: () => void = () => {}
+    const loaded = new Promise<void>((resolve) => (release = resolve))
+    const calls = groupsApi(admin, (url, method) => {
+      if (url.endsWith('/groups/') && method === 'POST') return json(201, group('4-C', 9, []))
+      return undefined
+    })
+    const base = globalThis.fetch
+    vi.stubGlobal('fetch', async (url: string, init?: RequestInit) => {
+      if (url.endsWith('/my-institution/')) await loaded
+      return base(url, init)
+    })
+    renderAt('/grupos')
+
+    const create = await screen.findByRole('button', { name: 'Crear grupo' })
+    await vi.waitFor(() => expect(screen.getByLabelText('Periodo lectivo')).toHaveValue('1'))
+    expect(create).toBeDisabled()
+    release()
+    await vi.waitFor(() => expect(create).toBeEnabled())
+    await userEvent.click(create)
+    expect(screen.getByLabelText('Nivel')).toHaveValue('primaria')
+    await userEvent.type(screen.getByLabelText('Código'), '4-C')
+    await userEvent.click(within(screen.getByRole('form', { name: 'Crear grupo' })).getByRole('button', { name: 'Guardar' }))
+    await screen.findByRole('status')
+    expect(calls.find((c) => c.method === 'POST')?.body).toMatchObject({ level: 'primaria' })
+  })
+
   it('HU09-E3: muestra que el estudiante ya pertenece a un grupo del periodo', async () => {
     groupsApi(admin, (url, method) =>
       url.endsWith('/groups/2/students/') && method === 'POST'
@@ -212,6 +239,7 @@ describe('HU09 Grupos', () => {
 })
 
 describe('HU10 Asistencia', () => {
+  const dateOf = (url: string) => new URL(url).searchParams.get('date')!
   const sheet = (recorded: boolean): AttendanceSheet => ({
     group: 1,
     group_code: '4-A',
@@ -238,15 +266,48 @@ describe('HU10 Asistencia', () => {
         saved = true
         return json(201, { recorded: 1 })
       }
-      if (url.includes('/attendance/?')) return json(200, sheet(saved))
+      if (url.includes('/attendance/?')) return json(200, { ...sheet(saved), date: dateOf(url) })
     })
     renderAt('/asistencia')
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Ausente' }))
     await userEvent.click(screen.getByRole('button', { name: 'Guardar asistencia' }))
 
-    expect(await screen.findByRole('status')).toHaveTextContent('Asistencia de 4-A del 2026-11-02 registrada.')
+    expect(await screen.findByRole('status')).toHaveTextContent(/Asistencia de 4-A del \d{4}-\d{2}-\d{2} registrada\./)
     expect(calls.find((c) => c.method === 'POST')?.body).toMatchObject({ entries: [{ student: 7, status: 'ausente' }] })
+  })
+
+  it('INC-011: una respuesta tardía de otra fecha no reemplaza la lista de la fecha elegida', async () => {
+    let releaseFirst: () => void = () => {}
+    const firstDelayed = new Promise<void>((resolve) => (releaseFirst = resolve))
+    let sheets = 0
+    const calls = api(teacher, (url, method) => {
+      if (url.endsWith('/groups/')) return json(200, [group('4-A', 1)])
+      if (url.endsWith('/attendance/') && method === 'POST') return json(201, { recorded: 1 })
+      if (url.includes('/attendance/?')) {
+        const date = new URL(url).searchParams.get('date')!
+        return json(200, { ...sheet(false), date })
+      }
+    })
+    const base = globalThis.fetch
+    vi.stubGlobal('fetch', async (url: string, init?: RequestInit) => {
+      if (url.includes('/attendance/?') && sheets++ === 0) await firstDelayed
+      return base(url, init)
+    })
+    renderAt('/asistencia')
+
+    const dateField = await screen.findByLabelText('Fecha')
+    await vi.waitFor(() => expect(sheets).toBe(1))
+    await userEvent.clear(dateField)
+    await userEvent.type(dateField, '2026-11-02')
+    expect(await screen.findByRole('heading', { name: '4-A · 2026-11-02' })).toBeInTheDocument()
+    releaseFirst()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(screen.getByRole('heading', { name: '4-A · 2026-11-02' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar asistencia' }))
+
+    await screen.findByRole('status')
+    expect(calls.find((c) => c.method === 'POST')?.body).toMatchObject({ date: '2026-11-02' })
   })
 
   it('HU10-E3: si la fecha ya tiene asistencia, abre el modo corrección', async () => {
@@ -254,7 +315,7 @@ describe('HU10 Asistencia', () => {
     api(teacher, (url, method) => {
       if (url.endsWith('/groups/')) return json(200, [group('4-A', 1)])
       if (method === 'POST') return conflict('La asistencia de esta fecha ya fue registrada.')
-      if (url.includes('/attendance/?')) return json(200, sheet(calls++ > 0))
+      if (url.includes('/attendance/?')) return json(200, { ...sheet(calls++ > 0), date: dateOf(url) })
     })
     renderAt('/asistencia')
 

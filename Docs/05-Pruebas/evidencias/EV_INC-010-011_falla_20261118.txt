@@ -1,0 +1,61 @@
+# Vitest sin la corrección de INC-010 e INC-011 (GroupsPage.tsx y AttendancePage.tsx de 67f59b4), 2026-11-18 19:03
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+ ✓ src/pages/academics.test.tsx > HU05-E5 Periodo lectivo > define el periodo 2026 como vigente 876ms
+ ✓ src/pages/academics.test.tsx > HU05-E5 Periodo lectivo > el personal docente consulta los periodos sin poder definirlos 60ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E1: registra un docente con su contraseña inicial 1021ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E3: muestra el error de correo duplicado 107ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E2: desactiva un docente 93ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E1: crea un grupo en el periodo vigente 311ms
+ × src/pages/academics.test.tsx > HU09 Grupos > INC-010: crear grupo se habilita al cargar los niveles y el único nivel queda preseleccionado 83ms
+   → expect(element).toBeDisabled()
+Received element is not disabled:
+  <button
+  class="button"
+  type="button"
+/>
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E3: muestra que el estudiante ya pertenece a un grupo del periodo 241ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E2: traslada un estudiante de 4-A a 4-B 233ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > CA16: el personal docente consulta sus grupos sin acciones de edición 97ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > HU10-E1: marca la asistencia y la guarda 164ms
+ × src/pages/academics.test.tsx > HU10 Asistencia > INC-011: una respuesta tardía de otra fecha no reemplaza la lista de la fecha elegida 391ms
+   → Unable to find an accessible element with the role "heading" and name "4-A · 2026-11-02"
+Here are the accessible roles:
+  banner:
+  Name "":
+  <header
+    class="topbar"
+  />
+  --------------------------------------------------
+  strong:
+  Name "":
+  <strong />
+  --------------------------------------------------
+  navigation:
+  Name "Menú principal":
+  <nav
+    aria-label="Menú principal"
+    class="menu"
+  />
+  --------------------------------------------------
+  link:
+  Name "Inicio":
+  <a
+    class=""
+    data-discover="true"
+    href="/"
+  />
+  Name "Mi institución":
+  <a
+    class=""
+    data-discover="true"
+    href="/mi-institucion"
+  />
+  Name "Estudiantes":
+  <a
+    class=""
+    data-discover="true"
+    href="/estudiantes"
+  />
+  Name "Grupos":
+  <a
+    class=""

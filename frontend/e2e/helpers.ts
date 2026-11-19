@@ -11,6 +11,7 @@ export const ACCOUNTS = {
   roblesAdmin: 'admin@robles.test',
   roblesTeacher: 'docente@robles.test',
   monteverdeAdmin: 'admin@monteverde.test',
+  arcoirisAdmin: 'admin@arcoiris.test',
 } as const
 
 export async function login(page: Page, email: string, password = DEMO_PASSWORD) {
@@ -31,3 +32,14 @@ export async function evidence(page: Page, testInfo: TestInfo, caseId: string, s
 }
 
 export const uniqueSuffix = () => Date.now().toString().slice(-8)
+
+/** Abre una opción del menú principal (en teléfono el inicio también la muestra como acceso directo). */
+export async function openMenu(page: Page, label: string) {
+  await page.getByRole('navigation', { name: 'Menú principal' }).getByRole('link', { name: label }).click()
+  await expect(page.getByRole('heading', { level: 1, name: label })).toBeVisible()
+}
+
+export async function logout(page: Page) {
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click()
+  await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible()
+}

@@ -61,6 +61,34 @@ test.describe('Accesibilidad', () => {
     await evidence(page, testInfo, 'CP-S16', 'formulario-errores')
   })
 
+  test('CP-S32 — pantallas de HU05-E5 y HU08 – HU12 sin violaciones WCAG 2.2 AA detectables', async ({ page }, testInfo) => {
+    await login(page, ACCOUNTS.roblesAdmin)
+    await page.goto('/docentes')
+    await page.getByRole('button', { name: 'Registrar docente' }).click()
+    await page.getByRole('button', { name: 'Guardar' }).click()
+    await expect(page.getByRole('alert')).toBeVisible()
+    await audit(page, testInfo, 'docentes-formulario-errores')
+    await page.goto('/grupos')
+    await page.getByRole('button', { name: 'Ver grupo 4-A' }).click()
+    await expect(page.getByRole('heading', { name: /Grupo 4-A/ })).toBeVisible()
+    await audit(page, testInfo, 'grupos-detalle')
+    await page.goto('/reportes')
+    await expect(page.getByRole('table', { name: 'Listado de grupos' })).toBeVisible()
+    await audit(page, testInfo, 'reportes')
+    await page.goto('/mi-institucion')
+    await expect(page.getByRole('table', { name: 'Periodos lectivos' })).toBeVisible()
+    await audit(page, testInfo, 'mi-institucion-periodos')
+
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click()
+    await login(page, ACCOUNTS.roblesTeacher)
+    await page.goto('/asistencia')
+    await page.getByLabel('Grupo').selectOption({ label: '4-A (2026)' })
+    await page.getByLabel('Fecha').fill('2026-11-04')
+    await expect(page.getByRole('button', { name: 'Guardar asistencia' })).toBeVisible()
+    await audit(page, testInfo, 'asistencia')
+    await evidence(page, testInfo, 'CP-S32', 'asistencia')
+  })
+
   test('CP-S17 — inicio de sesión solo con teclado y foco visible', async ({ page }, testInfo) => {
     await page.goto('/ingresar')
     // El formulario aparece cuando termina la validación de la sesión.

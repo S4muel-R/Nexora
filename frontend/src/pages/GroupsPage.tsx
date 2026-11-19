@@ -21,6 +21,8 @@ export function GroupsPage() {
   const [periods, setPeriods] = useState<AcademicPeriod[]>([])
   const [period, setPeriod] = useState('')
   const [levels, setLevels] = useState<Level[]>([])
+  // INC-010 (como INC-004): el formulario solo se abre cuando los niveles de la institución ya cargaron.
+  const [levelsLoaded, setLevelsLoaded] = useState(false)
   const [groups, setGroups] = useState<Group[]>([])
   const [selected, setSelected] = useState<number | null>(null)
   const [creating, setCreating] = useState(false)
@@ -47,11 +49,18 @@ export function GroupsPage() {
       apiGet<Institution>('/my-institution/')
         .then((institution) => active && setLevels(institution.levels))
         .catch(() => active && setLevels([]))
+        .finally(() => active && setLevelsLoaded(true))
     }
     return () => {
       active = false
     }
   }, [canEdit])
+
+  useEffect(() => {
+    if (creating && levels.length === 1) {
+      setForm((current) => (current.level ? current : { ...current, level: levels[0] }))
+    }
+  }, [creating, levels])
 
   const load = useCallback(() => {
     if (!period) {
@@ -97,7 +106,7 @@ export function GroupsPage() {
       <div className="page-header">
         <h1>Grupos</h1>
         {canEdit && !creating && (
-          <button type="button" className="button" onClick={openForm} disabled={periods.length === 0}>
+          <button type="button" className="button" onClick={openForm} disabled={periods.length === 0 || !levelsLoaded}>
             Crear grupo
           </button>
         )}

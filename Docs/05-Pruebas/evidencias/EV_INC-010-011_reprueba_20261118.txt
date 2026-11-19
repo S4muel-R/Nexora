@@ -1,0 +1,55 @@
+# Vitest con la corrección de INC-010 e INC-011, 2026-11-18 19:03
+ RUN  v4.1.12 C:/Users/Admin/Desktop/ULASHIT/QA/Nexora/Nexora/frontend
+ ✓ src/api/client.test.ts > parseError > usa el mensaje y los campos del formato estándar 9ms
+ ✓ src/api/client.test.ts > parseError > usa un mensaje genérico si la respuesta no es JSON 1ms
+ ✓ src/api/client.test.ts > apiGet > devuelve los datos cuando la respuesta es correcta 3ms
+ ✓ src/api/client.test.ts > apiGet > convierte una falla de red en ApiError legible 2ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > un 401 de la sesión vigente cierra la sesión 3ms
+ ✓ src/api/client.test.ts > sesión vencida (HU02-E3, INC-007) > INC-007: un 401 tardío de una sesión ya reemplazada no cierra la sesión nueva 1ms
+ ✓ src/api/client.test.ts > sesión en cookie con CSRF (INC-006) > las peticiones envían la cookie y las escrituras el token CSRF 12ms
+ ✓ src/api/client.test.ts > sesión en cookie con CSRF (INC-006) > si no hay cookie CSRF la pide a la API antes de escribir 3ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E5: marca los campos obligatorios sin llamar a la API 344ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E3: muestra el mensaje de credenciales inválidas 596ms
+ ✓ src/pages/academics.test.tsx > HU05-E5 Periodo lectivo > define el periodo 2026 como vigente 1023ms
+ ✓ src/pages/academics.test.tsx > HU05-E5 Periodo lectivo > el personal docente consulta los periodos sin poder definirlos 60ms
+ ✓ src/App.test.tsx > HU01 Iniciar sesión > HU01-E1: al ingresar muestra el inicio con la institución 621ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión > HU02-E2: sin sesión, una dirección interna lleva al inicio de sesión 29ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal administrativo ve las opciones de su institución 23ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E1: el personal docente no ve Docentes 23ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre Docentes ve acceso restringido 15ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E2: la administración de la plataforma ve solo Instituciones 18ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU03-E3: el docente que abre una pantalla de administración ve acceso restringido 28ms
+ ✓ src/App.test.tsx > HU03 Opciones por rol > HU07: el docente consulta estudiantes sin botón de registro 26ms
+ ✓ src/pages/pages.test.tsx > HU04 Registrar una institución (plataforma) > HU04-E1: envía la institución con su administradora y muestra la confirmación 1737ms
+ ✓ src/App.test.tsx > HU07 Registrar estudiante > INC-004: el registro se habilita al cargar los niveles y el único nivel queda preseleccionado 164ms
+ ✓ src/pages/pages.test.tsx > HU04 Registrar una institución (plataforma) > HU04-E3: muestra el error de nombre duplicado que devuelve la API 166ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: la sesión se cierra en la interfaz aunque el servidor no responda, y queda el cierre pendiente 103ms
+ ✓ src/App.test.tsx > HU02 Cerrar sesión en un equipo compartido > INC-009: con un cierre pendiente, al abrir la aplicación se cierra la sesión antes de restaurarla 31ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E1: registra un docente con su contraseña inicial 1051ms
+ ✓ src/pages/pages.test.tsx > HU05 Mi institución > HU05-E1: guarda el teléfono nuevo y confirma 324ms
+ ✓ src/pages/pages.test.tsx > HU05 Mi institución > HU05-E3: muestra el error del campo que rechaza la API 80ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E3: muestra el error de correo duplicado 107ms
+ ✓ src/pages/academics.test.tsx > HU08 Docentes > HU08-E2: desactiva un docente 109ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E1: crea un grupo en el periodo vigente 278ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > INC-010: crear grupo se habilita al cargar los niveles y el único nivel queda preseleccionado 278ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E3: muestra que el estudiante ya pertenece a un grupo del periodo 234ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E1: registra un estudiante y confirma; el foco pasa al formulario al abrirlo (A11Y-02) 896ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E4: muestra el error de identificación duplicada 138ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > HU09-E2: traslada un estudiante de 4-A a 4-B 246ms
+ ✓ src/pages/academics.test.tsx > HU09 Grupos > CA16: el personal docente consulta sus grupos sin acciones de edición 113ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > HU10-E1: marca la asistencia y la guarda 134ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E2: desactiva un estudiante y confirma 356ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > HU07-E3: la búsqueda consulta la API con el texto escrito 355ms
+ ✓ src/pages/pages.test.tsx > HU07 Estudiantes > A11Y-01: cada pantalla tiene su título de pestaña 21ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > INC-011: una respuesta tardía de otra fecha no reemplaza la lista de la fecha elegida 449ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > HU10-E3: si la fecha ya tiene asistencia, abre el modo corrección 123ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > HU10-E4: la corrección exige el motivo 158ms
+ ✓ src/pages/academics.test.tsx > HU10 Asistencia > HU10-E2: corrige a presente con motivo 353ms
+ ✓ src/pages/academics.test.tsx > HU11 y HU12 Reportes > HU11-E3: sin resultados muestra el mensaje en lugar de una tabla vacía 32ms
+ ✓ src/pages/academics.test.tsx > HU11 y HU12 Reportes > HU11-E1: muestra cada grupo con su docente y cantidad de estudiantes 36ms
+ ✓ src/pages/academics.test.tsx > HU11 y HU12 Reportes > HU12-E1: muestra presentes, ausentes y porcentaje 172ms
+ ✓ src/pages/academics.test.tsx > HU11 y HU12 Reportes > HU12-E3: muestra el error de rango invertido 116ms
+ Test Files  4 passed (4)
+      Tests  49 passed (49)
+   Start at  19:03:20
+   Duration  10.53s (transform 1.46s, setup 3.02s, import 2.36s, tests 11.21s, environment 14.13s)

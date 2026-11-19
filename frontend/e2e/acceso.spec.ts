@@ -43,7 +43,15 @@ test.describe('HU01 – HU03 Acceso y opciones por rol', () => {
     const menu = page.getByRole('navigation', { name: 'Menú principal' })
 
     await login(page, ACCOUNTS.roblesAdmin)
-    await expect(menu.getByRole('link')).toHaveText(['Inicio', 'Mi institución', 'Estudiantes'])
+    await expect(menu.getByRole('link')).toHaveText([
+      'Inicio',
+      'Mi institución',
+      'Estudiantes',
+      'Docentes',
+      'Grupos',
+      'Asistencia',
+      'Reportes',
+    ])
     await evidence(page, info, 'CP-S05', 'menu-administrativo')
     await page.getByRole('button', { name: 'Cerrar sesión' }).click()
 
